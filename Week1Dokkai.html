@@ -58,7 +58,7 @@
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
+        const { useState, useEffect } = React;
 
         // Lesson data structure (All Japanese & Indonesian)
         const DOKKAI_LESSON_DATA = {
@@ -91,12 +91,13 @@
                         { speaker: "女子学生", text: "あ、そう。知[し]らなかった。じゃ、明日[あした]が休みということね。私も調[しら]べたいことがあるから、一緒[いっしょ]に行こう。", trans: "Ah, begitu. Saya tidak tahu. Berarti besok yang libur ya. Saya juga ada hal yang ingin dicari, mari pergi bersama." }
                     ]
                 },
-                practiceQuestions: [
-                    { id: "q1", type: "mc", text: "1. 今日の日付・曜日の説明として正しいものはどれですか。", options: ["a. 今日は第3月曜日で祝日である", "b. 今日は第3月曜日で平日である"], ans: "a", trans: "Hari ini adalah Senin ke-3 dan merupakan hari libur nasional." },
-                    { id: "q2", type: "mc", text: "2. 今日、中央図書館は開いていますか。", options: ["a. 開いている", "b. 休館している"], ans: "a", trans: "Perpustakaan Pusat hari ini buka." },
-                    { id: "q3", type: "mc", text: "3. 女子学生は最初、図書館についてどう思っていましたか。", options: ["a. 今日は開いていると思っていた", "b. 今日は休みだと思っていた"], ans: "b", trans: "Siswi tersebut awalnya mengira perpustakaan hari ini libur." },
-                    { id: "q4", type: "mc", text: "4. 明日（火曜日）の図書館はどうなりますか。", options: ["a. 休み（休館）になる", "b. 通常通り開館する"], ans: "a", trans: "Besok (Selasa) perpustakaan akan libur." },
-                    { id: "q5", type: "mc", text: "5. 会話の内容と合っている文はどれですか。", options: ["a. 男子学生は今日が第3月曜日だと知らなかった", "b. 二人はこれから一緒に図書館へ行く"], ans: "b", trans: "Mereka berdua setelah ini akan pergi ke perpustakaan bersama-sama." }
+                // Updated practiceStatements for Day 1 from photo 2
+                practiceStatements: [
+                    { id: "s1", text: "1. 今日[きょう]は祝日[しゅくじつ]である。", isCorrect: true, trans: "Hari ini adalah hari libur nasional." },
+                    { id: "s2", text: "2. 今日[きょう]、図書館[としょかん]は休[やす]みである。", isCorrect: false, trans: "Perpustakaan hari ini libur." },
+                    { id: "s3", text: "3. 男子学生[だんしがくせい]は今日[きょう]が第[だい]3月曜日[げつようび]だということを知[し]らなかった。", isCorrect: false, trans: "Siswa laki-laki tidak tahu bahwa hari ini adalah hari Senin ke-3." },
+                    { id: "s4", text: "4. 女子学生[じょしがくせい]は最初[さいしょ]、今日[きょう]は図書館[としょかん]が休[やす]みだと思[おも]っていた。", isCorrect: true, trans: "Siswi perempuan pada awalnya mengira perpustakaan hari ini libur." },
+                    { id: "s5", text: "5. 明日[あす]は火曜日[かようび]で図書館[としょかん]は開[あ]いている。", isCorrect: false, trans: "Besok adalah hari Selasa dan perpustakaan buka." }
                 ],
 
                 noticeData: {
@@ -193,12 +194,13 @@
                         { speaker: "女子学生", text: "うん、もうすぐ説明会[せつめいかい]が始まっちゃうから、急ごう。", trans: "Iya, karena sesi penjelasan akan segera dimulai, mari cepat." }
                     ]
                 },
-                practiceQuestions: [
-                    { id: "q1", type: "mc", text: "1. この学生たちはどこに行こうとしていますか。", options: ["a. 説明会の会場", "b. ドラッグストア"], ans: "a", trans: "Para siswa ini berniat pergi ke lokasi sesi penjelasan (setsumeikai)." },
-                    { id: "q2", type: "mc", text: "2. なぜ目的地に着きませんでしたか。", options: ["a. 信号の数え方を間違えたから", "b. 右に曲がるのを左に曲がったから"], ans: "a", trans: "Mereka salah menghitung urutan lampu lalu lintas dari keluar stasiun." },
-                    { id: "q3", type: "mc", text: "3. 地下鉄の出口の信号は数えに入れますか。", options: ["a. 入れる", "b. 入れない"], ans: "a", trans: "Lampu lalu lintas tepat di depan pintu keluar stasiun ikut dihitung." },
-                    { id: "q4", type: "mc", text: "4. 会場はドラッグストアのどこにありますか。", options: ["a. 手前", "b. 向こう (4軒先)"], ans: "b", trans: "Lokasi acara berada di seberang/lewat dari drugstore (4 bangunan dari sana)." },
-                    { id: "q5", type: "mc", text: "5. この学生たちはこれからどうしますか。", options: ["a. 元の場所へ戻る", "b. このまままっすぐ歩く"], ans: "a", trans: "Para siswa ini akan berbalik kembali ke titik perhitungan yang benar." }
+                // Updated practiceStatements for Day 2 from photo 3
+                practiceStatements: [
+                    { id: "s1", text: "1. この学生[がくせい]たちは、説明会[せつめいかい]に行[い]くところである。", isCorrect: true, trans: "Para siswa ini sedang dalam perjalanan menuju lokasi sesi penjelasan." },
+                    { id: "s2", text: "2. この学生[がくせい]たちは、反対[はんたい]に曲[ま]がってしまったようだ。", isCorrect: false, trans: "Para siswa ini sepertinya malah berbelok ke arah yang berlawanan." },
+                    { id: "s3", text: "3. ドラッグストアの手前[てまえ]に会場[かいじょう]がある。", isCorrect: false, trans: "Lokasi acara berada di sebelah sini (sebelum) toko obat." },
+                    { id: "s4", text: "4. この学生[がくせい]たちは、ドラッグストアを通[とお]り過[す]ぎてしまったようだ。", isCorrect: false, trans: "Para siswa ini sepertinya telah melewati toko obat." },
+                    { id: "s5", text: "5. この学生[がくせい]たちは、曲[ま]がるところを間違[まちが]えたようだ。", isCorrect: true, trans: "Para siswa ini sepertinya salah tempat saat berbelok." }
                 ],
 
                 noticeData: {
@@ -269,12 +271,13 @@
                         { speaker: "父", text: "え？ おまえは、二十歳未満[はたちみまん]なんだから、まだ酒[さけ]はダメだよ。", trans: "Eh? Kamu kan masih di bawah 20 tahun, jadi belum boleh minum alkohol lho." }
                     ]
                 },
-                practiceQuestions: [
-                    { id: "q1", type: "mc", text: "1. 父は「レオン」のある場所を知らない。", options: ["a. 合っている (Benar)", "b. 違っている (Salah)"], ans: "b", trans: "Ayah tahu lokasi restoran Leon (di depan stasiun)." },
-                    { id: "q2", type: "mc", text: "2. 「レオン」は10年前に開店した。", options: ["a. 合っている (Benar)", "b. 違っている (Salah)"], ans: "a", trans: "Restoran Leon buka 10 tahun yang lalu (peringatan ke-10)." },
-                    { id: "q3", type: "mc", text: "3. 娘は「レオン」でワインを飲んだことがある。", options: ["a. 合っている (Benar)", "b. 違っている (Salah)"], ans: "b", trans: "Anak perempuan belum pernah minum anggur di sana ('今度は私も飲もうかな')." },
-                    { id: "q4", type: "mc", text: "4. 利用金額がちょうど5,000円の場合は、1,000円割引にならない。", options: ["a. 合っている (Benar)", "b. 違っている (Salah)"], ans: "b", trans: "'5,000円以上' berarti 5.000 yen JUGA termasuk dan dapat diskon 1.000 yen." },
-                    { id: "q5", type: "mc", text: "5. 娘はまだ二十歳になっていない。", options: ["a. 合っている (Benar)", "b. 違っている (Salah)"], ans: "a", trans: "Anak perempuan berusia di bawah 20 tahun ('二十歳未満')." }
+                // Updated practiceStatements for Day 3 from photo 1
+                practiceStatements: [
+                    { id: "s1", text: "1. 父[ちち]は「レオン」のある場所[ばしょ]を知[し]らない。", isCorrect: false, trans: "Ayah tidak tahu lokasi tempat restoran Leon berada." },
+                    { id: "s2", text: "2. 「レオン」は10年[ねん]前[まえ]に開店[かいてん]した。", isCorrect: true, trans: "Restoran Leon mulai buka 10 tahun yang lalu." },
+                    { id: "s3", text: "3. 娘[むすめ]は「レオン」でワインを飲[の]んだことがある。", isCorrect: false, trans: "Anak perempuan pernah minum anggur di restoran Leon." },
+                    { id: "s4", text: "4. 利用金額[りようきんがく]がちょうど5,000円[えん]の場合[ばあい]は、1,000円割引[えんわりびき]にならない。", isCorrect: false, trans: "Jika jumlah penggunaan tepat 5.000 yen, tidak mendapat diskon 1.000 yen." },
+                    { id: "s5", text: "5. 娘[むすめ]はまだ二十歳[はたち]になっていない。", isCorrect: true, trans: "Anak perempuan tersebut belum genap berusia 20 tahun." }
                 ],
 
                 noticeData: {
@@ -497,7 +500,7 @@
             );
         }
 
-        function PracticeDialogueSection({ dayKey, practiceDialogue, practiceQuestions, userAnswers, submitted, onSelect, showIndoTrans, setShowIndoTrans }) {
+        function PracticeDialogueSection({ dayKey, practiceDialogue, practiceStatements, userAnswers, submitted, onToggleCheck, showIndoTrans, setShowIndoTrans }) {
             return (
                 <section className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 md:p-8 mb-8">
                     <div className="border-b-2 border-slate-900 pb-4 mb-6 flex items-center justify-between flex-wrap gap-2">
@@ -533,57 +536,100 @@
                         ))}
                     </div>
 
-                    {/* Practice Questions */}
-                    <div className="space-y-6">
-                        <h3 className="text-sm font-bold text-slate-700 border-b pb-2 font-sans">
-                            れんしゅう (Soal Pemahaman Percakapan)
-                        </h3>
-                        {practiceQuestions.map((q) => {
-                            const selectedAnswer = userAnswers[`${dayKey}_${q.id}`];
-                            return (
-                                <div key={q.id} className="p-4 rounded-2xl border border-slate-100 bg-slate-50/50">
-                                    <p className="japanese-text font-bold text-slate-900 text-base mb-2">
-                                        <JpText text={q.text} />
-                                    </p>
-                                    {showIndoTrans && q.trans && (
-                                        <p className="text-xs text-amber-800 bg-amber-50/60 px-2.5 py-1.5 rounded-lg border border-amber-100/40 mb-3 italic font-sans flex items-center gap-1.5">
-                                            <i className="fa-solid fa-language text-amber-500 text-sm"></i>
-                                            <span>{q.trans}</span>
-                                        </p>
-                                    )}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 max-w-2xl">
-                                        {q.options.map((opt, idx) => {
-                                            const choiceVal = idx === 0 ? 'a' : 'b';
-                                            const isSelected = selectedAnswer === choiceVal;
-                                            let btnStyle = "bg-white hover:bg-slate-100 border-slate-200 text-slate-800";
-                                            if (isSelected) btnStyle = "bg-slate-800 border-slate-900 text-white ring-2 ring-slate-200";
-                                            if (submitted) {
-                                                if (choiceVal === q.ans) {
-                                                    btnStyle = "bg-amber-500 border-amber-600 text-white font-bold ring-2 ring-amber-200";
-                                                } else if (isSelected) {
-                                                    btnStyle = "bg-rose-500 border-rose-600 text-white ring-2 ring-rose-200";
-                                                } else {
-                                                    btnStyle = "bg-slate-50 text-slate-400 border-slate-100 opacity-60 pointer-events-none";
-                                                }
-                                            }
+                    {/* Practice Questions Checkbox Section */}
+                    <div className="space-y-4">
+                        <div className="bg-amber-50/70 border border-amber-200 p-4 rounded-2xl">
+                            <h3 className="text-sm font-black text-amber-900 font-sans flex items-center gap-2">
+                                <i className="fa-solid fa-square-check text-amber-600 text-base"></i>
+                                会話の内容と合っているものにチェックをしなさい。
+                            </h3>
+                            <p className="text-xs text-amber-700 mt-0.5 font-sans">
+                                (Centang pada kotak di samping pernyataan yang BENAR/SESUAI dengan isi percakapan di atas)
+                            </p>
+                        </div>
 
-                                            return (
-                                                <button 
-                                                    key={idx} 
-                                                    disabled={submitted} 
-                                                    onClick={() => onSelect(q.id, choiceVal)}
-                                                    className={`p-3 text-left rounded-xl border text-sm transition-all flex items-center justify-between japanese-text font-medium ${btnStyle}`}
-                                                >
-                                                    <span>{opt}</span>
-                                                    {submitted && choiceVal === q.ans && <i className="fa-solid fa-circle-check text-white"></i>}
-                                                    {submitted && isSelected && choiceVal !== q.ans && <i className="fa-solid fa-circle-xmark text-white"></i>}
-                                                </button>
-                                            );
-                                        })}
+                        <div className="space-y-3">
+                            {practiceStatements.map((stmt) => {
+                                const isChecked = !!userAnswers[`${dayKey}_${stmt.id}`];
+                                
+                                let cardStyle = "bg-white border-slate-200 hover:border-slate-300";
+                                if (isChecked) {
+                                    cardStyle = "bg-amber-50/50 border-amber-400 ring-1 ring-amber-300";
+                                }
+
+                                if (submitted) {
+                                    if (stmt.isCorrect) {
+                                        // Standard correct statement
+                                        cardStyle = isChecked 
+                                            ? "bg-emerald-50 border-emerald-500 ring-2 ring-emerald-200" 
+                                            : "bg-amber-50/80 border-amber-500 border-dashed";
+                                    } else {
+                                        // Standard incorrect statement
+                                        cardStyle = isChecked 
+                                            ? "bg-rose-50 border-rose-500 ring-2 ring-rose-200" 
+                                            : "bg-slate-50 border-slate-200 opacity-60";
+                                    }
+                                }
+
+                                return (
+                                    <div 
+                                        key={stmt.id} 
+                                        onClick={() => !submitted && onToggleCheck(stmt.id)}
+                                        className={`p-4 rounded-2xl border transition-all cursor-pointer select-none ${cardStyle}`}
+                                    >
+                                        <div className="flex items-start gap-3">
+                                            <div className="mt-1">
+                                                <input 
+                                                    type="checkbox"
+                                                    checked={isChecked}
+                                                    disabled={submitted}
+                                                    onChange={() => {}} // Handled by parent div onClick
+                                                    className="w-5 h-5 accent-amber-600 rounded cursor-pointer"
+                                                />
+                                            </div>
+                                            <div className="flex-1">
+                                                <p className="japanese-text font-bold text-slate-900 text-base md:text-lg">
+                                                    <JpText text={stmt.text} />
+                                                </p>
+                                                {showIndoTrans && stmt.trans && (
+                                                    <p className="text-xs text-slate-500 mt-1 italic font-sans">
+                                                        {stmt.trans}
+                                                    </p>
+                                                )}
+
+                                                {/* Feedback badges on submit */}
+                                                {submitted && (
+                                                    <div className="mt-2.5 pt-2 border-t border-slate-200/60 flex items-center justify-between text-xs font-bold font-sans">
+                                                        {stmt.isCorrect ? (
+                                                            <span className="text-emerald-700 flex items-center gap-1.5">
+                                                                <i className="fa-solid fa-circle-check text-emerald-600"></i>
+                                                                正しい文 (Pernyataan Benar)
+                                                                {!isChecked && <span className="text-amber-800 text-[11px] font-normal">(Harusnya dicentang)</span>}
+                                                            </span>
+                                                        ) : (
+                                                            <span className="text-rose-600 flex items-center gap-1.5">
+                                                                <i className="fa-solid fa-circle-xmark text-rose-500"></i>
+                                                                間違っている文 (Pernyataan Salah)
+                                                            </span>
+                                                        )}
+
+                                                        {isChecked === stmt.isCorrect ? (
+                                                            <span className="bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full text-[10px] uppercase">
+                                                                Jawaban Tepat
+                                                            </span>
+                                                        ) : (
+                                                            <span className="bg-rose-100 text-rose-800 px-2.5 py-0.5 rounded-full text-[10px] uppercase">
+                                                                Kurang Tepat
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            );
-                        })}
+                                );
+                            })}
+                        </div>
                     </div>
                 </section>
             );
@@ -720,7 +766,6 @@
             );
         }
 
-        // Component flyer untuk Hari ke-3 (Restoran Leon)
         function Day3LeonFlyer() {
             return (
                 <div className="bg-amber-50 border-4 border-amber-800 rounded-2xl p-6 my-4 shadow-md font-sans text-slate-800">
@@ -1000,7 +1045,17 @@
                 }));
             };
 
-            const handleSelectVal = (dayKey, questionId, val) => {
+            // Toggle checkbox for practiceStatements
+            const handleToggleStatementCheck = (dayKey, stmtId) => {
+                if (submittedDays[dayKey]) return;
+                const answerKey = `${dayKey}_${stmtId}`;
+                setUserAnswers(prev => ({
+                    ...prev,
+                    [answerKey]: !prev[answerKey]
+                }));
+            };
+
+            const handleSelectMondaiVal = (dayKey, questionId, val) => {
                 if (submittedDays[dayKey]) return;
                 setUserAnswers(prev => ({
                     ...prev,
@@ -1012,12 +1067,19 @@
                 const lesson = DOKKAI_LESSON_DATA[dayKey];
                 let correctCount = 0;
 
-                lesson.practiceQuestions.forEach(q => {
-                    if (userAnswers[`${dayKey}_${q.id}`] === q.ans) correctCount++;
+                // Evaluate Checkbox Statements: 1 point per statement if correct choice (checked vs isCorrect match)
+                lesson.practiceStatements.forEach(stmt => {
+                    const isChecked = !!userAnswers[`${dayKey}_${stmt.id}`];
+                    if (isChecked === stmt.isCorrect) {
+                        correctCount++;
+                    }
                 });
 
+                // Evaluate Mondai Questions
                 lesson.mondaiQuestions.forEach(mq => {
-                    if (userAnswers[`${dayKey}_${mq.id}`] === mq.ans) correctCount++;
+                    if (userAnswers[`${dayKey}_${mq.id}`] === mq.ans) {
+                        correctCount++;
+                    }
                 });
 
                 setScores(prev => ({ ...prev, [dayKey]: correctCount }));
@@ -1174,7 +1236,7 @@
                                                     const isCompleted = submittedDays[dayKey] || false;
 
                                                     const lesson = DOKKAI_LESSON_DATA[dayKey];
-                                                    const totalPoints = lesson ? (lesson.practiceQuestions.length + lesson.mondaiQuestions.length) : 0;
+                                                    const totalPoints = lesson ? (lesson.practiceStatements.length + lesson.mondaiQuestions.length) : 0;
                                                     const score = scores[dayKey] || 0;
 
                                                     return (
@@ -1282,7 +1344,7 @@
 
                 const currentLesson = DOKKAI_LESSON_DATA[currentView];
                 if (currentLesson) {
-                    const totalPoints = currentLesson.practiceQuestions.length + currentLesson.mondaiQuestions.length;
+                    const totalPoints = currentLesson.practiceStatements.length + currentLesson.mondaiQuestions.length;
                     const isSubmitted = submittedDays[currentView] || false;
                     const score = scores[currentView] || 0;
 
@@ -1317,14 +1379,14 @@
                                     onToggleUnderstood={handleToggleUnderstood}
                                 />
 
-                                {/* Dialogue Practice Component */}
+                                {/* Dialogue Practice Component with Checkbox Statements */}
                                 <PracticeDialogueSection 
                                     dayKey={currentView}
                                     practiceDialogue={currentLesson.practiceDialogue}
-                                    practiceQuestions={currentLesson.practiceQuestions}
+                                    practiceStatements={currentLesson.practiceStatements}
                                     userAnswers={userAnswers}
                                     submitted={isSubmitted}
-                                    onSelect={(qId, val) => handleSelectVal(currentView, qId, val)}
+                                    onToggleCheck={(stmtId) => handleToggleStatementCheck(currentView, stmtId)}
                                     showIndoTrans={showIndoTrans}
                                     setShowIndoTrans={setShowIndoTrans}
                                 />
@@ -1336,7 +1398,7 @@
                                     mondaiQuestions={currentLesson.mondaiQuestions}
                                     userAnswers={userAnswers}
                                     submitted={isSubmitted}
-                                    onSelect={(qId, val) => handleSelectVal(currentView, qId, val)}
+                                    onSelect={(qId, val) => handleSelectMondaiVal(currentView, qId, val)}
                                     showIndoTrans={showIndoTrans}
                                 />
 
