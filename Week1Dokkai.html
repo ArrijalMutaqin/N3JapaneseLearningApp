@@ -91,7 +91,6 @@
                         { speaker: "女子学生", text: "あ、そう。知[し]らなかった。じゃ、明日[あした]が休みということね。私も調[しら]べたいことがあるから、一緒[いっしょ]に行こう。", trans: "Ah, begitu. Saya tidak tahu. Berarti besok yang libur ya. Saya juga ada hal yang ingin dicari, mari pergi bersama." }
                     ]
                 },
-                // Updated practiceStatements for Day 1 from photo 2
                 practiceStatements: [
                     { id: "s1", text: "1. 今日[きょう]は祝日[しゅくじつ]である。", isCorrect: true, trans: "Hari ini adalah hari libur nasional." },
                     { id: "s2", text: "2. 今日[きょう]、図書館[としょかん]は休[やす]みである。", isCorrect: false, trans: "Perpustakaan hari ini libur." },
@@ -102,29 +101,36 @@
 
                 noticeData: {
                     title: "たから市 中央図書館 利用案内",
-                    subtitle: "たから市 中央図書館 利用案内 (Petunjuk Penggunaan)",
+                    titleTrans: "Petunjuk Penggunaan Perpustakaan Pusat Kota Takara",
+                    subtitle: "たから市 中央図書館 利用案内",
                     table: {
-                        headers: ["区分 (Kategori)", "開館時間 (Jam Operasional)"],
+                        headers: ["区分", "開館時間"],
+                        headersTrans: ["Kategori", "Jam Operasional"],
                         rows: [
                             {
-                                label: "平日 (Hari Kerja)",
-                                time: "午前10時から午後8時 (児童室は午後6時まで)"
+                                label: "平日",
+                                labelTrans: "Hari Kerja (Senin–Jumat)",
+                                time: "午前10時から午後8時 (児童室は午後6時まで)",
+                                timeTrans: "Jam 10:00 Pagi s.d. 20:00 Malam (Ruang Baca Anak s.d. 18:00)"
                             },
                             {
-                                label: "土曜日・日曜日・祝日\n(Sabtu, Minggu, Hari Libur)",
-                                time: "午前10時から午後6時"
+                                label: "土曜日・日曜日・祝日",
+                                labelTrans: "Sabtu, Minggu, & Hari Libur Nasional",
+                                time: "午前10時から午後6時",
+                                timeTrans: "Jam 10:00 Pagi s.d. 18:00 Sore"
                             }
                         ]
                     },
                     holidays: {
-                        title: "休館日 (Hari Libur/Tutup)",
+                        title: "休館日 (Hari Libur / Tutup)",
                         items: [
-                            "・第3月曜日 ただし祝日と重なった場合は火曜日が休館",
-                            "・年末年始：12月28日から1月4日",
-                            "・特別休館日：2月11日・5月3日〜5日・9月23日"
+                            { jp: "・第3月曜日 ただし祝日と重なった場合は火曜日が休館", trans: "・Hari Senin ke-3. Namun jika bertepatan dengan hari libur nasional, maka hari Selasa berikutnya yang tutup." },
+                            { jp: "・年末年始：12月28日から1月4日", trans: "・Libur Akhir & Awal Tahun: Tanggal 28 Desember sampai 4 Januari." },
+                            { jp: "・特別休館日：2月11日・5月3日〜5日・9月23日", trans: "・Hari Libur Khusus: 11 Februari, 3–5 Mei, dan 23 September." }
                         ]
                     },
                     extraNote: "＊なお、10月1日より10日まで電気工事のために臨時で休館します。",
+                    extraNoteTrans: "＊Catatan: Perpustakaan akan tutup sementara dari tanggal 1 hingga 10 Oktober karena perbaikan instalasi listrik.",
                     footnotes: [
                         "(※1) 開館時間 : Jam operasional / jam buka",
                         "(※2) 児童室 : Ruang baca khusus anak-anak",
@@ -142,7 +148,7 @@
                             "4. 10月10日の正午から午後2時"
                         ],
                         ans: 3,
-                        trans: "Pertanyaan 1: Pada situasi manakah perpustakaan ini TIDAK DAPAT digunakan? (Jawab: Tanggal 10 Oktober jam 12:00-14:00 karena tutup sementara untuk perbaikan listrik)."
+                        trans: "Pertanyaan 1: Pada situasi manakah perpustakaan ini TIDAK DAPAT digunakan? (Jawaban: Opsi 4 - Tanggal 10 Oktober jam 12:00-14:00 karena perpustakaan tutup sementara untuk perbaikan listrik tanggal 1-10 Oktober)."
                     },
                     {
                         id: "m2",
@@ -154,7 +160,7 @@
                             "4. この図書館は、休館日以外にも臨時で休む日がある。"
                         ],
                         ans: 3,
-                        trans: "Pertanyaan 2: Manakah pernyataan yang SESUAI dengan isi pengumuman di atas? (Jawab: Opsi 4 - Perpustakaan ini memiliki hari libur khusus/sementara selain hari libur rutin)."
+                        trans: "Pertanyaan 2: Manakah pernyataan yang SESUAI dengan isi pengumuman di atas? (Jawaban: Opsi 4 - Perpustakaan ini memiliki hari libur sementara/khusus selain dari hari libur rutinnya)."
                     }
                 ]
             },
@@ -194,7 +200,6 @@
                         { speaker: "女子学生", text: "うん、もうすぐ説明会[せつめいかい]が始まっちゃうから、急ごう。", trans: "Iya, karena sesi penjelasan akan segera dimulai, mari cepat." }
                     ]
                 },
-                // Updated practiceStatements for Day 2 from photo 3
                 practiceStatements: [
                     { id: "s1", text: "1. この学生[がくせい]たちは、説明会[せつめいかい]に行[い]くところである。", isCorrect: true, trans: "Para siswa ini sedang dalam perjalanan menuju lokasi sesi penjelasan." },
                     { id: "s2", text: "2. この学生[がくせい]たちは、反対[はんたい]に曲[ま]がってしまったようだ。", isCorrect: false, trans: "Para siswa ini sepertinya malah berbelok ke arah yang berlawanan." },
@@ -205,13 +210,14 @@
 
                 noticeData: {
                     title: "会場の案内図",
+                    titleTrans: "Peta & Petunjuk Lokasi Acara",
                     subtitle: "会場案内図 (Denah Lokasi B1)",
                     mapSvg: true,
                     directions: [
-                        "・地下鉄さくら野駅より徒歩10分",
-                        "・5番出口を出て、タワービル方面に向かって歩き、4つ目の信号で左折してください。そこから100メートルほど行ったところにドラッグストアがあります。その角から4軒向こうのビルの地下です＊。",
-                        "・会場のななめ向かいに有料駐車場があります。",
-                        "※ビルに面した道路は一方通行になっています＊＊。お車の場合は、ご注意ください。"
+                        { jp: "・地下鉄さくら野駅より徒歩10分", trans: "・Jalan kaki 10 menit dari Stasiun Kereta Bawah Tanah Sakurano." },
+                        { jp: "・5番出口を出て、タワービル方面に向かって歩き、4つ目の信号で左折してください。そこから100メートルほど行ったところにドラッグストアがあります。その角から4軒向こうのビルの地下です＊。", trans: "・Keluar dari pintu Keluar 5, berjalanlah ke arah Gedung Tower, lalu belok kiri di lampu lalu lintas ke-4. Berjalanlah sekitar 100 meter dari sana, Anda akan melihat toko obat. Lokasi acara berada di lantai bawah tanah (B1) gedung ke-4 di seberang tikungan tersebut." },
+                        { jp: "・会場のななめ向かいに有料駐車場があります。", trans: "・Terdapat tempat parkir berbayar di seberang miring (diagonal) dari lokasi acara." },
+                        { jp: "※ビルに面した道路は一方通行になっています＊＊。お車の場合は、ご注意ください。", trans: "※ Jalanan yang menghadap ke gedung adalah jalan satu arah. Jika menggunakan mobil, harap berhati-hati." }
                     ],
                     footnotes: [
                         "(※1) ドラッグストア : 薬局・薬屋 (Toko obat / Apotek)",
@@ -229,7 +235,7 @@
                             "4. タワービルを通り過ぎるまで歩く"
                         ],
                         ans: 1,
-                        trans: "Pertanyaan 1: Apa arti dari kalimat 'berjalan menuju ke arah Gedung Tower'? (Jawab: Opsi 2 - Berjalan sambil melihat Gedung Tower di depan arah pandangan)."
+                        trans: "Pertanyaan 1: Apa arti dari kalimat 'berjalan menuju ke arah Gedung Tower'? (Jawaban: Opsi 2 - Berjalan sambil melihat Gedung Tower di depan arah pandangan)."
                     },
                     {
                         id: "m2",
@@ -241,7 +247,7 @@
                             "4. 会場へは車で来てはいけない。"
                         ],
                         ans: 2,
-                        trans: "Pertanyaan 2: Manakah yang SESUAI dengan petunjuk informasi di atas? (Jawab: Opsi 3 - Jalanan di depan gedung merupakan jalan satu arah)."
+                        trans: "Pertanyaan 2: Manakah yang SESUAI dengan petunjuk informasi di atas? (Jawaban: Opsi 3 - Jalanan di depan gedung merupakan jalan satu arah)."
                     }
                 ]
             },
@@ -271,7 +277,6 @@
                         { speaker: "父", text: "え？ おまえは、二十歳未満[はたちみまん]なんだから、まだ酒[さけ]はダメだよ。", trans: "Eh? Kamu kan masih di bawah 20 tahun, jadi belum boleh minum alkohol lho." }
                     ]
                 },
-                // Updated practiceStatements for Day 3 from photo 1
                 practiceStatements: [
                     { id: "s1", text: "1. 父[ちち]は「レオン」のある場所[ばしょ]を知[し]らない。", isCorrect: false, trans: "Ayah tidak tahu lokasi tempat restoran Leon berada." },
                     { id: "s2", text: "2. 「レオン」は10年[ねん]前[まえ]に開店[かいてん]した。", isCorrect: true, trans: "Restoran Leon mulai buka 10 tahun yang lalu." },
@@ -282,6 +287,7 @@
 
                 noticeData: {
                     title: "レストラン レオン 10周年記念サービス",
+                    titleTrans: "Servis Peringatan 10 Tahun Restoran Leon",
                     subtitle: "5月15日～6月30日 ワインがおいしいレストラン レオン",
                     flyerLeon: true,
                     directions: [
@@ -296,8 +302,8 @@
                         "◆ コーヒーはお代わり自由です！"
                     ],
                     footnotes: [
-                        "(※1) 1グループ：1 group, 1組, 1ユゴ",
-                        "(※2) 日本の法律は、二十歳未満の人が酒を飲むことを禁じている。(Di Jepang, orang di bawah 20 tahun dilarang minum alkohol)."
+                        "(※1) 1グループ：1 group, 1組, 1 grup pelanggan",
+                        "(※2) 日本の法律は、二十歳未満の人が酒を飲むことを禁じている。(Hukum Jepang melarang orang berusia di bawah 20 tahun untuk minum alkohol)."
                     ]
                 },
                 mondaiQuestions: [
@@ -311,7 +317,7 @@
                             "4. 7月に4人で飲み物だけ注文した場合"
                         ],
                         ans: 0,
-                        trans: "Pertanyaan 1: Pada situasi manakah pelanggan mendapatkan servis es krim gratis? (Jawab: Opsi 1 - Bulan Juni makan sendiri. Karena di bulan Juni semua pemesan makanan dapat es krim gratis)."
+                        trans: "Pertanyaan 1: Pada situasi manakah pelanggan mendapatkan es krim gratis? (Jawaban: Opsi 1 - Bulan Juni makan sendiri. Karena di bulan Juni semua pemesan makanan mendapat es krim gratis)."
                     },
                     {
                         id: "m2",
@@ -323,7 +329,7 @@
                             "4. 8,000円"
                         ],
                         ans: 1,
-                        trans: "Pertanyaan 2: Jika 2 orang pergi di bulan Juni dan total transaksi 5.000 yen, berapa bayarnya? (Jawab: Opsi 2 - 4.000 yen, karena 5.000 yen dapat diskon 1.000 yen)."
+                        trans: "Pertanyaan 2: Jika 2 orang pergi di bulan Juni dan total transaksi 5.000 yen, berapa bayarnya? (Jawaban: Opsi 2 - 4.000 yen, karena penggunaan 5.000 yen mendapat diskon 1.000 yen)."
                     }
                 ]
             }
@@ -384,7 +390,7 @@
                 <div className="inline-flex items-center gap-2.5 bg-slate-100 px-3.5 py-1.5 rounded-xl border border-slate-200/80 shadow-sm">
                     <span className="text-xs font-bold text-slate-600 flex items-center gap-1.5 font-sans">
                         <i className="fa-solid fa-language text-amber-500 text-sm"></i>
-                        <span className="text-slate-700">Terjemahan Soal</span>
+                        <span className="text-slate-700">Terjemahan Soal & Pamflet</span>
                     </span>
                     <button 
                         type="button"
@@ -559,12 +565,10 @@
 
                                 if (submitted) {
                                     if (stmt.isCorrect) {
-                                        // Standard correct statement
                                         cardStyle = isChecked 
                                             ? "bg-emerald-50 border-emerald-500 ring-2 ring-emerald-200" 
                                             : "bg-amber-50/80 border-amber-500 border-dashed";
                                     } else {
-                                        // Standard incorrect statement
                                         cardStyle = isChecked 
                                             ? "bg-rose-50 border-rose-500 ring-2 ring-rose-200" 
                                             : "bg-slate-50 border-slate-200 opacity-60";
@@ -583,7 +587,7 @@
                                                     type="checkbox"
                                                     checked={isChecked}
                                                     disabled={submitted}
-                                                    onChange={() => {}} // Handled by parent div onClick
+                                                    onChange={() => {}}
                                                     className="w-5 h-5 accent-amber-600 rounded cursor-pointer"
                                                 />
                                             </div>
@@ -635,20 +639,20 @@
             );
         }
 
-        function Day2Map2D() {
+        function Day2Map2D({ showIndoTrans }) {
             return (
                 <div className="bg-slate-900 text-slate-800 p-3 sm:p-5 rounded-2xl border-2 border-slate-300 shadow-md font-sans my-4">
                     <div className="bg-stone-50 rounded-xl p-4 border border-slate-300 overflow-x-auto">
                         <div className="flex flex-wrap items-center justify-between gap-2 border-b-2 border-slate-800 pb-3 mb-4">
                             <div className="bg-slate-800 text-white px-3 py-1 rounded-lg text-xs md:text-sm font-black tracking-wider">
-                                会場の案内図
+                                会場の案内図 {showIndoTrans && <span className="text-amber-300 text-xs font-normal ml-1.5">(Denah Lokasi Acara)</span>}
                             </div>
                             <div className="flex items-center gap-3">
                                 <div className="bg-slate-800 text-white px-3 py-1 rounded-lg text-xs md:text-sm font-black">
-                                    会場 地下1階
+                                    会場 地下1階 {showIndoTrans && <span className="text-amber-300 text-xs font-normal ml-1">(Lantai B1)</span>}
                                 </div>
                                 <div className="bg-slate-200 border border-slate-400 text-slate-800 px-3 py-1 rounded-lg text-xs font-bold">
-                                    有料駐車場
+                                    有料駐車場 {showIndoTrans && <span className="text-slate-600 font-normal ml-1">(Parkir Berbayar)</span>}
                                 </div>
                             </div>
                         </div>
@@ -766,45 +770,71 @@
             );
         }
 
-        function Day3LeonFlyer() {
+        function Day3LeonFlyer({ showIndoTrans }) {
             return (
                 <div className="bg-amber-50 border-4 border-amber-800 rounded-2xl p-6 my-4 shadow-md font-sans text-slate-800">
                     <div className="text-center border-b-2 border-amber-800 pb-3 mb-4">
-                        <div className="text-sm font-bold text-amber-900 tracking-widest">5月15日～6月30日</div>
+                        <div className="text-sm font-bold text-amber-900 tracking-widest">
+                            5月15日～6月30日
+                            {showIndoTrans && <span className="block text-xs font-semibold text-amber-700 font-sans mt-0.5">(15 Mei ～ 30 Juni)</span>}
+                        </div>
                         <h2 className="text-3xl font-black text-amber-900 tracking-wider my-1">レオン</h2>
                         <div className="inline-block bg-amber-800 text-amber-50 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
-                            10周年記念サービス
+                            10周年記念サービス {showIndoTrans && <span className="normal-case font-normal">(Servis Peringatan 10 Tahun)</span>}
                         </div>
-                        <p className="text-xs text-amber-800 italic mt-1">ワインがおいしいレストラン</p>
+                        <p className="text-xs text-amber-800 italic mt-1">
+                            ワインがおいしいレストラン
+                            {showIndoTrans && <span className="block not-italic text-amber-700 text-[11px]">(Restoran dengan Anggur Lezat)</span>}
+                        </p>
                     </div>
 
                     <div className="text-center text-xs text-slate-700 mb-4 space-y-1">
                         <p>おかげさまで、「レオン」はこの6月に開店10周年を迎えます。</p>
-                        <p>みなさまに感謝の気持ちを込めまして、期間中、次のプレゼントをご用意してお待ちしております！</p>
+                        {showIndoTrans && <p className="text-amber-800 italic text-[11px]">"Berkat dukungan Anda, Restoran Leon genap berusia 10 tahun pada bulan Juni ini."</p>}
+                        
+                        <p className="pt-1">みなさまに感謝の気持ちを込めまして、期間中、次のプレゼントをご用意してお待ちしております！</p>
+                        {showIndoTrans && <p className="text-amber-800 italic text-[11px]">"Sebagai bentuk rasa terima kasih, kami menyediakan hadiah berikut selama periode promosi!"</p>}
                     </div>
 
                     <div className="space-y-3 mb-5">
-                        <div className="bg-white p-3 rounded-xl border border-amber-300 shadow-sm flex items-start gap-3">
-                            <span className="bg-amber-900 text-white font-bold text-xs px-2 py-1 rounded">その1</span>
+                        <div className="bg-white p-3.5 rounded-xl border border-amber-300 shadow-sm flex items-start gap-3">
+                            <span className="bg-amber-900 text-white font-bold text-xs px-2.5 py-1 rounded shrink-0">
+                                その1 {showIndoTrans && <span className="block text-[9px] text-amber-200">Promo 1</span>}
+                            </span>
                             <div>
                                 <p className="font-bold text-sm text-slate-900">ご利用金額より <span className="text-amber-700 text-lg font-black">1,000円割引！</span></p>
-                                <p className="text-xs text-slate-500">（ただし、1グループで5,000円以上ご利用の場合）</p>
+                                {showIndoTrans && <p className="text-xs text-amber-800 font-medium">➔ Diskon 1.000 Yen dari total nominal transaksi!</p>}
+                                <p className="text-xs text-slate-500 mt-0.5">（ただし、1グループで5,000円以上ご利用の場合）</p>
+                                {showIndoTrans && <p className="text-[11px] text-slate-600 italic">(Namun berlaku jika total transaksi 1 grup mencapai 5.000 Yen atau lebih)</p>}
                             </div>
                         </div>
 
-                        <div className="bg-white p-3 rounded-xl border border-amber-300 shadow-sm flex items-start gap-3">
-                            <span className="bg-amber-900 text-white font-bold text-xs px-2 py-1 rounded">その2</span>
+                        <div className="bg-white p-3.5 rounded-xl border border-amber-300 shadow-sm flex items-start gap-3">
+                            <span className="bg-amber-900 text-white font-bold text-xs px-2.5 py-1 rounded shrink-0">
+                                その2 {showIndoTrans && <span className="block text-[9px] text-amber-200">Promo 2</span>}
+                            </span>
                             <div>
                                 <p className="font-bold text-sm text-slate-900">お食事をご注文のお客様全員に <span className="text-amber-700 font-bold">アイスクリームを！</span></p>
-                                <p className="text-xs text-slate-500">そのほか、特別メニューもご用意しております。この機会にぜひご利用ください。</p>
+                                {showIndoTrans && <p className="text-xs text-amber-800 font-medium">➔ Es Krim Gratis untuk SEMUA pelanggan yang memesan makanan!</p>}
+                                <p className="text-xs text-slate-500 mt-1">そのほか、特別メニューもご用意しております。この機会にぜひご利用ください。</p>
+                                {showIndoTrans && <p className="text-[11px] text-slate-600 italic">Selain itu, kami juga menyediakan menu khusus. Silakan manfaatkan kesempatan ini!</p>}
                             </div>
                         </div>
                     </div>
 
-                    <div className="bg-amber-100/80 border border-amber-300 rounded-xl p-3 text-xs text-slate-700 space-y-1">
-                        <p className="font-bold text-amber-900 mb-1">なお、サービス期間に関係なく、一年中、次のサービスを行っています。</p>
-                        <p>◆ 4名様以上のグループでご利用の場合、全員にアイスクリームを！<span className="text-slate-500">（お食事をご注文のお客様に限ります。）</span></p>
-                        <p>◆ コーヒーはお代わり自由です！</p>
+                    <div className="bg-amber-100/80 border border-amber-300 rounded-xl p-3.5 text-xs text-slate-700 space-y-1.5">
+                        <p className="font-bold text-amber-900">なお、サービス期間に関係なく、一年中、次のサービスを行っています。</p>
+                        {showIndoTrans && <p className="text-amber-800 font-semibold text-[11px] mb-1">＊Selain itu, terlepas dari periode promosi, kami memberikan layanan berikut sepanjang tahun:</p>}
+                        
+                        <div className="pl-1">
+                            <p className="font-medium">◆ 4名様以上のグループでご利用の場合、全員にアイスクリームを！<span className="text-slate-500">（お食事をご注文のお客様に限ります。）</span></p>
+                            {showIndoTrans && <p className="text-slate-600 text-[11px] italic pl-3">➔ Gratis es krim untuk semua orang jika datang dalam grup 4 orang/lebih! (Terbatas bagi yang memesan makanan).</p>}
+                        </div>
+
+                        <div className="pl-1">
+                            <p className="font-medium">◆ コーヒーはお代わり自由です！</p>
+                            {showIndoTrans && <p className="text-slate-600 text-[11px] italic pl-3">➔ Refill (tambah) kopi gratis sepuasnya!</p>}
+                        </div>
                     </div>
                 </div>
             );
@@ -818,19 +848,24 @@
                             もんだい (Soal Utama Bacaan / 案内)
                         </span>
                         <h2 className="text-lg font-bold text-slate-800 mt-2 japanese-text">
-                            次のチラシ・案内を見て、後の問いに答えなさい。(Lihat brosur / informasi pengumuman di bawah lalu jawablah pertanyaan berikut.)
+                            次のチラシ・案内を見て、後の問いに答えなさい。(Lihat brosur / informasi pengumuman di bawah lalu jawablah質問/pertanyaan berikut.)
                         </h2>
                     </div>
 
-                    {/* Visual Notice Poster */}
+                    {/* Visual Notice Poster / Pamphlet Container */}
                     <div className="bg-slate-50 border-2 border-slate-300 rounded-2xl p-6 md:p-8 mb-8 shadow-inner">
                         {noticeData.flyerLeon ? (
-                            <Day3LeonFlyer />
+                            <Day3LeonFlyer showIndoTrans={showIndoTrans} />
                         ) : (
                             <div className="text-center border-b-2 border-slate-800 pb-4 mb-6">
                                 <h2 className="text-2xl md:text-3xl font-black text-slate-900 tracking-wider japanese-text">
                                     {noticeData.title}
                                 </h2>
+                                {showIndoTrans && noticeData.titleTrans && (
+                                    <p className="text-sm font-bold text-amber-700 font-sans mt-1">
+                                        [{noticeData.titleTrans}]
+                                    </p>
+                                )}
                                 <p className="text-xs text-slate-500 font-sans mt-1">{noticeData.subtitle}</p>
                             </div>
                         )}
@@ -843,7 +878,10 @@
                                         <tr className="bg-slate-200 text-slate-900">
                                             {noticeData.table.headers.map((h, i) => (
                                                 <th key={i} className="border border-slate-400 px-4 py-2 font-bold text-center">
-                                                    {h}
+                                                    <div>{h}</div>
+                                                    {showIndoTrans && noticeData.table.headersTrans && (
+                                                        <div className="text-xs font-normal text-slate-600">({noticeData.table.headersTrans[i]})</div>
+                                                    )}
                                                 </th>
                                             ))}
                                         </tr>
@@ -852,10 +890,16 @@
                                         {noticeData.table.rows.map((row, i) => (
                                             <tr key={i} className="hover:bg-slate-50">
                                                 <td className="border border-slate-400 px-4 py-3 font-bold text-slate-800 whitespace-pre-line text-center">
-                                                    {row.label}
+                                                    <div>{row.label}</div>
+                                                    {showIndoTrans && row.labelTrans && (
+                                                        <div className="text-xs text-amber-800 font-medium mt-1">({row.labelTrans})</div>
+                                                    )}
                                                 </td>
                                                 <td className="border border-slate-400 px-4 py-3 text-slate-800 font-medium text-center">
-                                                    {row.time}
+                                                    <div>{row.time}</div>
+                                                    {showIndoTrans && row.timeTrans && (
+                                                        <div className="text-xs text-amber-800 font-medium mt-1">({row.timeTrans})</div>
+                                                    )}
                                                 </td>
                                             </tr>
                                         ))}
@@ -865,32 +909,50 @@
                         )}
 
                         {/* Interactive 2D Map for Day 2 */}
-                        {noticeData.mapSvg && <Day2Map2D />}
+                        {noticeData.mapSvg && <Day2Map2D showIndoTrans={showIndoTrans} />}
 
                         {/* Directions / Holiday List */}
                         {noticeData.holidays && (
                             <div className="bg-white border border-slate-200 rounded-xl p-4 mb-4 text-sm font-sans">
-                                <h4 className="font-bold text-slate-900 border-b pb-1 mb-2">{noticeData.holidays.title}</h4>
-                                <ul className="space-y-1 text-slate-700 font-medium">
+                                <h4 className="font-bold text-slate-900 border-b pb-1 mb-2">
+                                    {noticeData.holidays.title}
+                                    {showIndoTrans && noticeData.holidays.titleTrans && (
+                                        <span className="text-xs font-normal text-amber-700 ml-2">({noticeData.holidays.titleTrans})</span>
+                                    )}
+                                </h4>
+                                <ul className="space-y-2 text-slate-700 font-medium">
                                     {noticeData.holidays.items.map((item, i) => (
-                                        <li key={i}>{item}</li>
+                                        <li key={i} className="space-y-0.5">
+                                            <div className="text-slate-900">{typeof item === 'string' ? item : item.jp}</div>
+                                            {showIndoTrans && item.trans && (
+                                                <div className="text-xs text-amber-800 italic pl-3">{item.trans}</div>
+                                            )}
+                                        </li>
                                     ))}
                                 </ul>
                             </div>
                         )}
 
                         {noticeData.directions && !noticeData.flyerLeon && (
-                            <div className="bg-white border border-slate-200 rounded-xl p-4 mb-4 text-sm font-sans space-y-2">
+                            <div className="bg-white border border-slate-200 rounded-xl p-4 mb-4 text-sm font-sans space-y-3">
                                 {noticeData.directions.map((dir, i) => (
-                                    <p key={i} className="text-slate-800 font-medium">{dir}</p>
+                                    <div key={i} className="space-y-0.5">
+                                        <p className="text-slate-800 font-medium">{typeof dir === 'string' ? dir : dir.jp}</p>
+                                        {showIndoTrans && dir.trans && (
+                                            <p className="text-xs text-amber-800 italic pl-3 font-normal">{dir.trans}</p>
+                                        )}
+                                    </div>
                                 ))}
                             </div>
                         )}
 
                         {noticeData.extraNote && (
-                            <p className="text-xs md:text-sm font-bold text-slate-800 bg-amber-100 border border-amber-300 p-3 rounded-lg font-sans">
-                                {noticeData.extraNote}
-                            </p>
+                            <div className="bg-amber-100 border border-amber-300 p-3.5 rounded-xl font-sans text-xs md:text-sm">
+                                <p className="font-bold text-amber-900">{noticeData.extraNote}</p>
+                                {showIndoTrans && noticeData.extraNoteTrans && (
+                                    <p className="text-xs text-amber-800 mt-1 font-medium italic">{noticeData.extraNoteTrans}</p>
+                                )}
+                            </div>
                         )}
 
                         {noticeData.footnotes && (
@@ -913,8 +975,8 @@
                                     </h3>
 
                                     {showIndoTrans && mq.trans && (
-                                        <div className="text-xs text-amber-800 bg-amber-50/60 px-2.5 py-1.5 rounded-lg border border-amber-100/40 mb-3 italic font-sans flex items-center gap-1.5">
-                                            <i className="fa-solid fa-language text-amber-500 text-sm"></i>
+                                        <div className="text-xs text-amber-800 bg-amber-50/60 px-3 py-2 rounded-xl border border-amber-100/60 mb-3 italic font-sans flex items-start gap-2">
+                                            <i className="fa-solid fa-language text-amber-500 text-sm mt-0.5 shrink-0"></i>
                                             <span>{mq.trans}</span>
                                         </div>
                                     )}
@@ -1067,7 +1129,6 @@
                 const lesson = DOKKAI_LESSON_DATA[dayKey];
                 let correctCount = 0;
 
-                // Evaluate Checkbox Statements: 1 point per statement if correct choice (checked vs isCorrect match)
                 lesson.practiceStatements.forEach(stmt => {
                     const isChecked = !!userAnswers[`${dayKey}_${stmt.id}`];
                     if (isChecked === stmt.isCorrect) {
@@ -1075,7 +1136,6 @@
                     }
                 });
 
-                // Evaluate Mondai Questions
                 lesson.mondaiQuestions.forEach(mq => {
                     if (userAnswers[`${dayKey}_${mq.id}`] === mq.ans) {
                         correctCount++;
@@ -1154,7 +1214,7 @@
 
                             <header className="bg-slate-900 text-white shadow-md relative overflow-hidden">
                                 <div className="max-w-4xl mx-auto px-6 pt-4 flex justify-between items-center text-xs">
-                                    <a href="DashboardDokkai.html" className="flex items-center gap-2 hover:text-white transition-colors bg-slate-800 text-slate-300 px-3.5 py-2 rounded-full border border-slate-700/50 hover:bg-slate-700 font-medium">
+                                    <a href="index.html" className="flex items-center gap-2 hover:text-white transition-colors bg-slate-800 text-slate-300 px-3.5 py-2 rounded-full border border-slate-700/50 hover:bg-slate-700 font-medium">
                                         <i className="fa-solid fa-house text-amber-400"></i>
                                         <span>Kembali</span>
                                     </a>
