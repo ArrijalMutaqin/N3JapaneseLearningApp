@@ -33,18 +33,24 @@
         }
         .japanese-text { 
             font-family: 'Noto Sans JP', sans-serif; 
-            line-height: 2.2rem;
+            line-height: 2.8rem !important; /* Ruang vertikal antar baris agar furigana tidak terpotong */
             letter-spacing: 0.04em;
         }
+        
+        /* FIX TAILWIND RESET - PAKSA LAYOUT NATIVE RUBY & RT */
         ruby { 
-            ruby-position: over; 
-            ruby-align: center; 
+            display: inline-ruby !important;
+            ruby-position: over !important;
+            ruby-align: center !important;
         }
         rt { 
-            font-size: 0.6em; 
-            color: #d97706;
-            user-select: none;
-            padding-bottom: 0.1rem;
+            display: ruby-text !important;
+            font-size: 0.58em !important; 
+            line-height: 1 !important;
+            color: #d97706 !important;
+            user-select: none !important;
+            font-weight: 700 !important;
+            text-align: center !important;
         }
     </style>
 </head>
@@ -54,7 +60,7 @@
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
 
-        // Lesson data structure (All Japanese & Indonesian, English terms removed)
+        // Lesson data structure (All Japanese & Indonesian)
         const DOKKAI_LESSON_DATA = {
             w1d1: {
                 title: "第1週 1日目",
@@ -236,31 +242,138 @@
                         trans: "Pertanyaan 2: Manakah yang SESUAI dengan petunjuk informasi di atas? (Jawab: Opsi 3 - Jalanan di depan gedung merupakan jalan satu arah)."
                     }
                 ]
+            },
+
+            w1d3: {
+                title: "第1週 3日目",
+                badge: "お知らせや案内を読もう①",
+                readingTitle: "案内③ : 意味を間違えやすい言葉に注意しよう！",
+                readingSubtitle: "(チラシの条件・「以上」「未満」などの表現)",
+                vocabList: [
+                    { num: "1", jp: "チラシ", romaji: "chirashi", mean: "Brosur / Leaflet promosi" },
+                    { num: "2", jp: "5日以内[ごにかいない]", romaji: "5-nichi inai", mean: "Dalam jangka waktu 5 hari" },
+                    { num: "3", jp: "2000年以前[ねんいぜん]", romaji: "2000-nen izen", mean: "Tahun 2000 atau sebelumnya (termasuk tahun 2000)" },
+                    { num: "4", jp: "10時以後[じいご]／以降[いこう]", romaji: "10-ji igo / ikō", mean: "Jam 10 atau setelahnya (termasuk jam 10)" },
+                    { num: "5", jp: "4人以上[にんいじょう]のグループ", romaji: "4-nin ijō no gurūpu", mean: "Grup berisi 4 orang atau lebih (termasuk 4 orang)" },
+                    { num: "6", jp: "30歳以下[さいいか]の女性[じょせい]", romaji: "30-sai ika no josei", mean: "Wanita berusia 30 tahun atau kurang (termasuk 30 tahun)" },
+                    { num: "7", jp: "14歳未満[さいみまん]の少年[しょうねん]", romaji: "14-sai miman no shōnen", mean: "Anak laki-laki berusia di bawah 14 tahun (TIDAK termasuk 14 tahun)" },
+                    { num: "8", jp: "10周年記念[しゅうねんきねん]", romaji: "10-shūnen kinen", mean: "Peringatan hari jadi (anniversary) ke-10" }
+                ],
+                grammarNote: "＊「以上」「以下」「以前」「以後/以降」「以内」がついた場合はその前の数字を含みます。(Termasuk angka tersebut)\n＊「未満」がつく場合はその前の数字を含みません。(TIDAK termasuk angka tersebut)",
+                
+                practiceDialogue: {
+                    title: "会話文 (Dialog Percakapan)",
+                    lines: [
+                        { speaker: "父", text: "このチラシに書[か]いてある「レオン」って、駅前[えきまえ]のレストランのことだよね。……ふーん、今[いま]、10周年記念[しゅうねんきねん]サービス期間中[きかんちゅう]か。明日[あした]、みんなで行こうか。", trans: "Restoran 'Leon' yang tertulis di brosur ini, restoran yang ada di depan stasiun kan? ...Hmm, sekarang sedang periode servis peringatan 10 tahun ya. Bagaimana kalau besok kita pergi bersama?" },
+                        { speaker: "娘", text: "うん、行こう、行こう。5,000円以上[えんいじょう]食べたら、1,000円割引[えんわりびき]だし。あそこ、ワインがおいしいんでしょ。今度は私も飲もうかなあ。", trans: "Wah mau, ayo pergi! Kalau makan 5.000 yen atau lebih, dapat diskon 1.000 yen. Restoran itu anggurnya enak kan? Lain kali aku juga mau coba minum ah." },
+                        { speaker: "父", text: "え？ おまえは、二十歳未満[はたちみまん]なんだから、まだ酒[さけ]はダメだよ。", trans: "Eh? Kamu kan masih di bawah 20 tahun, jadi belum boleh minum alkohol lho." }
+                    ]
+                },
+                practiceQuestions: [
+                    { id: "q1", type: "mc", text: "1. 父は「レオン」のある場所を知らない。", options: ["a. 合っている (Benar)", "b. 違っている (Salah)"], ans: "b", trans: "Ayah tahu lokasi restoran Leon (di depan stasiun)." },
+                    { id: "q2", type: "mc", text: "2. 「レオン」は10年前に開店した。", options: ["a. 合っている (Benar)", "b. 違っている (Salah)"], ans: "a", trans: "Restoran Leon buka 10 tahun yang lalu (peringatan ke-10)." },
+                    { id: "q3", type: "mc", text: "3. 娘は「レオン」でワインを飲んだことがある。", options: ["a. 合っている (Benar)", "b. 違っている (Salah)"], ans: "b", trans: "Anak perempuan belum pernah minum anggur di sana ('今度は私も飲もうかな')." },
+                    { id: "q4", type: "mc", text: "4. 利用金額がちょうど5,000円の場合は、1,000円割引にならない。", options: ["a. 合っている (Benar)", "b. 違っている (Salah)"], ans: "b", trans: "'5,000円以上' berarti 5.000 yen JUGA termasuk dan dapat diskon 1.000 yen." },
+                    { id: "q5", type: "mc", text: "5. 娘はまだ二十歳になっていない。", options: ["a. 合っている (Benar)", "b. 違っている (Salah)"], ans: "a", trans: "Anak perempuan berusia di bawah 20 tahun ('二十歳未満')." }
+                ],
+
+                noticeData: {
+                    title: "レストラン レオン 10周年記念サービス",
+                    subtitle: "5月15日～6月30日 ワインがおいしいレストラン レオン",
+                    flyerLeon: true,
+                    directions: [
+                        "おかげさまで、「レオン」はこの6月に開店10周年を迎えます。",
+                        "みなさまに感謝の気持ちを込めまして、期間中、次のプレゼントをご用意してお待ちしております！",
+                        "【その1】ご利用金額より 1,000円割引！ (ただし、1グループで5,000円以上ご利用の場合)",
+                        "【その2】お食事をご注文のお客様全員に アイスクリームを！",
+                        "そのほか、特別メニューもご用意しております。この機会にぜひご利用ください。",
+                        "--------------------------------------------------",
+                        "なお、サービス期間に関係なく、一年中、次のサービスを行っています。",
+                        "◆ 4名様以上のグループでご利用の場合、全員にアイスクリームを！(お食事をご注文のお客様に限ります。)",
+                        "◆ コーヒーはお代わり自由です！"
+                    ],
+                    footnotes: [
+                        "(※1) 1グループ：1 group, 1組, 1ユゴ",
+                        "(※2) 日本の法律は、二十歳未満の人が酒を飲むことを禁じている。(Di Jepang, orang di bawah 20 tahun dilarang minum alkohol)."
+                    ]
+                },
+                mondaiQuestions: [
+                    {
+                        id: "m1",
+                        q: "問1 アイスクリームのサービスが受けられるのはどの場合か。",
+                        options: [
+                            "1. 6月に1人で食事した場合",
+                            "2. 6月に4人で飲み物だけ注文した場合",
+                            "3. 7月に1人で食事した場合",
+                            "4. 7月に4人で飲み物だけ注文した場合"
+                        ],
+                        ans: 0,
+                        trans: "Pertanyaan 1: Pada situasi manakah pelanggan mendapatkan servis es krim gratis? (Jawab: Opsi 1 - Bulan Juni makan sendiri. Karena di bulan Juni semua pemesan makanan dapat es krim gratis)."
+                    },
+                    {
+                        id: "m2",
+                        q: "問2 6月に2人でこのレストランに行き、2人合わせて5,000円分飲食した場合、支払額はいくらになるか。",
+                        options: [
+                            "1. 3,000円",
+                            "2. 4,000円",
+                            "3. 5,000円",
+                            "4. 8,000円"
+                        ],
+                        ans: 1,
+                        trans: "Pertanyaan 2: Jika 2 orang pergi di bulan Juni dan total transaksi 5.000 yen, berapa bayarnya? (Jawab: Opsi 2 - 4.000 yen, karena 5.000 yen dapat diskon 1.000 yen)."
+                    }
+                ]
             }
         };
 
+        // Component JpText Presisi: Mengisolasi Kanji persis di depan kurung [...]
         function JpText({ text }) {
             if (!text) return null;
             if (typeof text !== 'string') return text;
             
-            // Matches Word[Furigana] or plain text segment
-            const regex = /([^\s\[\]]+)\[([^\]]+)\]|([^\[\]]+)/g;
-            const parts = [];
+            const nodes = [];
+            let lastIndex = 0;
+            const bracketRegex = /\[([^\]]+)\]/g;
             let match;
-            let index = 0;
-            while ((match = regex.exec(text)) !== null) {
-                if (match[1] && match[2]) {
-                    parts.push(
-                        <ruby key={index++}>
-                            {match[1]}
-                            <rt>{match[2]}</rt>
+
+            while ((match = bracketRegex.exec(text)) !== null) {
+                const bracketIndex = match.index;
+                const furigana = match[1];
+                const textBefore = text.slice(lastIndex, bracketIndex);
+
+                // Cari karakter Kanji / Angka persis di ujung belakang textBefore
+                const kanjiMatch = textBefore.match(/([\u4e00-\u9faf\u3005\u3400-\u4dbf0-9０-９a-zA-Z]+)$/);
+
+                if (kanjiMatch) {
+                    const kanji = kanjiMatch[1];
+                    const plainText = textBefore.slice(0, textBefore.length - kanji.length);
+
+                    if (plainText) {
+                        nodes.push(<span key={`plain_${lastIndex}`}>{plainText}</span>);
+                    }
+                    nodes.push(
+                        <ruby key={`ruby_${bracketIndex}`}>
+                            {kanji}
+                            <rt>{furigana}</rt>
                         </ruby>
                     );
-                } else if (match[3]) {
-                    parts.push(<span key={index++}>{match[3]}</span>);
+                } else {
+                    nodes.push(<span key={`plain_${lastIndex}`}>{textBefore}</span>);
+                    nodes.push(
+                        <ruby key={`ruby_${bracketIndex}`}>
+                            <rt>{furigana}</rt>
+                        </ruby>
+                    );
                 }
+
+                lastIndex = bracketRegex.lastIndex;
             }
-            return <>{parts}</>;
+
+            if (lastIndex < text.length) {
+                nodes.push(<span key={`plain_end`}>{text.slice(lastIndex)}</span>);
+            }
+
+            return <>{nodes}</>;
         }
 
         function TranslationToggle({ enabled, onChange }) {
@@ -400,10 +513,10 @@
                     </div>
 
                     {/* Dialogue Lines */}
-                    <div className="space-y-3 bg-slate-50 p-4 md:p-6 rounded-2xl border border-slate-200 mb-6 font-sans">
+                    <div className="space-y-4 bg-slate-50 p-4 md:p-6 rounded-2xl border border-slate-200 mb-6 font-sans">
                         {practiceDialogue.lines.map((line, idx) => (
                             <div key={idx} className="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-3 p-2 rounded-xl hover:bg-slate-100/70 transition-colors">
-                                <span className="text-xs font-bold text-amber-800 bg-amber-50 border border-amber-200/80 px-2.5 py-1 rounded-lg shrink-0 self-start">
+                                <span className="text-xs font-bold text-amber-800 bg-amber-50 border border-amber-200/80 px-2.5 py-1 rounded-lg shrink-0 self-start mt-1">
                                     {line.speaker}
                                 </span>
                                 <div className="flex-1">
@@ -411,7 +524,7 @@
                                         <JpText text={line.text} />
                                     </p>
                                     {showIndoTrans && line.trans && (
-                                        <p className="text-xs text-slate-500 mt-0.5 italic">
+                                        <p className="text-xs text-slate-500 mt-1 italic">
                                             {line.trans}
                                         </p>
                                     )}
@@ -480,7 +593,6 @@
             return (
                 <div className="bg-slate-900 text-slate-800 p-3 sm:p-5 rounded-2xl border-2 border-slate-300 shadow-md font-sans my-4">
                     <div className="bg-stone-50 rounded-xl p-4 border border-slate-300 overflow-x-auto">
-                        {/* Map Header Labels */}
                         <div className="flex flex-wrap items-center justify-between gap-2 border-b-2 border-slate-800 pb-3 mb-4">
                             <div className="bg-slate-800 text-white px-3 py-1 rounded-lg text-xs md:text-sm font-black tracking-wider">
                                 会場の案内図
@@ -495,38 +607,29 @@
                             </div>
                         </div>
 
-                        {/* 2D Map SVG Illustration matching the textbook diagram */}
                         <svg viewBox="0 0 800 400" className="w-full h-auto min-w-[650px] font-sans">
-                            {/* Background */}
                             <rect width="800" height="400" fill="#f8fafc" rx="8" />
-                            
-                            {/* Roads */}
                             <rect x="20" y="160" width="760" height="70" fill="#e2e8f0" stroke="#475569" strokeWidth="2" />
                             <rect x="100" y="20" width="55" height="360" fill="#e2e8f0" stroke="#475569" strokeWidth="2" />
                             <rect x="250" y="20" width="55" height="360" fill="#e2e8f0" stroke="#475569" strokeWidth="2" />
                             <rect x="420" y="20" width="55" height="360" fill="#e2e8f0" stroke="#475569" strokeWidth="2" />
                             <rect x="600" y="20" width="55" height="360" fill="#e2e8f0" stroke="#475569" strokeWidth="2" />
 
-                            {/* Clean Up Intersection Overlaps */}
                             <rect x="101" y="161" width="53" height="68" fill="#e2e8f0" />
                             <rect x="251" y="161" width="53" height="68" fill="#e2e8f0" />
                             <rect x="421" y="161" width="53" height="68" fill="#e2e8f0" />
                             <rect x="601" y="161" width="53" height="68" fill="#e2e8f0" />
 
-                            {/* Subway Track Line */}
                             <line x1="20" y1="195" x2="780" y2="195" stroke="#94a3b8" strokeWidth="6" strokeDasharray="12 8" />
                             
-                            {/* Station Label */}
                             <rect x="160" y="177" width="180" height="36" fill="#ffffff" stroke="#1e293b" strokeWidth="2" rx="4" />
                             <text x="250" y="200" textAnchor="middle" fill="#0f172a" fontSize="15" fontWeight="900">地下鉄さくら野駅</text>
 
-                            {/* Exit 5 */}
                             <rect x="230" y="130" width="90" height="26" fill="#ffffff" stroke="#0f172a" strokeWidth="2" rx="4" />
                             <text x="275" y="147" textAnchor="middle" fill="#0f172a" fontSize="13" fontWeight="bold">5番出口</text>
                             <circle cx="310" cy="112" r="13" fill="#1e293b" />
                             <text x="310" y="117" textAnchor="middle" fill="#ffffff" fontSize="13" fontWeight="bold">5</text>
 
-                            {/* Black Circle Numbers for Reference */}
                             <circle cx="80" cy="215" r="11" fill="#1e293b" />
                             <text x="80" y="219" textAnchor="middle" fill="#ffffff" fontSize="11" fontWeight="bold">1</text>
 
@@ -539,8 +642,6 @@
                             <circle cx="230" cy="215" r="11" fill="#1e293b" />
                             <text x="230" y="219" textAnchor="middle" fill="#ffffff" fontSize="11" fontWeight="bold">4</text>
 
-                            {/* 4 Traffic Light Signal Icons (信号 1, 2, 3, 4) */}
-                            {/* Signal 1 - Right at Exit 5 */}
                             <g transform="translate(325, 182)">
                                 <rect x="-14" y="-12" width="28" height="18" fill="#1e293b" rx="3" stroke="#e2e8f0" strokeWidth="1" />
                                 <circle cx="-7" cy="-3" r="3.5" fill="#ef4444" />
@@ -550,7 +651,6 @@
                                 <text x="0" y="-18" textAnchor="middle" fill="#ffffff" fontSize="9" fontWeight="900">信号①</text>
                             </g>
 
-                            {/* Signal 2 */}
                             <g transform="translate(420, 182)">
                                 <rect x="-14" y="-12" width="28" height="18" fill="#1e293b" rx="3" stroke="#e2e8f0" strokeWidth="1" />
                                 <circle cx="-7" cy="-3" r="3.5" fill="#ef4444" />
@@ -560,7 +660,6 @@
                                 <text x="0" y="-18" textAnchor="middle" fill="#ffffff" fontSize="9" fontWeight="900">信号②</text>
                             </g>
 
-                            {/* Signal 3 */}
                             <g transform="translate(515, 182)">
                                 <rect x="-14" y="-12" width="28" height="18" fill="#1e293b" rx="3" stroke="#e2e8f0" strokeWidth="1" />
                                 <circle cx="-7" cy="-3" r="3.5" fill="#ef4444" />
@@ -570,7 +669,6 @@
                                 <text x="0" y="-18" textAnchor="middle" fill="#ffffff" fontSize="9" fontWeight="900">信号③</text>
                             </g>
 
-                            {/* Signal 4 - Left Turn Corner */}
                             <g transform="translate(595, 182)">
                                 <rect x="-14" y="-12" width="28" height="18" fill="#1e293b" rx="3" stroke="#e2e8f0" strokeWidth="1" />
                                 <circle cx="-7" cy="-3" r="3.5" fill="#ef4444" />
@@ -580,33 +678,26 @@
                                 <text x="0" y="-18" textAnchor="middle" fill="#ffffff" fontSize="8" fontWeight="900">信号④(左折)</text>
                             </g>
 
-                            {/* Tower Building */}
                             <rect x="670" y="240" width="90" height="120" fill="#ffffff" stroke="#1e293b" strokeWidth="2" rx="4" />
                             <text x="715" y="305" textAnchor="middle" fill="#0f172a" fontSize="14" fontWeight="bold">タワービル</text>
 
-                            {/* Drugstore */}
                             <rect x="490" y="80" width="105" height="50" fill="#ffffff" stroke="#1e293b" strokeWidth="2" rx="4" />
                             <text x="542" y="110" textAnchor="middle" fill="#0f172a" fontSize="13" fontWeight="bold">ドラッグストア</text>
 
-                            {/* 4 Houses down */}
                             <rect x="600" y="130" width="25" height="20" fill="#cbd5e1" stroke="#475569" />
                             <rect x="600" y="105" width="25" height="20" fill="#cbd5e1" stroke="#475569" />
                             <rect x="600" y="80" width="25" height="20" fill="#cbd5e1" stroke="#475569" />
                             
-                            {/* Venue Building */}
                             <rect x="490" y="20" width="105" height="48" fill="#b45309" stroke="#78350f" strokeWidth="2" rx="6" />
                             <text x="542" y="42" textAnchor="middle" fill="#ffffff" fontSize="13" fontWeight="bold">会場</text>
                             <text x="542" y="58" textAnchor="middle" fill="#fef3c7" fontSize="10" fontWeight="bold">(地下1階)</text>
 
-                            {/* Paid Parking Lot */}
                             <rect x="670" y="30" width="90" height="75" fill="#e2e8f0" stroke="#1e293b" strokeWidth="2" strokeDasharray="4 2" rx="4" />
                             <text x="715" y="65" textAnchor="middle" fill="#0f172a" fontSize="12" fontWeight="bold">有料駐車場</text>
 
-                            {/* One-Way Street Indicator */}
                             <rect x="485" y="138" width="110" height="15" fill="#fef3c7" stroke="#d97706" rx="3" />
                             <text x="540" y="149" textAnchor="middle" fill="#b45309" fontSize="9" fontWeight="bold">※ 一方通行 (Satu Arah)</text>
 
-                            {/* Guided Route Path */}
                             <path d="M 310 125 L 310 195 L 600 195 L 600 44 L 595 44" fill="none" stroke="#dc2626" strokeWidth="3.5" strokeDasharray="6 4" />
 
                             <polygon points="450,191 462,195 450,199" fill="#dc2626" />
@@ -614,7 +705,6 @@
                             <polygon points="595,40 583,44 595,48" fill="#dc2626" />
                         </svg>
 
-                        {/* Map Guide Legend */}
                         <div className="mt-3 pt-3 border-t border-slate-200 text-xs text-slate-700 flex flex-wrap items-center justify-between gap-2">
                             <div className="flex items-center gap-2">
                                 <span className="inline-block w-4 h-1 bg-red-600 rounded"></span>
@@ -630,6 +720,51 @@
             );
         }
 
+        // Component flyer untuk Hari ke-3 (Restoran Leon)
+        function Day3LeonFlyer() {
+            return (
+                <div className="bg-amber-50 border-4 border-amber-800 rounded-2xl p-6 my-4 shadow-md font-sans text-slate-800">
+                    <div className="text-center border-b-2 border-amber-800 pb-3 mb-4">
+                        <div className="text-sm font-bold text-amber-900 tracking-widest">5月15日～6月30日</div>
+                        <h2 className="text-3xl font-black text-amber-900 tracking-wider my-1">レオン</h2>
+                        <div className="inline-block bg-amber-800 text-amber-50 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                            10周年記念サービス
+                        </div>
+                        <p className="text-xs text-amber-800 italic mt-1">ワインがおいしいレストラン</p>
+                    </div>
+
+                    <div className="text-center text-xs text-slate-700 mb-4 space-y-1">
+                        <p>おかげさまで、「レオン」はこの6月に開店10周年を迎えます。</p>
+                        <p>みなさまに感謝の気持ちを込めまして、期間中、次のプレゼントをご用意してお待ちしております！</p>
+                    </div>
+
+                    <div className="space-y-3 mb-5">
+                        <div className="bg-white p-3 rounded-xl border border-amber-300 shadow-sm flex items-start gap-3">
+                            <span className="bg-amber-900 text-white font-bold text-xs px-2 py-1 rounded">その1</span>
+                            <div>
+                                <p className="font-bold text-sm text-slate-900">ご利用金額より <span className="text-amber-700 text-lg font-black">1,000円割引！</span></p>
+                                <p className="text-xs text-slate-500">（ただし、1グループで5,000円以上ご利用の場合）</p>
+                            </div>
+                        </div>
+
+                        <div className="bg-white p-3 rounded-xl border border-amber-300 shadow-sm flex items-start gap-3">
+                            <span className="bg-amber-900 text-white font-bold text-xs px-2 py-1 rounded">その2</span>
+                            <div>
+                                <p className="font-bold text-sm text-slate-900">お食事をご注文のお客様全員に <span className="text-amber-700 font-bold">アイスクリームを！</span></p>
+                                <p className="text-xs text-slate-500">そのほか、特別メニューもご用意しております。この機会にぜひご利用ください。</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="bg-amber-100/80 border border-amber-300 rounded-xl p-3 text-xs text-slate-700 space-y-1">
+                        <p className="font-bold text-amber-900 mb-1">なお、サービス期間に関係なく、一年中、次のサービスを行っています。</p>
+                        <p>◆ 4名様以上のグループでご利用の場合、全員にアイスクリームを！<span className="text-slate-500">（お食事をご注文のお客様に限ります。）</span></p>
+                        <p>◆ コーヒーはお代わり自由です！</p>
+                    </div>
+                </div>
+            );
+        }
+
         function NoticeMondaiSection({ dayKey, noticeData, mondaiQuestions, userAnswers, submitted, onSelect, showIndoTrans }) {
             return (
                 <section className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 md:p-8 mb-8">
@@ -638,18 +773,22 @@
                             もんだい (Soal Utama Bacaan / 案内)
                         </span>
                         <h2 className="text-lg font-bold text-slate-800 mt-2 japanese-text">
-                            次の案内を見て、後の問いに答えなさい。(Lihat informasi pengumuman di bawah lalu jawablah pertanyaan berikut.)
+                            次のチラシ・案内を見て、後の問いに答えなさい。(Lihat brosur / informasi pengumuman di bawah lalu jawablah pertanyaan berikut.)
                         </h2>
                     </div>
 
                     {/* Visual Notice Poster */}
                     <div className="bg-slate-50 border-2 border-slate-300 rounded-2xl p-6 md:p-8 mb-8 shadow-inner">
-                        <div className="text-center border-b-2 border-slate-800 pb-4 mb-6">
-                            <h2 className="text-2xl md:text-3xl font-black text-slate-900 tracking-wider japanese-text">
-                                {noticeData.title}
-                            </h2>
-                            <p className="text-xs text-slate-500 font-sans mt-1">{noticeData.subtitle}</p>
-                        </div>
+                        {noticeData.flyerLeon ? (
+                            <Day3LeonFlyer />
+                        ) : (
+                            <div className="text-center border-b-2 border-slate-800 pb-4 mb-6">
+                                <h2 className="text-2xl md:text-3xl font-black text-slate-900 tracking-wider japanese-text">
+                                    {noticeData.title}
+                                </h2>
+                                <p className="text-xs text-slate-500 font-sans mt-1">{noticeData.subtitle}</p>
+                            </div>
+                        )}
 
                         {/* Custom Table for Day 1 Library Notice */}
                         {noticeData.table && (
@@ -695,7 +834,7 @@
                             </div>
                         )}
 
-                        {noticeData.directions && (
+                        {noticeData.directions && !noticeData.flyerLeon && (
                             <div className="bg-white border border-slate-200 rounded-xl p-4 mb-4 text-sm font-sans space-y-2">
                                 {noticeData.directions.map((dir, i) => (
                                     <p key={i} className="text-slate-800 font-medium">{dir}</p>
@@ -1031,7 +1170,7 @@
                                             <div className="grid grid-cols-4 gap-3">
                                                 {[1, 2, 3, 4, 5, 6, 7].map((dayNum) => {
                                                     const dayKey = `w${weekNum}d${dayNum}`;
-                                                    const isAvailable = (weekNum === 1 && (dayNum === 1 || dayNum === 2));
+                                                    const isAvailable = (weekNum === 1 && (dayNum === 1 || dayNum === 2 || dayNum === 3));
                                                     const isCompleted = submittedDays[dayKey] || false;
 
                                                     const lesson = DOKKAI_LESSON_DATA[dayKey];
