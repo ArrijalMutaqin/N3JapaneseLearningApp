@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日本語総まとめ N3 文字・語彙 - Week 1</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Noto Sans JP"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Load React, ReactDOM, Babel -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Load Noto Sans JP Font & FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body { 
+            font-family: 'Noto Sans JP', sans-serif; 
+            background-color: #f8fafc; 
+        }
+        .japanese-text { 
+            font-family: 'Noto Sans JP', sans-serif; 
+            line-height: 2.2rem;
+            letter-spacing: 0.04em;
+        }
+        ruby { 
+            ruby-position: over; 
+            ruby-align: center; 
+        }
+        rt { 
+            font-size: 0.6em; 
+            color: #a855f7;
+            user-select: none;
+            padding-bottom: 0.1rem;
+            font-weight: 700;
+        }
+
+        /* 3D Card Flip Animation */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .transform-style-3d {
+            transform-style: preserve-3d;
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+    </style>
+</head>
+<body class="antialiased text-slate-800">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const CURRENT_WEEK = 1;
+
+        // Data Kurikulum Week 1 (Hari 1 & Hari 2) MojiGoi
+        const LESSON_DATA = {
+            w1d1: {
+                title: "第1週 1日目",
+                badge: "家事をしましょう",
+                vocabTitle: "キッチンで／リビングで",
+                dialogue: [
+                    { speaker: "A", jp: <span>おなかがすいた。<ruby>何<rt>なに</rt></ruby>かない？</span>, trans: "Lapar nih. Tidak ada makanan?" },
+                    { speaker: "B", jp: <span><ruby>残<rt>のこ</rt></ruby>り<ruby>物<rt>もの</rt></ruby>なら、あるよ。ビール、<ruby>冷<rt>ひ</rt></ruby>えてるけど、<ruby>飲<rt>の</rt></ruby>む？</span>, trans: "Kalau makanan sisa ada kok. Birnya dingin, mau minum?" }
+                ],
+                categories: [
+                    {
+                        categoryTitle: "◆ キッチン（＝台所） (Di Dapur)",
+                        items: [
+                            { jp: <span><ruby>電<rt>でん</rt></ruby><ruby>子<rt>し</rt></ruby>レンジ</span>, id: "Microwave" },
+                            { jp: <span>ガスレンジ／ガスコンロ</span>, id: "Kompor Gas" },
+                            { jp: <span>ガラスのコップ</span>, id: "Gelas Kaca" },
+                            { jp: <span>ワイングラス</span>, id: "Gelas Wine" },
+                            { jp: <span>（お）<ruby>茶<rt>ちゃ</rt></ruby>わん</span>, id: "Mangkuk Nasi / Teh" },
+                            { jp: <span>コーヒーカップ</span>, id: "Cangkir Kopi" },
+                            { jp: <span><ruby>湯<rt>ゆ</rt></ruby><ruby>飲<rt>の</rt></ruby>み（<ruby>茶<rt>ちゃ</rt></ruby>わん）</span>, id: "Cangkir Teh Jepang" },
+                            { jp: <span><ruby>冷<rt>れい</rt></ruby><ruby>蔵<rt>ぞう</rt></ruby><ruby>庫<rt>こ</rt></ruby></span>, id: "Kulkas / Lemari Es" },
+                            { jp: <span>レバー</span>, id: "Gagang Keran / Tuas" },
+                            { jp: <span><ruby>流<rt>なが</rt></ruby>し</span>, id: "Wastafel / Tempat Cuci Piring" }
+                        ]
+                    },
+                    {
+                        categoryTitle: "◆ リビング／居間 (Ruang Tamu / Ruang Keluarga)",
+                        items: [
+                            { jp: <span><ruby>窓<rt>まど</rt></ruby>ガラス</span>, id: "Kaca Jendela" },
+                            { jp: <span><ruby>雨<rt>あま</rt></ruby><ruby>戸<rt>ど</rt></ruby></span>, id: "Pintu Pelindung Hujan / Shutter" },
+                            { jp: <span><ruby>網<rt>あみ</rt></ruby><ruby>戸<rt>ど</rt></ruby></span>, id: "Pintu Kawat Nyamuk" },
+                            { jp: <span><ruby>天<rt>てん</rt></ruby><ruby>井<rt>じょう</rt></ruby></span>, id: "Langit-langit / Plafon" },
+                            { jp: <span><ruby>床<rt>ゆか</rt></ruby></span>, id: "Lantai" },
+                            { jp: <span>コンセント</span>, id: "Stopkontak" },
+                            { jp: <span>コード</span>, id: "Kabel Listrik" },
+                            { jp: <span>エアコン</span>, id: "Pendingin Ruangan (AC)" },
+                            { jp: <span>ヒーター</span>, id: "Pemanas Ruangan" },
+                            { jp: <span>じゅうたん／カーペット</span>, id: "Karpet" }
+                        ]
+                    },
+                    {
+                        categoryTitle: "◆ もっとおぼえましょう (Pengungkapan & Frasa Lainnya)",
+                        items: [
+                            { jp: <span>エアコンのリモコン</span>, id: "Remote AC" },
+                            { jp: <span><ruby>電<rt>でん</rt></ruby><ruby>源<rt>げん</rt></ruby>を<ruby>入<rt>い</rt></ruby>れる ↔ <ruby>切<rt>き</rt></ruby>る</span>, id: "Menyalakan ↔ Mematikan Listrik" },
+                            { jp: <span>スイッチ</span>, id: "Sakelar" },
+                            { jp: <span>じゅうたんを<ruby>敷<rt>し</rt></ruby>く</span>, id: "Membentangkan Karpet" },
+                            { jp: <span><ruby>部<rt>へ</rt></ruby><ruby>屋<rt>や</rt></ruby>を<ruby>暖<rt>あたた</rt></ruby>める</span>, id: "Menghangatkan Ruangan" },
+                            { jp: <span><ruby>暖<rt>だん</rt></ruby><ruby>房<rt>ぼう</rt></ruby>をつける</span>, id: "Menyalakan Pemanas Ruangan" },
+                            { jp: <span>クーラー／<ruby>冷<rt>れい</rt></ruby><ruby>房<rt>ぼう</rt></ruby>が<ruby>効<rt>き</rt></ruby>いている</span>, id: "AC/Pendingin Bekerja Dengan Baik" },
+                            { jp: <span><ruby>日<rt>ひ</rt></ruby><ruby>当<rt>あた</rt></ruby>りがいい ↔ <ruby>日<rt>ひ</rt></ruby><ruby>当<rt>あた</rt></ruby>りが<ruby>悪<rt>わる</rt></ruby>い</span>, id: "Pencahayaan Matahari Bagus ↔ Buruk" },
+                            { jp: <span><ruby>水<rt>すい</rt></ruby><ruby>道<rt>どう</rt></ruby>の<ruby>蛇<rt>じゃ</rt></ruby><ruby>口<rt>ぐち</rt></ruby>をひねる</span>, id: "Memutar Keran Air" },
+                            { jp: <span><ruby>水<rt>みず</rt></ruby>が<ruby>凍<rt>こお</rt></ruby>る ➔ <ruby>氷<rt>こおり</rt></ruby>になる</span>, id: "Air Membeku ➔ Menjadi Es" },
+                            { jp: <span><ruby>冷<rt>れい</rt></ruby><ruby>冷凍<rt>とう</rt></ruby>して<ruby>保<rt>ほ</rt></ruby><ruby>存<rt>ぞん</rt></ruby>する</span>, id: "Membekukan untuk Menyimpan" },
+                            { jp: <span><ruby>残<rt>のこ</rt></ruby>り<ruby>物<rt>もの</rt></ruby>を<ruby>温<rt>あたた</rt></ruby>める</span>, id: "Menghangatkan Makanan Sisa" },
+                            { jp: <span>ビールを<ruby>冷<rt>ひ</rt></ruby>やす ↔ ビールが<ruby>冷<rt>ひ</rt></ruby>えている</span>, id: "Mendinginkan Bir ↔ Bir Sudah Dingin" }
+                        ]
+                    }
+                ],
+                practice1: [
+                    { id: "q1", type: "mc", text: "① 虫が入ってこないように、（a. 雨戸  b. 網戸）を閉めましょう。", options: ["a. 雨戸", "b. 網戸"], ans: "b", trans: "Agar serangga tidak masuk, mari kita tutup (...)." },
+                    { id: "q2", type: "mc", text: "② サラダを冷蔵庫で（a. 冷やして  b. 冷冷凍して）おきましょう。", options: ["a. 冷やして", "b. 冷凍して"], ans: "a", trans: "Mari kita (...) salad di dalam kulkas terlebih dahulu." },
+                    { id: "q3", type: "mc", text: "③ ヒーターをつけたら、部屋が（a. 暖かくなった  b. 効いてきた）。", options: ["a. 暖かくなった", "b. 効いてきた"], ans: "a", trans: "Setelah menyalakan pemanas, ruangan menjadi (...)." },
+                    { id: "q4", type: "mc", text: "④ 「ちょっと、そこのワイン（a. ガラス  b. グラス）を取って。」", options: ["a. ガラス", "b. グラス"], ans: "b", trans: "'Tolong ambilkan (...) wine di sebelah sana.'" },
+                    { id: "q5", type: "mc", text: "⑤ 「（a. 電子レンジ  b. ガスレンジ）の火を少し小さくして。」", options: ["a. 電子レンジ", "b. ガスレンジ"], ans: "b", trans: "'Kecilkan sedikit api pada (...).'" },
+                    { id: "q6", type: "mc", text: "⑥ 窓（a. ガラス  b. グラス）をふきましょう。", options: ["a. ガラス", "b. グラス"], ans: "a", trans: "Mari kita lap (...) jendela." }
+                ],
+                practice2: [
+                    {
+                        id: "q7",
+                        type: "mc4",
+                        text: "⑦ 新しいコーヒー（   ）を買いました。",
+                        options: ["1. コップ", "2. グラス", "3. ガラス", "4. カップ"],
+                        ans: "4",
+                        trans: "Saya membeli (...) kopi yang baru."
+                    },
+                    {
+                        id: "q8",
+                        type: "mc4",
+                        text: "⑧ この蛇口を（   ）と、お湯が出ます。",
+                        options: ["1. しく", "2. あたためる", "3. ひねる", "4. いれる"],
+                        ans: "3",
+                        trans: "Jika (...) keran ini, air panas akan keluar."
+                    }
+                ]
+            },
+            w1d2: {
+                title: "第1週 2日目",
+                badge: "家事をしましょう",
+                vocabTitle: "料理をしましょう①",
+                dialogue: [
+                    { speaker: "A", jp: <span><ruby>夕<rt>ゆう</rt></ruby><ruby>食<rt>しょく</rt></ruby>のおかずに、ぜひ！</span>, trans: "Silakan dicoba untuk lauk makan malam!" },
+                    { speaker: "B", jp: <span><ruby>牛<rt>ぎゅう</rt></ruby><ruby>肉<rt>にく</rt></ruby>は3センチ<ruby>幅<rt>はば</rt></ruby>に、<ruby>玉<rt>たま</rt></ruby>ネギとジャガイモは<ruby>皮<rt>かわ</rt></ruby>をむいて、<ruby>大<rt>おお</rt></ruby>きめに<ruby>切<rt>き</rt></ruby>っておきましょう。</span>, trans: "Daging sapi dipotong setebal 3 cm, bawang bombay dan kentang dikupas kulitnya lalu dipotong besar-besar." }
+                ],
+                categories: [
+                    {
+                        categoryTitle: "◆ 絵をみておぼえましょう (Mari Mengingat Melalui Gambar)",
+                        items: [
+                            { jp: <span><ruby>大<rt>おお</rt></ruby>さじ</span>, id: "Sendok Makan (15 ml)" },
+                            { jp: <span><ruby>小<rt>こ</rt></ruby>さじ</span>, id: "Sendok Teh (5 ml)" },
+                            { jp: <span>1カップ＝200cc</span>, id: "1 Cangkir = 200 cc" },
+                            { jp: <span>1リットル＝1000cc</span>, id: "1 Liter = 1000 cc" },
+                            { jp: <span><ruby>包<rt>ほう</rt></ruby><ruby>丁<rt>ちょう</rt></ruby></span>, id: "Pisau Dapur" },
+                            { jp: <span>まな<ruby>板<rt>いた</rt></ruby></span>, id: "Talenan" },
+                            { jp: <span>はかり</span>, id: "Timbangan Dapur" },
+                            { jp: <span>100グラム（g）</span>, id: "100 Gram" }
+                        ]
+                    },
+                    {
+                        categoryTitle: "◆ 料理の手順・動作 (Langkah & Cara Memasak)",
+                        items: [
+                            { jp: <span><ruby>皮<rt>かわ</rt></ruby>をむく</span>, id: "Mengupas Kulit" },
+                            { jp: <span><ruby>材<rt>ざい</rt></ruby><ruby>料<rt>りょう</rt></ruby>を<ruby>刻<rt>きざ</rt></ruby>む</span>, id: "Mencincang / Memotong Makanan" },
+                            { jp: <span><ruby>大<rt>おお</rt></ruby>きめに<ruby>切<rt>き</rt></ruby>る</span>, id: "Memotong Besar-besar" },
+                            { jp: <span>3センチ<ruby>幅<rt>はば</rt></ruby>に<ruby>切<rt>き</rt></ruby>る</span>, id: "Memotong Setebal 3 cm" },
+                            { jp: <span>みそ<ruby>汁<rt>しる</rt></ruby>がぬるくなる</span>, id: "Sup Miso Menjadi Suam-suam Kuku" },
+                            { jp: <span>ラップをかぶせる／かける</span>, id: "Menutup dengan Plastic Wrap" },
+                            { jp: <span>ラップでくるむ</span>, id: "Membungkus dengan Plastic Wrap" },
+                            { jp: <span>（アルミ）ホイル</span>, id: "Aluminium Foil" }
+                        ]
+                    },
+                    {
+                        categoryTitle: "◆ もっとおぼえましょう (Bumbu & Ungkapan Lainnya)",
+                        items: [
+                            { jp: <span><ruby>夕<rt>ゆう</rt></ruby><ruby>食<rt>しょく</rt></ruby>のおかず</span>, id: "Lauk Pauk Makan Malam" },
+                            { jp: <span><ruby>栄<rt>えい</rt></ruby><ruby>養<rt>よう</rt></ruby>のバランスを<ruby>考<rt>かんが</rt></ruby>える</span>, id: "Memikirkan Keseimbangan Gizi" },
+                            { jp: <span>カロリーが<ruby>高<rt>たか</rt></ruby>い<ruby>食<rt>しょく</rt></ruby><ruby>品<rt>ひん</rt></ruby></span>, id: "Makanan Tinggi Kalori" },
+                            { jp: <span>はかりで<ruby>量<rt>はか</rt></ruby>る</span>, id: "Menimbang dengan Timbangan" },
+                            { jp: <span><ruby>塩<rt>しお</rt></ruby>を<ruby>少<rt>しょう</rt></ruby><ruby>々<rt>しょう</rt></ruby><ruby>入<rt>い</rt></ruby>れる</span>, id: "Memasukkan Sedikit Garam" },
+                            { jp: <span><ruby>調<rt>ちょう</rt></ruby><ruby>味<rt>み</rt></ruby><ruby>料<rt>りょう</rt></ruby></span>, id: "Bumbu Dapur / Seasoning" },
+                            { jp: <span><ruby>酒<rt>さけ</rt></ruby></span>, id: "Sake (Bumbu Masak)" },
+                            { jp: <span><ruby>酢<rt>す</rt></ruby></span>, id: "Cuka" },
+                            { jp: <span>サラダ<ruby>油<rt>ゆ</rt></ruby></span>, id: "Minyak Sayur" },
+                            { jp: <span><ruby>天<rt>てん</rt></ruby>ぷら<ruby>油<rt>あぶら</rt></ruby></span>, id: "Minyak Goreng Tempura" }
+                        ]
+                    }
+                ],
+                practice1: [
+                    { id: "q1", type: "mc", text: "①（a. 1カップ  b. 1リットル）入りのビールを買う。", options: ["a. 1カップ", "b. 1リットル"], ans: "b", trans: "Membeli bir yang berisi (...)." },
+                    { id: "q2", type: "mc", text: "② 材料を（a. はかり  b. ラップ）で量りましょう。", options: ["a. はかり", "b. ラップ"], ans: "a", trans: "Mari kita menimbang bahan makanan menggunakan (...)." },
+                    { id: "q3", type: "mc", text: "③ 栄養の（a. バランス  b. カロリー）を考えましょう。", options: ["a. バランス", "b. カロリー"], ans: "a", trans: "Mari kita memikirkan (...) gizi." },
+                    { id: "q4", type: "mc", text: "④ 材料を（a. 1グラム  b. 1センチ）幅に切っておきましょう。", options: ["a. 1グラム", "b. 1センチ"], ans: "b", trans: "Mari kita potong bahan setebal (...) terlebih dahulu." },
+                    { id: "q5", type: "mc", text: "⑤ 包丁で材料の（a. おかず  b. 玉ネギ）を刻む。", options: ["a. おかず", "b. 玉ネギ"], ans: "b", trans: "Mencincang (...) dari bahan makanan menggunakan pisau dapur." },
+                    { id: "q6", type: "mc", text: "⑥ 次に、塩を（a. 少々  b. 細かく）入れてください。", options: ["a. 少々", "b. 細かく"], ans: "a", trans: "Selanjutnya, tolong masukkan (...) garam." }
+                ],
+                practice2: [
+                    {
+                        id: "q7",
+                        type: "mc4",
+                        text: "⑦ 皮は入れないほうがいいので、きれいに（   ）おきましょう。",
+                        options: ["1. むいて", "2. 切って", "3. かぶせて", "4. きざんで"],
+                        ans: "1",
+                        trans: "Karena sebaiknya tidak memasukkan kulitnya, mari kita (...) bersih terlebih dahulu."
+                    },
+                    {
+                        id: "q8",
+                        type: "mc4",
+                        text: "⑧ 肉をラップで（   ）冷蔵庫にしまいましょう。",
+                        options: ["1. 冷やして", "2. ひねって", "3. くるんで", "4. 量って"],
+                        ans: "3",
+                        trans: "Mari kita (...) daging dengan plastic wrap lalu simpan di dalam kulkas."
+                    }
+                ]
+            },
+            w1d3: {
+                title: "第1週 3日目",
+                badge: "家事をしましょう",
+                vocabTitle: "料理をしましょう②",
+                dialogue: [
+                    { speaker: "1", jp: <span>なべにサラダ<ruby>油<rt>ゆ</rt></ruby>を<ruby>入<rt>い</rt></ruby>れて<ruby>熱<rt>ねっ</rt></ruby>し、<ruby>牛<rt>ぎゅう</rt></ruby><ruby>肉<rt>にく</rt></ruby>と<ruby>玉<rt>たま</rt></ruby>ネギを<ruby>入<rt>い</rt></ruby>れていためる。</span>, trans: "Panaskan minyak sayur di panci, masukkan daging sapi dan bawang bombay lalu tumis." },
+                    { speaker: "2", jp: <span><ruby>牛<rt>ぎゅう</rt></ruby><ruby>肉<rt>にく</rt></ruby>の<ruby>色<rt>いろ</rt></ruby>が<ruby>変<rt>か</rt></ruby>わったら、ジャガイモを<ruby>加<rt>くわ</rt></ruby>えていためる。</span>, trans: "Setelah warna daging sapi berubah, tambahkan kentang lalu tumis." },
+                    { speaker: "3", jp: <span>2のなべに<ruby>水<rt>みず</rt></ruby>と<ruby>調<rt>ちょう</rt></ruby><ruby>味<rt>み</rt></ruby><ruby>料<rt>りょう</rt></ruby>を<ruby>全<rt>ぜん</rt></ruby><ruby>部<rt>ぶ</rt></ruby><ruby>入<rt>い</rt></ruby>れ、ジャガイモが<ruby>柔<rt>やわ</rt></ruby>らかくなるまで<ruby>煮<rt>に</rt></ruby>る。</span>, trans: "Masukkan air dan seluruh bumbu ke panci, rebus hingga kentang menjadi empuk." }
+                ],
+                categories: [
+                    {
+                        categoryTitle: "◆ 絵をみておぼえましょう (Mari Mengingat Melalui Gambar)",
+                        items: [
+                            { jp: <span>なべ</span>, id: "Panci" },
+                            { jp: <span>ふた</span>, id: "Tutup Panci" },
+                            { jp: <span>おたま</span>, id: "Sendok Sayur / Ladle" },
+                            { jp: <span>フライパン</span>, id: "Wajan / Frying Pan" },
+                            { jp: <span>フライ<ruby>返<rt>がえ</rt></ruby>し</span>, id: "Sodet / Spatula" },
+                            { jp: <span><ruby>炊<rt>すい</rt></ruby><ruby>飯<rt>はん</rt></ruby><ruby>器<rt>き</rt></ruby></span>, id: "Penanak Nasi (Rice Cooker)" },
+                            { jp: <span>しゃもじ</span>, id: "Centong Nasi" }
+                        ]
+                    },
+                    {
+                        categoryTitle: "◆ 調理動作・方法 (Aktivitas & Cara Memasak)",
+                        items: [
+                            { jp: <span>（お）<ruby>湯<rt>ゆ</rt></ruby>を<ruby>沸<rt>わ</rt></ruby>かす ↔ （お）<ruby>湯<rt>ゆ</rt></ruby>が<ruby>沸<rt>わ</rt></ruby>く</span>, id: "Mendidihkan Air ↔ Air Mendidih" },
+                            { jp: <span>（お）<ruby>湯<rt>ゆ</rt></ruby>を<ruby>冷<rt>さ</rt></ruby>ます ↔ （お）<ruby>湯<rt>ゆ</rt></ruby>が<ruby>冷<rt>さ</rt></ruby>める</span>, id: "Mendinginkan Air ↔ Air Menjadi Dingin" },
+                            { jp: <span>なべを<ruby>火<rt>ひ</rt></ruby>にかける</span>, id: "Menaruh Panci di atas Kompor/Api" },
+                            { jp: <span>ご<ruby>飯<rt>はん</rt></ruby>を<ruby>炊<rt>た</rt></ruby>く</span>, id: "Menanak Nasi" },
+                            { jp: <span><ruby>油<rt>あぶら</rt></ruby>を<ruby>熱<rt>ねっ</rt></ruby>する</span>, id: "Memanaskan Minyak" },
+                            { jp: <span><ruby>油<rt>あぶら</rt></ruby>で<ruby>揚<rt>あ</rt></ruby>げる</span>, id: "Menggoreng (Deep Fry)" },
+                            { jp: <span><ruby>煮<rt>に</rt></ruby>る</span>, id: "Merebus (dengan bumbu/kuah)" },
+                            { jp: <span>ゆでる</span>, id: "Merebus (air biasa)" },
+                            { jp: <span>いためる</span>, id: "Menumis" },
+                            { jp: <span><ruby>蒸<rt>む</rt></ruby>す</span>, id: "Mengukus" },
+                            { jp: <span><ruby>水<rt>みず</rt></ruby>を<ruby>切<rt>き</rt></ruby>る</span>, id: "Mengaatkan / Tiriskan Air" },
+                            { jp: <span><ruby>混<rt>ま</rt></ruby>ぜる</span>, id: "Mencampur / Aduk" },
+                            { jp: <span>こげる</span>, id: "Hangus / Gosong" },
+                            { jp: <span>ひっくり<ruby>返<rt>かえ</rt></ruby>す／<ruby>裏<rt>うら</rt></ruby><ruby>返<rt>がえ</rt></ruby>す</span>, id: "Membalikkan" },
+                            { jp: <span><ruby>味<rt>あじ</rt></ruby>をつける</span>, id: "Membumbui / Memberi Rasa" },
+                            { jp: <span><ruby>塩<rt>しお</rt></ruby>を<ruby>加<rt>くわ</rt></ruby>える</span>, id: "Menambahkan Garam" },
+                            { jp: <span>こしょうを<ruby>振<rt>ふ</rt></ruby>る</span>, id: "Menaburkan Lada" }
+                        ]
+                    },
+                    {
+                        categoryTitle: "◆ 味・味つけ (Rasa & Bumbu)",
+                        items: [
+                            { jp: <span><ruby>味<rt>あじ</rt></ruby><ruby>見<rt>み</rt></ruby>をする／<ruby>味<rt>あじ</rt></ruby>を<ruby>見<rt>み</rt></ruby>る</span>, id: "Mencicipi Rasa" },
+                            { jp: <span><ruby>味<rt>あじ</rt></ruby>が<ruby>濃<rt>こ</rt></ruby>い ↔ <ruby>味<rt>あじ</rt></ruby>が<ruby>薄<rt>うす</rt></ruby>い</span>, id: "Rasa Pekat/Kuat ↔ Rasa Hambar/Tipis" },
+                            { jp: <span>からい</span>, id: "Pedas / Asin" },
+                            { jp: <span><ruby>塩<rt>しお</rt></ruby>からい</span>, id: "Asin" },
+                            { jp: <span>すっぱい</span>, id: "Asam" },
+                            { jp: <span>できあがる ➔ できあがり</span>, id: "Selesai / Masakan Siap Saji" }
+                        ]
+                    }
+                ],
+                practice1: [
+                    { id: "q1", type: "mc", text: "① 魚を油で（a. 煮る  b. あげる）。", options: ["a. 煮る", "b. あげる"], ans: "b", trans: "Menggoreng ikan dengan minyak (...)." },
+                    { id: "q2", type: "mc", text: "② フライパンにサラダ油を（a. 大さじ  b. 大しゃもじ）3杯入れて、熱します。", options: ["a. 大さじ", "b. 大しゃもじ"], ans: "a", trans: "Masukkan minyak sayur 3 (...) ke wajan, lalu panaskan." },
+                    { id: "q3", type: "mc", text: "③ いためる前に、フライパンをよく（a. 煮ましょう  b. 熱しましょう）。", options: ["a. 煮ましょう", "b. 熱しましょう"], ans: "b", trans: "Sebelum menumis, mari kita (...) wajan dengan baik." },
+                    { id: "q4", type: "mc", text: "④ フライパンに小さじ1杯の油を入れて、卵を（a. 焼いて  b. ゆでて）ください。", options: ["a. 焼いて", "b. ゆでて"], ans: "a", trans: "Masukkan 1 sendok teh minyak ke wajan, lalu (...) telur." },
+                    { id: "q5", type: "mc", text: "⑤ お湯を（a. 煮て  b. 沸かして）ください。", options: ["a. 煮て", "b. 沸かして"], ans: "b", trans: "Tolong (...) air panas." },
+                    { id: "q6", type: "mc", text: "⑥ 最後に塩とこしょうを（a. ふって  b. たいて）、味をつけましょう。", options: ["a. ふって", "b. たいて"], ans: "a", trans: "Terakhir, mari kita (...) garam dan lada untuk memberi rasa." }
+                ],
+                practice2: [
+                    {
+                        id: "q7",
+                        type: "mc4",
+                        text: "⑦ 野菜をフライパンに入れたら、よく（   ）ましょう。",
+                        options: ["1. 加え", "2. 刻み", "3. 混ぜ", "4. 量り"],
+                        ans: "3",
+                        trans: "Setelah memasukkan sayur ke wajan, mari kita (...) dengan baik."
+                    },
+                    {
+                        id: "q8",
+                        type: "mc4",
+                        text: "⑧ 材料を入れたら、（   ）をして蒸してください。",
+                        options: ["1. なべ", "2. ふた", "3. おたま", "4. フライ返し"],
+                        ans: "2",
+                        trans: "Setelah memasukkan bahan, pasang (...) lalu kukus."
+                    }
+                ]
+            }
+        };
+
+        function TranslationToggle({ enabled, onChange }) {
+            return (
+                <div className="inline-flex items-center gap-2.5 bg-slate-100 px-3.5 py-1.5 rounded-xl border border-slate-200/80 shadow-sm">
+                    <span className="text-xs font-bold text-slate-600 flex items-center gap-1.5 font-sans">
+                        <i className="fa-solid fa-language text-purple-500 text-sm"></i>
+                        <span className="text-slate-700">Terjemahan Soal</span>
+                    </span>
+                    <button 
+                        type="button"
+                        onClick={() => onChange(!enabled)}
+                        className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${enabled ? 'bg-purple-500' : 'bg-slate-300'}`}
+                    >
+                        <span className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${enabled ? 'translate-x-4' : 'translate-x-0'}`} />
+                    </button>
+                </div>
+            );
+        }
+
+        function Header({ title, onBack }) {
+            return (
+                <header className="bg-slate-900 text-white shadow-md">
+                    <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <button onClick={onBack} className="p-2 hover:bg-slate-800 rounded-lg transition-colors text-slate-300 hover:text-white">
+                                <i className="fa-solid fa-arrow-left"></i>
+                            </button>
+                            <div>
+                                <span className="text-xs text-purple-400 font-bold uppercase tracking-wider block font-sans">JLPT N3 文字・語彙</span>
+                                <h1 className="text-base md:text-lg font-black leading-tight font-sans">{title}</h1>
+                            </div>
+                        </div>
+                        <a href="DashboardMojiGoi.html" className="p-2 hover:bg-slate-800 rounded-lg transition-colors text-slate-300 hover:text-white flex items-center gap-2 text-sm font-sans" title="Kembali ke Dashboard MojiGoi">
+                            <i className="fa-solid fa-house text-purple-400"></i>
+                            <span className="hidden sm:inline">Kembali</span>
+                        </a>
+                    </div>
+                </header>
+            );
+        }
+
+        function QuizResultCard({ score, total, onReset }) {
+            return (
+                <div className="mb-8 bg-white border border-slate-200 rounded-3xl p-6 shadow-sm transition-all animate-fade-in font-sans">
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                        <div className="flex items-center gap-4">
+                            <div className="w-16 h-16 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center text-2xl font-black border border-purple-100">
+                                {total > 0 ? Math.round((score / total) * 100) : 0}%
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-bold text-slate-800">結果 (Hasil Skor)</h3>
+                                <p className="text-slate-500 text-sm">
+                                    正解数: <span className="text-purple-600 font-bold">{score}</span> / <span className="font-bold">{total}</span>
+                                </p>
+                            </div>
+                        </div>
+                        <div className="flex gap-3 w-full md:w-auto">
+                            <button onClick={onReset} className="w-full md:w-auto px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-2xl transition-colors text-sm">
+                                もう一度解く (Ulangi Latihan)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        function VocabSection({ categoryTitle, items, dayKey, memorizedVocab, onToggleMemorized }) {
+            return (
+                <div className="border border-purple-100/70 rounded-2xl p-5 bg-purple-50/20 mb-6">
+                    <h3 className="text-md font-black text-slate-900 mb-4 border-b border-purple-100 pb-2 font-sans flex items-center justify-between">
+                        <span>{categoryTitle}</span>
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {items.map((item, idx) => {
+                            const itemKey = `${dayKey}_${item.id}`;
+                            const isMemorized = memorizedVocab[itemKey] || false;
+                            return (
+                                <div key={idx} className={`p-3.5 rounded-xl border shadow-sm flex items-center justify-between transition-all ${isMemorized ? 'bg-purple-50/50 border-purple-200' : 'bg-white border-slate-100'}`}>
+                                    <div className="flex flex-col">
+                                        <div className="text-base md:text-lg font-bold japanese-text text-slate-800">
+                                            {item.jp}
+                                        </div>
+                                        <div className="text-xs text-purple-600 font-medium font-sans mt-0.5">
+                                            {item.id}
+                                        </div>
+                                    </div>
+                                    <button 
+                                        onClick={() => onToggleMemorized(itemKey)}
+                                        title={isMemorized ? "Tandai Belum Hafal" : "Tandai Sudah Hafal"}
+                                        className={`px-3 py-1.5 rounded-lg text-xs font-bold font-sans transition-colors flex items-center gap-1.5 ${
+                                            isMemorized 
+                                                ? 'bg-purple-500 text-white shadow-sm' 
+                                                : 'bg-slate-100 text-slate-500 hover:bg-purple-100 hover:text-purple-700'
+                                        }`}
+                                    >
+                                        <i className={`fa-solid ${isMemorized ? 'fa-circle-check' : 'fa-circle'}`}></i>
+                                        <span>{isMemorized ? 'Hafal' : 'Hafal?'}</span>
+                                    </button>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            );
+        }
+
+        // Component Flashcard untuk Hafalan
+        function FlashcardMode({ categories, dayKey, memorizedVocab, onToggleMemorized }) {
+            const allItems = categories.flatMap(cat => 
+                cat.items.map(item => ({ ...item, category: cat.categoryTitle }))
+            );
+
+            const [currentIndex, setCurrentIndex] = useState(0);
+            const [isFlipped, setIsFlipped] = useState(false);
+            const [filterMemorized, setFilterMemorized] = useState(false);
+
+            const activeItems = filterMemorized 
+                ? allItems.filter(item => !memorizedVocab[`${dayKey}_${item.id}`])
+                : allItems;
+
+            useEffect(() => {
+                setIsFlipped(false);
+                if (currentIndex >= activeItems.length && activeItems.length > 0) {
+                    setCurrentIndex(0);
+                }
+            }, [currentIndex, filterMemorized, activeItems.length]);
+
+            if (activeItems.length === 0) {
+                return (
+                    <div className="bg-purple-50/50 border border-purple-200 rounded-3xl p-8 text-center space-y-4 my-6 font-sans">
+                        <div className="w-16 h-16 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-2xl mx-auto shadow-inner">
+                            <i className="fa-solid fa-trophy"></i>
+                        </div>
+                        <h3 className="text-lg font-bold text-slate-800">Semua Kosakata Telah Dihafal 🎉</h3>
+                        <p className="text-xs text-slate-500">Anda telah menandai semua kosakata pada hari ini sebagai "Sudah Hafal".</p>
+                        <button 
+                            onClick={() => setFilterMemorized(false)}
+                            className="px-5 py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs rounded-xl shadow transition-all"
+                        >
+                            Lihat Semua Flashcard
+                        </button>
+                    </div>
+                );
+            }
+
+            const currentItem = activeItems[currentIndex] || activeItems[0];
+            const currentItemKey = `${dayKey}_${currentItem.id}`;
+            const isMemorized = memorizedVocab[currentItemKey] || false;
+
+            const handleNext = () => {
+                setIsFlipped(false);
+                setCurrentIndex((prev) => (prev + 1) % activeItems.length);
+            };
+
+            const handlePrev = () => {
+                setIsFlipped(false);
+                setCurrentIndex((prev) => (prev - 1 + activeItems.length) % activeItems.length);
+            };
+
+            return (
+                <div className="my-6 space-y-6 font-sans">
+                    {/* Header Controls */}
+                    <div className="flex flex-wrap items-center justify-between gap-3 bg-slate-50 p-3.5 rounded-2xl border border-slate-200/80">
+                        <div className="text-xs font-bold text-slate-600 flex items-center gap-2">
+                            <span className="bg-purple-100 text-purple-700 px-2.5 py-1 rounded-lg">
+                                {currentIndex + 1} / {activeItems.length} Kartu
+                            </span>
+                            <span className="text-slate-400">|</span>
+                            <span className="truncate max-w-[180px] sm:max-w-xs text-slate-500">
+                                {currentItem.category}
+                            </span>
+                        </div>
+
+                        <button 
+                            onClick={() => setFilterMemorized(!filterMemorized)}
+                            className={`text-xs font-bold px-3 py-1.5 rounded-xl border transition-all flex items-center gap-1.5 ${
+                                filterMemorized 
+                                    ? 'bg-purple-600 text-white border-purple-700 shadow-sm' 
+                                    : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'
+                            }`}
+                        >
+                            <i className="fa-solid fa-filter text-xs"></i>
+                            <span>Sembunyikan yang Hafal</span>
+                        </button>
+                    </div>
+
+                    {/* Interactive 3D Card */}
+                    <div className="perspective-1000 w-full min-h-[220px] sm:min-h-[260px] cursor-pointer" onClick={() => setIsFlipped(!isFlipped)}>
+                        <div className={`relative w-full h-full min-h-[220px] sm:min-h-[260px] duration-500 transform-style-3d transition-transform ${isFlipped ? 'rotate-y-180' : ''}`}>
+                            
+                            {/* Front Side */}
+                            <div className="absolute inset-0 w-full h-full bg-white border-2 border-purple-200 rounded-3xl p-6 sm:p-8 shadow-sm backface-hidden flex flex-col items-center justify-between text-center select-none">
+                                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                                    Klik untuk Balik Kartu
+                                </span>
+                                <div className="text-2xl sm:text-3xl font-black text-slate-900 japanese-text my-auto">
+                                    {currentItem.jp}
+                                </div>
+                                <div className="text-xs text-purple-500 font-medium flex items-center gap-1.5">
+                                    <i className="fa-solid fa-rotate"></i>
+                                    <span>Lihat Arti / Terjemahan</span>
+                                </div>
+                            </div>
+
+                            {/* Back Side */}
+                            <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-purple-900 to-slate-900 text-white rounded-3xl p-6 sm:p-8 shadow-md backface-hidden rotate-y-180 flex flex-col items-center justify-between text-center select-none">
+                                <span className="text-[11px] font-bold text-purple-300 uppercase tracking-widest">
+                                    Arti & Terjemahan
+                                </span>
+                                <div className="my-auto space-y-2">
+                                    <div className="text-xl sm:text-2xl font-black text-purple-200 font-sans">
+                                        {currentItem.id}
+                                    </div>
+                                    <div className="text-sm text-slate-300 japanese-text">
+                                        {currentItem.jp}
+                                    </div>
+                                </div>
+                                <div className="text-xs text-purple-300 font-medium flex items-center gap-1.5">
+                                    <i className="fa-solid fa-rotate"></i>
+                                    <span>Klik untuk Kembalikan Kartu</span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    {/* Action Controls */}
+                    <div className="flex items-center justify-between gap-3 pt-2">
+                        <button 
+                            onClick={handlePrev}
+                            className="px-5 py-3 bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 font-bold text-sm rounded-2xl transition-all shadow-sm flex items-center gap-2"
+                        >
+                            <i className="fa-solid fa-chevron-left"></i>
+                            <span>Mae (Sebelumnya)</span>
+                        </button>
+
+                        <button 
+                            onClick={() => onToggleMemorized(currentItemKey)}
+                            className={`px-5 py-3 font-extrabold text-sm rounded-2xl transition-all shadow-sm flex items-center gap-2 ${
+                                isMemorized 
+                                    ? 'bg-purple-600 text-white hover:bg-purple-700' 
+                                    : 'bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200'
+                            }`}
+                        >
+                            <i className={`fa-solid ${isMemorized ? 'fa-circle-check' : 'fa-circle-plus'}`}></i>
+                            <span>{isMemorized ? 'Sudah Hafal ✓' : 'Tandai Hafal'}</span>
+                        </button>
+
+                        <button 
+                            onClick={handleNext}
+                            className="px-5 py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm rounded-2xl transition-all shadow-sm flex items-center gap-2"
+                        >
+                            <span>Tsugi (Selanjutnya)</span>
+                            <i className="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            );
+        }
+
+        function PracticePart1({ dayKey, questions, answers, submitted, onSelect, showIndoTrans, setShowIndoTrans }) {
+            return (
+                <section className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 md:p-8 mb-8">
+                    <div className="border-b-2 border-slate-900 pb-4 mb-6 flex items-center justify-between flex-wrap gap-2">
+                        <span className="text-xs font-bold uppercase tracking-wider text-slate-700 bg-slate-100 px-3 py-1 rounded-full border border-slate-200 font-sans">
+                            れんしゅう I (正しいほうに〇をつけなさい)
+                        </span>
+                        <TranslationToggle enabled={showIndoTrans} onChange={setShowIndoTrans} />
+                    </div>
+
+                    <div className="space-y-8 divide-y divide-slate-100">
+                        {questions.map((q) => (
+                            <div key={q.id} className="pt-6 first:pt-0">
+                                <div className="flex items-start gap-3">
+                                    <div className="flex-1">
+                                        <p className="text-lg text-slate-800 font-medium japanese-text tracking-wide mb-3">
+                                            {q.text}
+                                        </p>
+                                        
+                                        {showIndoTrans && q.trans && (
+                                            <div className="text-xs text-indigo-700 bg-indigo-50/50 px-2.5 py-1.5 rounded-lg border border-indigo-100/40 mb-3 italic flex items-center gap-1.5 font-sans">
+                                                <i className="fa-solid fa-language text-indigo-500 text-sm"></i>
+                                                <span>{q.trans}</span>
+                                            </div>
+                                        )}
+
+                                        <div className="flex gap-3 max-w-sm">
+                                            {q.options.map((opt, optIdx) => {
+                                                const choiceVal = optIdx === 0 ? 'a' : 'b';
+                                                const isSelected = answers[`${dayKey}_${q.id}`] === choiceVal;
+                                                let btnStyle = "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700";
+                                                if (isSelected) btnStyle = "bg-slate-800 border-slate-900 text-white ring-2 ring-slate-200";
+                                                
+                                                if (submitted) {
+                                                    if (choiceVal === q.ans) {
+                                                        btnStyle = "bg-purple-500 border-purple-600 text-white font-bold ring-2 ring-purple-200";
+                                                    } else if (isSelected) {
+                                                        btnStyle = "bg-rose-500 border-rose-600 text-white ring-2 ring-rose-200";
+                                                    } else {
+                                                        btnStyle = "bg-slate-50 text-slate-400 border-slate-100 opacity-60 pointer-events-none";
+                                                    }
+                                                }
+
+                                                return (
+                                                    <button key={opt} disabled={submitted} onClick={() => onSelect(q.id, choiceVal)}
+                                                        className={`p-3 w-1/2 text-left rounded-xl border text-sm transition-all japanese-text font-medium ${btnStyle}`}>
+                                                        <span>{opt}</span>
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            );
+        }
+
+        function PracticePart2({ dayKey, questions, answers, submitted, onSelect, showIndoTrans }) {
+            return (
+                <section className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 md:p-8 mb-12">
+                    <div className="border-b-2 border-slate-900 pb-4 mb-6">
+                        <span className="text-xs font-bold uppercase tracking-wider text-slate-700 bg-slate-100 px-3 py-1 rounded-full border border-slate-200 font-sans">
+                            れんしゅう II （ ）にはどれが入りますか。一つ選びなさい。
+                        </span>
+                    </div>
+
+                    <div className="space-y-8 divide-y divide-slate-100">
+                        {questions.map((q) => (
+                            <div key={q.id} className="pt-6 first:pt-0">
+                                <div className="flex items-start gap-3">
+                                    <div className="flex-1">
+                                        <p className="text-lg text-slate-800 font-medium japanese-text tracking-wide mb-3">
+                                            {q.text}
+                                        </p>
+                                        
+                                        {showIndoTrans && q.trans && (
+                                            <div className="text-xs text-indigo-700 bg-indigo-50/50 px-2.5 py-1.5 rounded-lg border border-indigo-100/40 mb-3 italic flex items-center gap-1.5 font-sans">
+                                                <i className="fa-solid fa-language text-indigo-500 text-sm"></i>
+                                                <span>{q.trans}</span>
+                                            </div>
+                                        )}
+
+                                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-2xl">
+                                            {q.options.map((opt, optIdx) => {
+                                                const choiceVal = (optIdx + 1).toString();
+                                                const isSelected = answers[`${dayKey}_${q.id}`] === choiceVal;
+                                                let btnStyle = "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700";
+                                                if (isSelected) btnStyle = "bg-slate-800 border-slate-900 text-white ring-2 ring-slate-200";
+                                                
+                                                if (submitted) {
+                                                    if (choiceVal === q.ans) {
+                                                        btnStyle = "bg-purple-500 border-purple-600 text-white font-bold ring-2 ring-purple-200";
+                                                    } else if (isSelected) {
+                                                        btnStyle = "bg-rose-500 border-rose-600 text-white ring-2 ring-rose-200";
+                                                    } else {
+                                                        btnStyle = "bg-slate-50 text-slate-400 border-slate-100 opacity-60 pointer-events-none";
+                                                    }
+                                                }
+
+                                                return (
+                                                    <button key={opt} disabled={submitted} onClick={() => onSelect(q.id, choiceVal)}
+                                                        className={`p-3 text-left rounded-xl border text-sm transition-all japanese-text font-medium ${btnStyle}`}>
+                                                        <span>{opt}</span>
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            );
+        }
+
+        function App() {
+            const [currentView, setCurrentView] = useState('landing');
+            const [vocabMode, setVocabMode] = useState('list'); // 'list' | 'flashcard'
+
+            // Switch terjemahan khusus latihan soal
+            const [showIndoTrans, setShowIndoTrans] = useState(() => {
+                try {
+                    return localStorage.getItem('ns_mojigoi_showIndoTrans') === 'true';
+                } catch (e) {
+                    return false;
+                }
+            });
+
+            // Status hafalan kosakata
+            const [memorizedVocab, setMemorizedVocab] = useState(() => {
+                try {
+                    const saved = localStorage.getItem('ns_mojigoi_memorized');
+                    return saved ? JSON.parse(saved) : {};
+                } catch (e) { return {}; }
+            });
+
+            const [userAnswers, setUserAnswers] = useState(() => {
+                try {
+                    const saved = localStorage.getItem('ns_mojigoi_userAnswers');
+                    return saved ? JSON.parse(saved) : {};
+                } catch (e) { return {}; }
+            });
+
+            const [submittedDays, setSubmittedDays] = useState(() => {
+                try {
+                    const saved = localStorage.getItem('ns_mojigoi_submittedDays');
+                    return saved ? JSON.parse(saved) : {};
+                } catch (e) { return {}; }
+            });
+
+            const [scores, setScores] = useState(() => {
+                try {
+                    const saved = localStorage.getItem('ns_mojigoi_scores');
+                    return saved ? JSON.parse(saved) : {};
+                } catch (e) { return {}; }
+            });
+
+            const [showResetConfirm, setShowResetConfirm] = useState(false);
+
+            useEffect(() => {
+                localStorage.setItem('ns_mojigoi_showIndoTrans', showIndoTrans.toString());
+            }, [showIndoTrans]);
+
+            useEffect(() => {
+                localStorage.setItem('ns_mojigoi_memorized', JSON.stringify(memorizedVocab));
+            }, [memorizedVocab]);
+
+            useEffect(() => {
+                localStorage.setItem('ns_mojigoi_userAnswers', JSON.stringify(userAnswers));
+            }, [userAnswers]);
+
+            useEffect(() => {
+                localStorage.setItem('ns_mojigoi_submittedDays', JSON.stringify(submittedDays));
+            }, [submittedDays]);
+
+            useEffect(() => {
+                localStorage.setItem('ns_mojigoi_scores', JSON.stringify(scores));
+            }, [scores]);
+
+            const handleResetAllProgress = () => {
+                localStorage.clear();
+                setUserAnswers({});
+                setSubmittedDays({});
+                setScores({});
+                setMemorizedVocab({});
+                setShowResetConfirm(false);
+            };
+
+            const handleToggleMemorized = (itemKey) => {
+                setMemorizedVocab(prev => ({
+                    ...prev,
+                    [itemKey]: !prev[itemKey]
+                }));
+            };
+
+            const handleSelectVal = (dayKey, questionId, val) => {
+                if (submittedDays[dayKey]) return;
+                setUserAnswers(prev => ({ ...prev, [`${dayKey}_${questionId}`]: val }));
+            };
+
+            const calculateResults = (dayKey) => {
+                const lesson = LESSON_DATA[dayKey];
+                let correctCount = 0;
+
+                lesson.practice1.forEach(q => {
+                    if (userAnswers[`${dayKey}_${q.id}`] === q.ans) correctCount++;
+                });
+
+                lesson.practice2.forEach(q => {
+                    if (userAnswers[`${dayKey}_${q.id}`] === q.ans) correctCount++;
+                });
+
+                setScores(prev => ({ ...prev, [dayKey]: correctCount }));
+                setSubmittedDays(prev => ({ ...prev, [dayKey]: true }));
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
+
+            const resetQuiz = (dayKey) => {
+                setSubmittedDays(prev => ({ ...prev, [dayKey]: false }));
+                setScores(prev => ({ ...prev, [dayKey]: 0 }));
+                setUserAnswers(prev => {
+                    const updated = { ...prev };
+                    Object.keys(updated).forEach(key => {
+                        if (key.startsWith(`${dayKey}_`)) delete updated[key];
+                    });
+                    return updated;
+                });
+            };
+
+            const renderViewContent = () => {
+                if (currentView === 'landing') {
+                    const availableDayKeys = Object.keys(LESSON_DATA);
+                    const totalLessons = availableDayKeys.length; 
+                    const completedCount = availableDayKeys.filter(k => submittedDays[k]).length;
+                    const completionPercentage = Math.round((completedCount / totalLessons) * 100);
+
+                    // Menghitung statistik total hafalan kosakata
+                    let allVocabCount = 0;
+                    let memorizedCount = 0;
+                    availableDayKeys.forEach(dKey => {
+                        LESSON_DATA[dKey].categories.forEach(cat => {
+                            cat.items.forEach(item => {
+                                allVocabCount++;
+                                if (memorizedVocab[`${dKey}_${item.id}`]) {
+                                    memorizedCount++;
+                                }
+                            });
+                        });
+                    });
+                    const memorizedPercentage = allVocabCount > 0 ? Math.round((memorizedCount / allVocabCount) * 100) : 0;
+
+                    return (
+                        <div className="min-h-screen bg-slate-50 font-sans">
+                            {showResetConfirm && (
+                                <div className="fixed inset-0 bg-slate-950/65 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
+                                    <div className="bg-white rounded-3xl border border-slate-200 shadow-xl max-w-sm w-full p-6 text-center space-y-4">
+                                        <div className="w-14 h-14 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center mx-auto shadow-inner text-xl">
+                                            <i className="fa-solid fa-triangle-exclamation"></i>
+                                        </div>
+                                        <div className="space-y-1">
+                                            <h3 className="text-base font-black text-slate-900">Mulai Ulang Progres?</h3>
+                                            <p className="text-xs text-slate-500 leading-relaxed">Tindakan ini akan menghapus semua jawaban dan status hafalan kosakata Anda secara permanen dari browser.</p>
+                                        </div>
+                                        <div className="flex gap-2 pt-2">
+                                            <button onClick={() => setShowResetConfirm(false)} className="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all">Batalkan</button>
+                                            <button onClick={handleResetAllProgress} className="flex-1 py-2.5 bg-rose-500 hover:bg-rose-600 text-white font-bold text-xs rounded-xl transition-all">Ya, Reset</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            <header className="bg-slate-900 text-white shadow-md relative overflow-hidden">
+                                <div className="max-w-4xl mx-auto px-6 pt-4 flex justify-between items-center text-xs">
+                                    <a href="DashboardMojiGoi.html" className="flex items-center gap-2 hover:text-white transition-colors bg-slate-800 text-slate-300 px-3.5 py-2 rounded-full border border-slate-700/50 hover:bg-slate-700 font-medium">
+                                        <i className="fa-solid fa-house text-purple-400"></i>
+                                        <span>Kembali</span>
+                                    </a>
+                                    <button onClick={() => setShowResetConfirm(true)} className="flex items-center gap-2 hover:text-white transition-colors bg-rose-950/40 text-rose-300 px-3.5 py-2 rounded-full border border-rose-900/50 hover:bg-rose-900/60 font-medium">
+                                        <i className="fa-solid fa-trash-can text-rose-400"></i>
+                                        <span>Reset Progres</span>
+                                    </button>
+                                </div>
+                                <div className="max-w-4xl mx-auto px-6 py-12 text-center relative z-10 flex flex-col items-center">
+                                    <span className="bg-purple-500/20 text-purple-400 text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider mb-3 inline-block border border-purple-500/20">
+                                        日本語総まとめ N3 : 文字・語彙
+                                    </span>
+                                    <h1 className="text-3xl md:text-4xl font-black tracking-tight mt-1">
+                                        第1週 (Week 1)
+                                    </h1>
+                                    <p className="text-slate-400 font-medium mt-2 text-sm md:text-base">
+                                        家事をしましょう (1日目〜7日目)
+                                    </p>
+                                </div>
+                            </header>
+
+                            <main className="max-w-4xl mx-auto px-4 md:px-6 py-10">
+                                <div className="mb-8 bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
+                                    <h3 className="text-sm font-extrabold text-slate-400 uppercase tracking-widest mb-4">Statistik Progres Week 1</h3>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="flex items-center justify-between gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-lg font-black border border-purple-100">
+                                                    {memorizedPercentage}%
+                                                </div>
+                                                <div>
+                                                    <h4 className="text-sm font-bold text-slate-800">Hafalan Kosakata</h4>
+                                                    <p className="text-slate-500 text-[11px]">
+                                                        Menghafal <span className="text-purple-600 font-bold">{memorizedCount}</span> dari <span className="font-bold">{allVocabCount}</span> kata.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div className="w-20 bg-slate-200 h-2 rounded-full overflow-hidden">
+                                                <div className="bg-purple-500 h-full transition-all duration-500" style={{ width: `${memorizedPercentage}%` }}></div>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex items-center justify-between gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-lg font-black border border-purple-100">
+                                                    {completionPercentage}%
+                                                </div>
+                                                <div>
+                                                    <h4 className="text-sm font-bold text-slate-800">Uji Latihan Soal</h4>
+                                                    <p className="text-slate-500 text-[11px]">
+                                                        Menyelesaikan <span className="text-purple-600 font-bold">{completedCount}</span> dari <span className="font-bold">{totalLessons}</span> bab.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div className="w-20 bg-slate-200 h-2 rounded-full overflow-hidden">
+                                                <div className="bg-purple-500 h-full transition-all duration-500" style={{ width: `${completionPercentage}%` }}></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden p-6">
+                                    <h2 className="text-xl font-bold text-slate-800 border-b border-slate-100 pb-3 mb-4">
+                                         Pemilihan Hari (Week 1)
+                                    </h2>
+                                    <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-3">
+                                        {[1, 2, 3, 4, 5, 6, 7].map((dayNum) => {
+                                            const dayKey = `w1d${dayNum}`;
+                                            const isAvailable = Boolean(LESSON_DATA[dayKey]);
+                                            const isCompleted = submittedDays[dayKey] || false;
+                                            const score = scores[dayKey] || 0;
+                                            const totalPoints = LESSON_DATA[dayKey] ? (LESSON_DATA[dayKey].practice1.length + LESSON_DATA[dayKey].practice2.length) : 0;
+
+                                            return (
+                                                <button
+                                                    key={dayNum}
+                                                    disabled={!isAvailable}
+                                                    onClick={() => isAvailable && setCurrentView(dayKey)}
+                                                    className={`py-3 px-2 rounded-2xl border text-center transition-all relative flex flex-col justify-between min-h-[90px] ${
+                                                        !isAvailable 
+                                                            ? 'bg-slate-50 border-slate-200 text-slate-400 opacity-60 cursor-not-allowed'
+                                                            : isCompleted
+                                                            ? 'bg-purple-50 border-purple-300 text-purple-800 hover:bg-purple-100/80 hover:shadow-sm'
+                                                            : 'bg-purple-50/40 border-purple-400 text-purple-800 hover:bg-purple-100/80 hover:shadow-sm'
+                                                    }`}
+                                                >
+                                                    {isCompleted && (
+                                                        <span className="absolute -top-1 -right-1 bg-purple-500 text-white text-[8px] w-4.5 h-4.5 rounded-full flex items-center justify-center shadow-sm z-10">
+                                                            <i className="fa-solid fa-check"></i>
+                                                        </span>
+                                                    )}
+                                                    <div>
+                                                        <div className="text-[10px] text-slate-400 font-medium leading-none mb-1">
+                                                            {dayNum === 7 ? '実戦' : `${dayNum}日目`}
+                                                        </div>
+                                                        <div className="text-sm font-extrabold leading-none mb-1">
+                                                            {dayNum === 7 ? '7日目' : `${dayNum}日`}
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="text-[10px] mt-2 space-y-0.5 border-t border-dashed border-slate-200 pt-1.5 w-full">
+                                                        {isAvailable ? (
+                                                            <div className="text-purple-700 font-bold leading-none">
+                                                                <i className="fa-solid fa-star text-[8px] mr-1"></i>
+                                                                {isCompleted ? `${score}/${totalPoints}` : 'Mulai'}
+                                                            </div>
+                                                        ) : (
+                                                            <div className="text-slate-400 font-medium leading-none">
+                                                                Segera
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            </main>
+
+                            <footer className="mt-12 border-t border-slate-200 py-8 text-center text-slate-400 text-xs">
+                                <p>© Nihongo Soumatome N3 MojiGoi.</p>
+                            </footer>
+                        </div>
+                    );
+                }
+
+                const currentLesson = LESSON_DATA[currentView];
+                if (currentLesson) {
+                    const totalPoints = currentLesson.practice1.length + currentLesson.practice2.length;
+                    const isSubmitted = submittedDays[currentView] || false;
+                    const score = scores[currentView] || 0;
+
+                    return (
+                        <div className="min-h-screen pb-20 bg-slate-50">
+                            <Header title={currentLesson.title} onBack={() => setCurrentView('landing')} />
+
+                            <main className="max-w-4xl mx-auto px-4 md:px-6 mt-8 animate-fade-in">
+                                {isSubmitted && (
+                                    <QuizResultCard score={score} total={totalPoints} onReset={() => resetQuiz(currentView)} />
+                                )}
+
+                                <section className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 md:p-8 mb-8">
+                                    <div className="border-b-2 border-slate-900 pb-4 mb-6 flex items-center justify-between flex-wrap gap-3">
+                                        <div>
+                                            <span className="text-xs font-bold uppercase tracking-wider text-slate-700 bg-slate-100 px-3 py-1 rounded-full border border-slate-200 font-sans">
+                                                {currentLesson.badge}
+                                            </span>
+                                            <h2 className="text-2xl font-extrabold text-slate-800 mt-2 japanese-text">
+                                                {currentLesson.vocabTitle}
+                                            </h2>
+                                        </div>
+
+                                        {/* Mode View Switch (Daftar vs Flashcard) */}
+                                        <div className="inline-flex p-1 bg-slate-100 rounded-2xl border border-slate-200 font-sans">
+                                            <button 
+                                                onClick={() => setVocabMode('list')}
+                                                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+                                                    vocabMode === 'list' 
+                                                        ? 'bg-white text-slate-900 shadow-sm' 
+                                                        : 'text-slate-500 hover:text-slate-800'
+                                                }`}
+                                            >
+                                                <i className="fa-solid fa-list-ul"></i>
+                                                <span>Daftar</span>
+                                            </button>
+                                            <button 
+                                                onClick={() => setVocabMode('flashcard')}
+                                                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+                                                    vocabMode === 'flashcard' 
+                                                        ? 'bg-purple-600 text-white shadow-sm' 
+                                                        : 'text-slate-500 hover:text-slate-800'
+                                                }`}
+                                            >
+                                                <i className="fa-solid fa-clone"></i>
+                                                <span>Flashcard</span>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    {/* Percakapan Singkat */}
+                                    <div className="bg-slate-50/80 border border-slate-200/80 rounded-2xl p-4 md:p-5 mb-8">
+                                        <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 font-sans">会話 (Percakapan Singkat)</h4>
+                                        <div className="space-y-3 japanese-text text-base md:text-lg">
+                                            {currentLesson.dialogue.map((d, idx) => (
+                                                <div key={idx} className="flex flex-col">
+                                                    <div className="font-medium text-slate-800">
+                                                        <span className="font-bold text-purple-600 mr-2 font-sans">{d.speaker}:</span>
+                                                        {d.jp}
+                                                    </div>
+                                                    <div className="text-xs text-slate-500 font-sans ml-6 mt-0.5">
+                                                        {d.trans}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {/* Kosakata: Tampilan Flashcard atau Tampilan Daftar */}
+                                    {vocabMode === 'flashcard' ? (
+                                        <FlashcardMode 
+                                            categories={currentLesson.categories} 
+                                            dayKey={currentView}
+                                            memorizedVocab={memorizedVocab}
+                                            onToggleMemorized={handleToggleMemorized}
+                                        />
+                                    ) : (
+                                        <div className="space-y-6">
+                                            {currentLesson.categories.map((cat, idx) => (
+                                                <VocabSection 
+                                                    key={idx} 
+                                                    categoryTitle={cat.categoryTitle} 
+                                                    items={cat.items} 
+                                                    dayKey={currentView}
+                                                    memorizedVocab={memorizedVocab}
+                                                    onToggleMemorized={handleToggleMemorized}
+                                                />
+                                            ))}
+                                        </div>
+                                    )}
+                                </section>
+
+                                <PracticePart1 
+                                    dayKey={currentView}
+                                    questions={currentLesson.practice1} 
+                                    answers={userAnswers} 
+                                    submitted={isSubmitted} 
+                                    onSelect={(qId, val) => handleSelectVal(currentView, qId, val)} 
+                                    showIndoTrans={showIndoTrans}
+                                    setShowIndoTrans={setShowIndoTrans}
+                                />
+
+                                <PracticePart2 
+                                    dayKey={currentView}
+                                    questions={currentLesson.practice2} 
+                                    answers={userAnswers} 
+                                    submitted={isSubmitted} 
+                                    onSelect={(qId, val) => handleSelectVal(currentView, qId, val)} 
+                                    showIndoTrans={showIndoTrans}
+                                />
+
+                                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 font-sans">
+                                    {!isSubmitted ? (
+                                        <button onClick={() => calculateResults(currentView)}
+                                            className="w-full sm:w-auto px-10 py-4 bg-slate-900 hover:bg-slate-800 text-white text-base font-black rounded-2xl shadow-md transition-transform active:scale-95 flex items-center justify-center gap-2">
+                                            <i className="fa-solid fa-paper-plane"></i>
+                                            採点する (Nilai Latihan)
+                                        </button>
+                                    ) : (
+                                        <button onClick={() => resetQuiz(currentView)}
+                                            className="w-full sm:w-auto px-10 py-4 bg-slate-900 hover:bg-slate-800 text-white text-base font-black rounded-2xl shadow-md transition-transform active:scale-95 flex items-center justify-center gap-2">
+                                            <i className="fa-solid fa-rotate-right"></i>
+                                            もう一度解く (Coba Lagi)
+                                        </button>
+                                    )}
+                                </div>
+                            </main>
+
+                            <footer className="mt-20 border-t border-slate-200 py-8 text-center text-slate-400 text-xs font-sans">
+                                <p>© Nihongo Soumatome N3 MojiGoi.</p>
+                            </footer>
+                        </div>
+                    );
+                }
+
+                return null;
+            };
+
+            return (
+                <div className="min-h-screen bg-slate-50 relative">
+                    {renderViewContent()}
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

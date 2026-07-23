@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日本語総まとめ N3 — Learning Portal</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body { 
+            font-family: 'Plus Jakarta Sans', 'Noto Sans JP', sans-serif; 
+            background-color: #f8fafc; 
+        }
+        .japanese-text { 
+            font-family: 'Noto Sans JP', sans-serif; 
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+    </style>
+</head>
+<body class="antialiased text-slate-800 min-h-screen flex flex-col justify-between">
+
+    <div>
+        <!-- Premium Navigation / Header -->
+        <header class="bg-slate-900 text-white shadow-md relative overflow-hidden">
+            <!-- Decorative Subtle Pattern Layer -->
+            <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(99,102,241,0.1),transparent_50%)]"></div>
+            
+            <div class="max-w-5xl mx-auto px-6 py-16 text-center relative z-10">
+                <span class="bg-indigo-500/20 text-indigo-400 text-xs px-4 py-2 rounded-full font-bold uppercase tracking-wider mb-5 inline-block border border-indigo-500/20 font-sans">
+                    日本語総まとめ N3 • Portal Belajar Terpadu
+                </span>
+                <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mt-1 bg-gradient-to-r from-white via-slate-100 to-indigo-200 bg-clip-text text-transparent">
+                    Nihongo Portal N3
+                </h1>
+                <p class="text-slate-400 font-medium mt-3 text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
+                    Kuasai materi Kanji, Tata Bahasa, Kosakata, dan Pemahaman Membaca level JLPT N3 secara sistematis berdasarkan kurikulum terpercaya <span class="text-indigo-300">Nihongo Soumatome</span>.
+                </p>
+                <div class="mt-4 flex justify-center items-center gap-1.5 text-xs text-indigo-400/80 font-bold tracking-wide uppercase">
+                    <span>Mulai Belajar</span>
+                    <i class="fa-solid fa-chevron-down animate-bounce mt-0.5"></i>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Core Modules Grid -->
+        <main class="max-w-5xl mx-auto px-4 md:px-6 py-12">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                
+                <!-- CARD 1: KANJI EXPLORER -->
+                <a href="DashboardKanji.html" class="group bg-white rounded-3xl border border-slate-200 p-5 shadow-sm hover:shadow-xl hover:border-indigo-500 transition-all duration-300 transform hover:-translate-y-1.5 flex flex-col justify-between">
+                    <div>
+                        <!-- Icon/Visual Header -->
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center text-xl font-black border border-indigo-100 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300 shadow-sm japanese-text">
+                                漢
+                            </div>
+                            <span class="bg-indigo-50 text-indigo-700 text-[9px] font-bold px-2.5 py-0.5 rounded-full border border-indigo-100 uppercase tracking-wider">
+                                Kanji
+                            </span>
+                        </div>
+                        
+                        <!-- Card Titles -->
+                        <h2 class="text-xl font-extrabold text-slate-800 mb-2 flex items-center gap-1.5 group-hover:text-indigo-600 transition-colors">
+                            <span>Kanji</span>
+                            <span class="text-[10px] text-slate-400 font-normal font-sans japanese-text">(漢字)</span>
+                        </h2>
+                        
+                        <!-- Description -->
+                        <p class="text-slate-500 text-xs leading-relaxed mb-4">
+                            Pendalaman materi Kanji N3, Onyomi & Kunyomi, terjemahan Indonesia, Audio TTS asli, serta kuis mandiri harian.
+                        </p>
+                    </div>
+                    
+                    <!-- Badges & Action Trigger -->
+                    <div>
+                        <div class="flex flex-wrap gap-1.5 mb-4">
+                            <span class="bg-slate-50 text-slate-600 text-[9px] font-bold px-2 py-0.5 rounded-lg border border-slate-100">
+                                <i class="fa-solid fa-clone mr-1 text-indigo-500"></i> Flashcard 3D
+                            </span>
+                            <span class="bg-slate-50 text-slate-600 text-[9px] font-bold px-2 py-0.5 rounded-lg border border-slate-100">
+                                <i class="fa-solid fa-circle-check mr-1 text-indigo-500"></i> Kuis
+                            </span>
+                        </div>
+                        <div class="text-[10px] font-black text-indigo-600 group-hover:text-indigo-700 flex items-center gap-1 uppercase tracking-wider">
+                            <span>Masuk Modul</span>
+                            <i class="fa-solid fa-arrow-right transition-transform group-hover:translate-x-0.5 text-[9px]"></i>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- CARD 2: GRAMMAR (BUNPOU) EXPLORER -->
+                <a href="DashboardBunpou.html" class="group bg-white rounded-3xl border border-slate-200 p-5 shadow-sm hover:shadow-xl hover:border-emerald-500 transition-all duration-300 transform hover:-translate-y-1.5 flex flex-col justify-between">
+                    <div>
+                        <!-- Icon/Visual Header -->
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-xl font-black border border-emerald-100 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300 shadow-sm japanese-text">
+                                文
+                            </div>
+                            <span class="bg-emerald-50 text-emerald-700 text-[9px] font-bold px-2.5 py-0.5 rounded-full border border-emerald-100 uppercase tracking-wider">
+                                Grammar
+                            </span>
+                        </div>
+                        
+                        <!-- Card Titles -->
+                        <h2 class="text-xl font-extrabold text-slate-800 mb-2 flex items-center gap-1.5 group-hover:text-emerald-600 transition-colors">
+                            <span>Bunpou</span>
+                            <span class="text-[10px] text-slate-400 font-normal font-sans japanese-text">(文法)</span>
+                        </h2>
+                        
+                        <!-- Description -->
+                        <p class="text-slate-500 text-xs leading-relaxed mb-4">
+                            Struktur tata bahasa N3, penjelasan bahasa Indonesia komprehensif, serta latihan interaktif menyusun kalimat bintang.
+                        </p>
+                    </div>
+                    
+                    <!-- Badges & Action Trigger -->
+                    <div>
+                        <div class="flex flex-wrap gap-1.5 mb-4">
+                            <span class="bg-slate-50 text-slate-600 text-[9px] font-bold px-2 py-0.5 rounded-lg border border-slate-100">
+                                <i class="fa-solid fa-book-open mr-1 text-emerald-500"></i> Rumus
+                            </span>
+                            <span class="bg-slate-50 text-slate-600 text-[9px] font-bold px-2 py-0.5 rounded-lg border border-slate-100">
+                                <i class="fa-solid fa-star mr-1 text-emerald-500"></i> Bintang
+                            </span>
+                        </div>
+                        <div class="text-[10px] font-black text-emerald-600 group-hover:text-emerald-700 flex items-center gap-1 uppercase tracking-wider">
+                            <span>Masuk Modul</span>
+                            <i class="fa-solid fa-arrow-right transition-transform group-hover:translate-x-0.5 text-[9px]"></i>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- CARD 3: MOJI GOI (VOCABULARY) EXPLORER (ACTIVATED) -->
+                <a href="DashboardMojiGoi.html" class="group bg-white rounded-3xl border border-slate-200 p-5 shadow-sm hover:shadow-xl hover:border-purple-500 transition-all duration-300 transform hover:-translate-y-1.5 flex flex-col justify-between">
+                    <div>
+                        <!-- Icon/Visual Header -->
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center text-xl font-black border border-purple-100 group-hover:bg-purple-600 group-hover:text-white transition-all duration-300 shadow-sm japanese-text">
+                                語
+                            </div>
+                            <span class="bg-purple-50 text-purple-700 text-[9px] font-bold px-2.5 py-0.5 rounded-full border border-purple-100 uppercase tracking-wider">
+                                Vocab
+                            </span>
+                        </div>
+                        
+                        <!-- Card Titles -->
+                        <h2 class="text-xl font-extrabold text-slate-800 mb-2 flex items-center gap-1.5 group-hover:text-purple-600 transition-colors">
+                            <span>Moji Goi</span>
+                            <span class="text-[10px] text-slate-400 font-normal font-sans japanese-text">(語彙)</span>
+                        </h2>
+                        
+                        <!-- Description -->
+                        <p class="text-slate-500 text-xs leading-relaxed mb-4">
+                            Kumpulan kosakata harian N3, antonim, sinonim, penggolongan kata benda, kata sifat, dan ungkapan idiomatis.
+                        </p>
+                    </div>
+                    
+                    <!-- Badges & Action Trigger -->
+                    <div>
+                        <div class="flex flex-wrap gap-1.5 mb-4">
+                            <span class="bg-slate-50 text-slate-600 text-[9px] font-bold px-2 py-0.5 rounded-lg border border-slate-100">
+                                <i class="fa-solid fa-font mr-1 text-purple-500"></i> Vocab
+                            </span>
+                            <span class="bg-slate-50 text-slate-600 text-[9px] font-bold px-2 py-0.5 rounded-lg border border-slate-100">
+                                <i class="fa-solid fa-circle-check mr-1 text-purple-500"></i> Latihan
+                            </span>
+                        </div>
+                        <div class="text-[10px] font-black text-purple-600 group-hover:text-purple-700 flex items-center gap-1 uppercase tracking-wider">
+                            <span>Masuk Modul</span>
+                            <i class="fa-solid fa-arrow-right transition-transform group-hover:translate-x-0.5 text-[9px]"></i>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- CARD 4: DOKKAI (READING) EXPLORER -->
+                <a href="DashboardDokkai.html" class="group bg-white rounded-3xl border border-slate-200 p-5 shadow-sm hover:shadow-xl hover:border-amber-500 transition-all duration-300 transform hover:-translate-y-1.5 flex flex-col justify-between">
+                    <div>
+                        <!-- Icon/Visual Header -->
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center text-xl font-black border border-amber-100 group-hover:bg-amber-500 group-hover:text-white transition-all duration-300 shadow-sm japanese-text">
+                                読
+                            </div>
+                            <span class="bg-amber-50 text-amber-700 text-[9px] font-bold px-2.5 py-0.5 rounded-full border border-amber-100 uppercase tracking-wider">
+                                Reading
+                            </span>
+                        </div>
+                        
+                        <!-- Card Titles -->
+                        <h2 class="text-xl font-extrabold text-slate-800 mb-2 flex items-center gap-1.5 group-hover:text-amber-600 transition-colors">
+                            <span>Dokkai</span>
+                            <span class="text-[10px] text-slate-400 font-normal font-sans japanese-text">(読解)</span>
+                        </h2>
+                        
+                        <!-- Description -->
+                        <p class="text-slate-500 text-xs leading-relaxed mb-4">
+                            Latihan pemahaman teks bacaan tingkat N3, pemahaman surat kabar, email kasual, instruksi tertulis, dan trik ujian.
+                        </p>
+                    </div>
+                    
+                    <!-- Badges & Action Trigger -->
+                    <div>
+                        <div class="flex flex-wrap gap-1.5 mb-4">
+                            <span class="bg-slate-50 text-slate-600 text-[9px] font-bold px-2 py-0.5 rounded-lg border border-slate-100">
+                                <i class="fa-solid fa-book-open-reader mr-1 text-amber-500"></i> Reading
+                            </span>
+                            <span class="bg-slate-50 text-slate-600 text-[9px] font-bold px-2 py-0.5 rounded-lg border border-slate-100">
+                                <i class="fa-solid fa-circle-check mr-1 text-amber-500"></i> Latihan
+                            </span>
+                        </div>
+                        <div class="text-[10px] font-black text-amber-600 group-hover:text-amber-700 flex items-center gap-1 uppercase tracking-wider">
+                            <span>Masuk Modul</span>
+                            <i class="fa-solid fa-arrow-right transition-transform group-hover:translate-x-0.5 text-[9px]"></i>
+                        </div>
+                    </div>
+                </a>
+
+            </div>
+
+            <!-- Highlight Features Section -->
+            <section class="mt-20 border-t border-slate-200 pt-16">
+                <div class="text-center mb-12">
+                    <h3 class="text-2xl font-extrabold text-slate-800">Metode Belajar Terpadu</h3>
+                    <p class="text-slate-500 text-xs mt-1">Dirancang khusus untuk mengoptimalkan persiapan ujian JLPT N3 Anda</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                    <div class="bg-white border border-slate-100 rounded-2xl p-5 text-center shadow-sm">
+                        <div class="w-12 h-12 bg-indigo-50 text-indigo-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fa-solid fa-graduation-cap text-lg"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-800 text-sm mb-1.5">Penjelasan Komprehensif</h4>
+                        <p class="text-slate-500 text-[11px] leading-relaxed">
+                            Materi diterjemahkan ke bahasa Indonesia dengan penjelasan mudah dipahami dan contoh kalimat alami.
+                        </p>
+                    </div>
+
+                    <div class="bg-white border border-slate-100 rounded-2xl p-5 text-center shadow-sm">
+                        <div class="w-12 h-12 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fa-solid fa-laptop-code text-lg"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-800 text-sm mb-1.5">Uji Kemampuan Mandiri</h4>
+                        <p class="text-slate-500 text-[11px] leading-relaxed">
+                            Tersedia latihan pilihan ganda harian dan mini test penutup mingguan untuk melacak perkembangan Anda.
+                        </p>
+                    </div>
+
+                    <div class="bg-white border border-slate-100 rounded-2xl p-5 text-center shadow-sm">
+                        <div class="w-12 h-12 bg-amber-50 text-amber-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fa-solid fa-ear-listen text-lg"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-800 text-sm mb-1.5">Akurasi Pengucapan</h4>
+                        <p class="text-slate-500 text-[11px] leading-relaxed">
+                            Gunakan integrasi suara Text-to-Speech (TTS) untuk mendengarkan intonasi asli pengucapan bahasa Jepang.
+                        </p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Portal Footer Banner -->
+    <footer class="border-t border-slate-200 py-10 bg-slate-900 text-slate-400 text-center text-xs">
+        <div class="max-w-4xl mx-auto px-6 space-y-3">
+            <p class="font-semibold text-slate-200 text-sm japanese-text tracking-wider">
+                継続は力なり (Keberlanjutan adalah Kekuatan)
+            </p>
+            <p class="text-[11px] text-slate-500 font-sans">
+                Belajar secara konsisten setiap hari adalah kunci utama menguasai kosakata dan tata bahasa baru.
+            </p>
+            <div class="pt-4 text-[10px] text-slate-600 border-t border-slate-800/80">
+                <p>© Nihongo Soumatome N3 Portal • Kurikulum Mandiri JLPT</p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

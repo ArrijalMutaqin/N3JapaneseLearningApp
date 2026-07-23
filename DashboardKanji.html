@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日本語総まとめ N3 漢字 - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Noto Sans JP"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { 
+            font-family: 'Noto Sans JP', sans-serif; 
+            background-color: #f8fafc; 
+        }
+    </style>
+</head>
+<body class="antialiased text-slate-800 min-h-screen flex flex-col justify-between">
+
+    <div>
+        <!-- Header -->
+        <header class="bg-slate-900 text-white shadow-md relative overflow-hidden">
+            <!-- Navigation Bar Atas -->
+            <div class="max-w-4xl mx-auto px-6 pt-4 flex justify-between items-center text-xs">
+                <a href="index.html" class="flex items-center gap-2 hover:text-white transition-colors bg-slate-800 text-slate-300 px-3.5 py-2 rounded-full border border-slate-700/50 hover:bg-slate-700 font-medium">
+                    <i class="fa-solid fa-house text-indigo-400"></i>
+                    <span>Kembali Halaman Utama</span>
+                </a>
+            </div>
+
+            <div class="max-w-4xl mx-auto px-6 pb-12 pt-6 text-center relative z-10 flex flex-col items-center">
+                <span class="bg-indigo-500/20 text-indigo-400 text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider mb-3 inline-block border border-indigo-500/20">
+                    日本語総まとめ N3 : 漢字
+                </span>
+                <h1 class="text-3xl md:text-4xl font-black tracking-tight mt-1 text-white">
+                    コースダッシュボード
+                </h1>
+                <p class="text-slate-400 font-medium mt-2 text-sm md:text-base">
+                    Pilih minggu pembelajaran untuk memulai latihan
+                </p>
+            </div>
+        </header>
+
+        <!-- Main Dashboard Content -->
+        <main class="max-w-4xl mx-auto px-4 md:px-6 py-10">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <!-- Week 1 -->
+                <a href="Week1Kanji.html" class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 hover:shadow-md hover:border-indigo-400 transition-all group flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="bg-indigo-50 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full border border-indigo-200">
+                                第1週
+                            </span>
+                            <i class="fa-solid fa-arrow-right text-slate-300 group-hover:text-indigo-500 group-hover:translate-x-1 transition-all"></i>
+                        </div>
+                        <h2 class="text-xl font-bold text-slate-800 mb-2">Week 1 Kanji</h2>
+                        <p class="text-slate-500 text-xs leading-relaxed">
+                            Pelajaran Kanji JLPT N3 untuk Hari 1 sampai Hari 7 (Latihan & Ujian Minggu 1).
+                        </p>
+                    </div>
+                    <div class="mt-6 border-t border-slate-100 pt-3 flex items-center justify-between text-xs text-indigo-600 font-bold">
+                        <span>Buka Materi</span>
+                        <i class="fa-solid fa-circle-play"></i>
+                    </div>
+                </a>
+
+                <!-- Week 2 (Coming Soon) -->
+                <div class="bg-slate-50 rounded-3xl border border-slate-200 p-6 opacity-60 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="bg-slate-200 text-slate-600 text-xs font-bold px-3 py-1 rounded-full">
+                                第2週
+                            </span>
+                            <i class="fa-solid fa-lock text-slate-400"></i>
+                        </div>
+                        <h2 class="text-xl font-bold text-slate-700 mb-2">Week 2 Kanji</h2>
+                        <p class="text-slate-400 text-xs leading-relaxed">
+                            Materi untuk minggu ke-2 (Segera Hadir).
+                        </p>
+                    </div>
+                    <div class="mt-6 border-t border-slate-200 pt-3 text-xs text-slate-400 font-bold">
+                        <span>Belum Tersedia</span>
+                    </div>
+                </div>
+
+                <!-- Week 3 (Coming Soon) -->
+                <div class="bg-slate-50 rounded-3xl border border-slate-200 p-6 opacity-60 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="bg-slate-200 text-slate-600 text-xs font-bold px-3 py-1 rounded-full">
+                                第3週
+                            </span>
+                            <i class="fa-solid fa-lock text-slate-400"></i>
+                        </div>
+                        <h2 class="text-xl font-bold text-slate-700 mb-2">Week 3 Kanji</h2>
+                        <p class="text-slate-400 text-xs leading-relaxed">
+                            Materi untuk minggu ke-3 (Segera Hadir).
+                        </p>
+                    </div>
+                    <div class="mt-6 border-t border-slate-200 pt-3 text-xs text-slate-400 font-bold">
+                        <span>Belum Tersedia</span>
+                    </div>
+                </div>
+
+                <!-- Week 4 (Coming Soon) -->
+                <div class="bg-slate-50 rounded-3xl border border-slate-200 p-6 opacity-60 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="bg-slate-200 text-slate-600 text-xs font-bold px-3 py-1 rounded-full">
+                                第4週
+                            </span>
+                            <i class="fa-solid fa-lock text-slate-400"></i>
+                        </div>
+                        <h2 class="text-xl font-bold text-slate-700 mb-2">Week 4 Kanji</h2>
+                        <p class="text-slate-400 text-xs leading-relaxed">
+                            Materi untuk minggu ke-4 (Segera Hadir).
+                        </p>
+                    </div>
+                    <div class="mt-6 border-t border-slate-200 pt-3 text-xs text-slate-400 font-bold">
+                        <span>Belum Tersedia</span>
+                    </div>
+                </div>
+
+                <!-- Week 5 (Coming Soon) -->
+                <div class="bg-slate-50 rounded-3xl border border-slate-200 p-6 opacity-60 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="bg-slate-200 text-slate-600 text-xs font-bold px-3 py-1 rounded-full">
+                                第5週
+                            </span>
+                            <i class="fa-solid fa-lock text-slate-400"></i>
+                        </div>
+                        <h2 class="text-xl font-bold text-slate-700 mb-2">Week 5 Kanji</h2>
+                        <p class="text-slate-400 text-xs leading-relaxed">
+                            Materi untuk minggu ke-5 (Segera Hadir).
+                        </p>
+                    </div>
+                    <div class="mt-6 border-t border-slate-200 pt-3 text-xs text-slate-400 font-bold">
+                        <span>Belum Tersedia</span>
+                    </div>
+                </div>
+
+                <!-- Week 6 (Coming Soon) -->
+                <div class="bg-slate-50 rounded-3xl border border-slate-200 p-6 opacity-60 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="bg-slate-200 text-slate-600 text-xs font-bold px-3 py-1 rounded-full">
+                                第6週
+                            </span>
+                            <i class="fa-solid fa-lock text-slate-400"></i>
+                        </div>
+                        <h2 class="text-xl font-bold text-slate-700 mb-2">Week 6 Kanji</h2>
+                        <p class="text-slate-400 text-xs leading-relaxed">
+                            Materi untuk minggu ke-6 (Segera Hadir).
+                        </p>
+                    </div>
+                    <div class="mt-6 border-t border-slate-200 pt-3 text-xs text-slate-400 font-bold">
+                        <span>Belum Tersedia</span>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <footer class="border-t border-slate-200 py-8 text-center text-slate-400 text-xs">
+        <p>© Nihongo Soumatome N3 Kanji.</p>
+    </footer>
+
+</body>
+</html>
