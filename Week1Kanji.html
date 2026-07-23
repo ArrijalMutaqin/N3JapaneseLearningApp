@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日本語総まとめ N3 漢字 - Week 1</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', '"Noto Sans JP"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Load React, ReactDOM, Babel -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Load Google Fonts & FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body { 
+            font-family: 'Plus Jakarta Sans', 'Noto Sans JP', sans-serif; 
+            background-color: #f8fafc; 
+        }
+        .japanese-text { 
+            font-family: 'Noto Sans JP', sans-serif; 
+        }
+        /* 3D Flashcard Transitions */
+        .flashcard-container {
+            perspective: 1200px;
+        }
+        .flashcard {
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+        .flashcard-front, .flashcard-back {
+            backface-visibility: hidden;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .flashcard-back {
+            transform: rotateY(180deg);
+        }
+        ruby { 
+            ruby-position: over; 
+            ruby-align: center; 
+        }
+        rt { 
+            font-size: 0.55em; 
+            color: #6366f1;
+            user-select: none;
+            padding-bottom: 0.1rem;
+        }
+    </style>
+</head>
+<body class="antialiased text-slate-800">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useMemo } = React;
+
+        const CURRENT_WEEK = 1;
+
+        // Data khusus Kanji Week 1
+        const KANJI_DATA_W1 = [
+            // === MATERI HARI 1 ===
+            { id: 1, week: 1, day: 1, kanji: "駐車", furigana: "ちゅうしゃ", meaning: "Parkir", example: "駐車場 (Chuushajou) - Tempat parkir", type: "駐車", details: "Materi No. 1 (Hari 1)" },
+            { id: 2, week: 1, day: 1, kanji: "無休", furigana: "むきゅう", meaning: "Tanpa hari libur (Buka setiap hari)", example: "年中無休 (Nenjuumukyuu) - Buka terus sepanjang tahun", type: "無休", details: "Materi No. 2 (Hari 1)" },
+            { id: 3, week: 1, day: 1, kanji: "無料", furigana: "むりょう", meaning: "Gratis / Bebas biaya", example: "入場無料 (Nyuujoumuryou) - Biaya masuk gratis", type: "無料", details: "Materi No. 2 (Hari 1)" },
+            { id: 4, week: 1, day: 1, kanji: "無理", furigana: "むり", meaning: "Mustahil / Memaksakan diri", example: "無理をしないでください - Tolong jangan memaksakan diri", type: "無理", details: "Materi No. 2 (Hari 1)" },
+            { id: 5, week: 1, day: 1, kanji: "無い", furigana: "ない", meaning: "Tidak ada / Hilang / Habis", example: "全く問題が無い (Mattaku mondai ga nai) - Tidak ada masalah sama sekali", type: "無い", details: "Materi No. 2 (Hari 1)" },
+            { id: 6, week: 1, day: 1, kanji: "満車", furigana: "まんしゃ", meaning: "Parkir penuh (Kendaraan penuh)", example: "満車のため入れない - Tidak bisa masuk karena parkir penuh", type: "満車", details: "Materi No. 3 (Hari 1)" },
+            { id: 7, week: 1, day: 1, kanji: "不満", furigana: "ふまん", meaning: "Tidak puas / Kecewa", example: "結果に対して不満を抱く - Merasa tidak puas terhadap hasil", type: "不満", details: "Materi No. 3 (Hari 1)" },
+            { id: 8, week: 1, day: 1, kanji: "方向", furigana: "ほうこう", meaning: "Arah / Orientasi", example: "進むべき方向を決める - Menentukan arah yang harus dituju", type: "方向", details: "Materi No. 4 (Hari 1)" },
+            { id: 9, week: 1, day: 1, kanji: "向こう", furigana: "むこう", meaning: "Di sebelah sana / Seberang", example: "道の向こう側 (Michi no mukougawa) - Sisi seberang jalan", type: "向こう", details: "Materi No. 4 (Hari 1)" },
+            { id: 10, week: 1, day: 1, kanji: "禁止", furigana: "きんし", meaning: "Larangan / Dilarang", example: "立入禁止 (Tachiirikinshi) - Dilarang masuk", type: "禁止", details: "Materi No. 5 (Hari 1)" },
+            { id: 11, week: 1, day: 1, kanji: "関心", furigana: "かんしん", meaning: "Minat / Ketertarikan", example: "日本の政治に関心がある - Memiliki minat terhadap politik Jepang", type: "関心", details: "Materi No. 6 (Hari 1)" },
+            { id: 12, week: 1, day: 1, kanji: "関係", furigana: "かんけい", meaning: "Hubungan / Relasi", example: "良好な人間関係を築く - Membangun hubungan antarmanusia yang baik", type: "関係", details: "Materi No. 7 (Hari 1)" },
+            { id: 13, week: 1, day: 1, kanji: "係", furigana: "かかり", meaning: "Petugas / Penanggung jawab", example: "係の人に案内を頼む - Meminta panduan pada petugas yang bertanggung jawab", type: "係", details: "Materi No. 7 (Hari 1)" },
+            { id: 14, week: 1, day: 1, kanji: "無断", furigana: "むだん", meaning: "Tanpa izin", example: "無断で他人の物を使う - Menggunakan barang orang lain tanpa izin", type: "無断", details: "Materi No. 8 (Hari 1)" },
+            { id: 15, week: 1, day: 1, kanji: "断水", furigana: "だんすい", meaning: "Pemutusan aliran air / Air mati", example: "明日、この地域は断水です - Besok daerah ini mati air", type: "断水", details: "Materi No. 8 (Hari 1)" },
+
+            // === MATERI HARI 2 ===
+            { id: 16, week: 1, day: 2, kanji: "横断", furigana: "おうだん", meaning: "Menyeberang", example: "横断歩道 (Oudanhodou) - Zebra Cross / Penyeberangan jalan", type: "横断", details: "Materi No. 9 (Hari 2)" },
+            { id: 17, week: 1, day: 2, kanji: "横", furigana: "よこ", meaning: "Samping / Sebelah", example: "横を向く (Yoko o muku) - Menghadap ke samping", type: "横", details: "Materi No. 9 (Hari 2)" },
+            { id: 18, week: 1, day: 2, kanji: "押す", furigana: "おす", meaning: "Menekan / Mendorong", example: "ボタンを押す (Botan o osu) - Menekan tombol", type: "押す", details: "Materi No. 10 (Hari 2)" },
+            { id: 19, week: 1, day: 2, kanji: "押し入れ", furigana: "おしいれ", meaning: "Lemari dinding khas Jepang", example: "押し入れに荷物をしまう - Menyimpan barang di lemari dinding", type: "押し入れ", details: "Materi No. 10 (Hari 2)" },
+            { id: 20, week: 1, day: 2, kanji: "押しボタン式", furigana: "おしボタンしき", meaning: "Tipe tombol tekan", example: "押しボタン式信号 - Lampu lalu lintas tipe tombol tekan", type: "押しボタン式", details: "Materi No. 11 (Hari 2)" },
+            { id: 21, week: 1, day: 2, kanji: "入学式", furigana: "にゅうがくしき", meaning: "Upacara masuk sekolah", example: "入学式に出席する - Menghadiri upacara masuk sekolah", type: "入学式", details: "Materi No. 11 (Hari 2)" },
+            { id: 22, week: 1, day: 2, kanji: "送信", furigana: "そうしん", meaning: "Mengirim / Transmisi", example: "メールを送信する - Mengirim surat elektronik (surel)", type: "送信", details: "Materi No. 12 (Hari 2)" },
+            { id: 23, week: 1, day: 2, kanji: "信じる", furigana: "しんじる", meaning: "Percaya / Memercayai", example: "自分を信じる (Jibun o shinjiru) - Percaya pada diri sendiri", type: "信じる", details: "Materi No. 12 (Hari 2)" },
+            { id: 24, week: 1, day: 2, kanji: "自信", furigana: "じしん", meaning: "Percaya diri", example: "自信を持って発表する - Melakukan presentasi dengan percaya diri", type: "自信", details: "Materi No. 12 (Hari 2)" },
+            { id: 25, week: 1, day: 2, kanji: "信用", furigana: "しんよう", meaning: "Kepercayaan / Kredibilitas", example: "他人の信用を得る - Mendapatkan kepercayaan orang lain", type: "信用", details: "Materi No. 12 (Hari 2)" },
+            { id: 26, week: 1, day: 2, kanji: "信号", furigana: "しんごう", meaning: "Lampu lalu lintas / Isyarat", example: "次の信号を右に曲がる - Belok kanan di lampu lalu lintas berikutnya", type: "信号", details: "Materi No. 13 (Hari 2)" },
+            { id: 27, week: 1, day: 2, kanji: "正確", furigana: "せいかく", meaning: "Tepat / Akurat / Presisi", example: "正確な答え (Seikakuna kotae) - Jawaban yang tepat/akurat", type: "正確", details: "Materi No. 14 (Hari 2)" },
+            { id: 28, week: 1, day: 2, kanji: "確かめる", furigana: "たしかめる", meaning: "Memastikan / Memverifikasi", example: "安全を確かめる (Anzen o tashikameru) - Memastikan keselamatan", type: "確かめる", details: "Materi No. 14 (Hari 2)" },
+            { id: 29, week: 1, day: 2, kanji: "確認", furigana: "かくにん", meaning: "Konfirmasi / Peninjauan", example: "安全を確認する (Anzen o kakunin suru) - Mengonfirmasi keamanan", type: "確認", details: "Materi No. 15 (Hari 2)" },
+            { id: 30, week: 1, day: 2, kanji: "認める", furigana: "みとめる", meaning: "Mengakui / Menyetujui", example: "自分の間違いを認める - Mengakui kesalahan diri sendiri", type: "認める", details: "Materi No. 15 (Hari 2)" },
+            { id: 31, week: 1, day: 2, kanji: "飛ぶ", furigana: "とぶ", meaning: "Terbang", example: "空を飛ぶ (Sora o tobu) - Terbang di langit", type: "飛ぶ", details: "Materi No. 16 (Hari 2)" },
+
+            // === MATERI HARI 3 ===
+            { id: 32, week: 1, day: 3, kanji: "非常", furigana: "ひじょう", meaning: "Darurat / Sangat luar biasa", example: "非常に (hijou ni) - Sangat / Amat", type: "非常", details: "Materi No. 17 (Hari 3)" },
+            { id: 33, week: 1, day: 3, kanji: "非常口", furigana: "ひじょうぐち", meaning: "Pintu Darurat / Pintu Keluar Darurat", example: "非常口を確かめておきましょう - Mari kita pastikan pintu daruratnya", type: "非常口", details: "Materi No. 17 (Hari 3)" },
+            { id: 34, week: 1, day: 3, kanji: "日常", furigana: "にちじょう", meaning: "Sehari-hari / Keseharian", example: "日常生活 (Nichijou seikatsu) - Kehidupan sehari-hari", type: "日常", details: "Materi No. 18 (Hari 3)" },
+            { id: 35, week: 1, day: 3, kanji: "正常", furigana: "せいじょう", meaning: "Normal / Biasa", example: "正常な状態 (Seikou na joutai) - Kondisi normal", type: "正常", details: "Materi No. 18 (Hari 3)" },
+            { id: 36, week: 1, day: 3, kanji: "～階", furigana: "～かい", meaning: "Lantai (penunjuk tingkat gedung)", example: "私の部屋は五階にあります。 - Kamar saya berada di lantai lima.", type: "～階", details: "Materi No. 19/20 (Hari 3)" },
+            { id: 37, week: 1, day: 3, kanji: "階段", furigana: "かいだん", meaning: "Tangga", example: "エレベーターを使わずに、階段を使う - Menggunakan tangga tanpa menggunakan lift", type: "階段", details: "Materi No. 19/20 (Hari 3)" },
+            { id: 38, week: 1, day: 3, kanji: "箱", furigana: "はこ", meaning: "Kotak / Box / Dus", example: "その箱の中に何が入っていますか - Apa yang ada di dalam kotak itu?", type: "箱", details: "Materi No. 21 (Hari 3)" },
+            { id: 39, week: 1, day: 3, kanji: "ごみ箱", furigana: "ごみばこ", meaning: "Tempat Sampah", example: "ごみをごみ箱に捨てる - Membuang sampah ke tempat sampah", type: "ごみ箱", details: "Materi No. 21 (Hari 3)" },
+            { id: 40, week: 1, day: 3, kanji: "危険", furigana: "きけん", meaning: "Bahaya", example: "危険ですから、押さないでください - Karena bahaya, tolong jangan dorong", type: "危険", details: "Materi No. 22/23 (Hari 3)" },
+            { id: 41, week: 1, day: 3, kanji: "危ない", furigana: "あぶない", meaning: "Berbahaya / Gawat", example: "危ないですから、ここで遊ばないでください - Karena berbahaya, jangan bermain di sini", type: "危ない", details: "Materi No. 22 (Hari 3)" },
+            { id: 42, week: 1, day: 3, kanji: "捨てる", furigana: "すてる", meaning: "Membuang (sampah, dsb)", example: "ここにごみを捨てないでください - Tolong jangan buang sampah di sini", type: "捨てる", details: "Materi No. 24 (Hari 3)" },
+            
+            // === MATERI HARI 4 ===
+            { id: 43, week: 1, day: 4, kanji: "線", furigana: "せん", meaning: "Jalur / Garis", example: "山手線に乗ります。 - Naik Jalur Yamanote.", type: "線", details: "Materi No. 25 (Hari 4)" },
+            { id: 44, week: 1, day: 4, kanji: "番線", furigana: "ばんせん", meaning: "Peron / Jalur kereta", example: "三番線から電車が発車します。 - Kereta berangkat dari jalur nomor 3.", type: "番線", details: "Materi No. 25 (Hari 4)" },
+            { id: 45, week: 1, day: 4, kanji: "全面", furigana: "ぜんめん", meaning: "Seluruh permukaan / Sepenuhnya", example: "道路は全面通行止めです。 - Jalan ditutup sepenuhnya.", type: "全面", details: "Materi No. 26 (Hari 4)" },
+            { id: 46, week: 1, day: 4, kanji: "画面", furigana: "がめん", meaning: "Layar", example: "画面を見てください。 - Tolong lihat layarnya.", type: "画面", details: "Materi No. 26 (Hari 4)" },
+            { id: 47, week: 1, day: 4, kanji: "方面", furigana: "ほうめん", meaning: "Arah / Jurusan", example: "東京方面 of 電車です。 - Kereta menuju arah Tokyo.", type: "方面", details: "Materi No. 26 (Hari 4)" },
+            { id: 48, week: 1, day: 4, kanji: "普通", furigana: "ふつう", meaning: "Biasa / Lokal", example: "普通電車に乗ります。 - Naik kereta lokal.", type: "普通", details: "Materi No. 27 (Hari 4)" },
+            { id: 49, week: 1, day: 4, kanji: "各駅", furigana: "かくえき", meaning: "Setiap stasiun", example: "各駅に止まります。 - Berhenti di setiap stasiun.", type: "各駅", details: "Materi No. 28 (Hari 4)" },
+            { id: 50, week: 1, day: 4, kanji: "各自", furigana: "かくじ", meaning: "Masing-masing", example: "各自で準備してください。 - Silakan masing-masing mempersiapkan diri.", type: "各自", details: "Materi No. 28 (Hari 4)" },
+            { id: 51, week: 1, day: 4, kanji: "各国", furigana: "かっこく", meaning: "Setiap negara", example: "各国から人が集まりました。 - Orang-orang berkumpul dari berbagai negara.", type: "各国", details: "Materi No. 28 (Hari 4)" },
+            { id: 52, week: 1, day: 4, kanji: "目次", furigana: "もくじ", meaning: "Daftar isi", example: "目次を見てください。 - Silakan lihat daftar isinya.", type: "目次", details: "Materi No. 29 (Hari 4)" },
+            { id: 53, week: 1, day: 4, kanji: "次", furigana: "つぎ", meaning: "Berikutnya / Selanjutnya", example: "次の駅で降ります。 - Saya turun di stasiun berikutnya.", type: "次", details: "Materi No. 29 (Hari 4)" },
+            { id: 54, week: 1, day: 4, kanji: "次回", furigana: "じかい", meaning: "Kesempatan berikutnya", example: "次回また会いましょう。 - Mari bertemu lagi lain kali.", type: "次回", details: "Materi No. 29 (Hari 4)" },
+            { id: 55, week: 1, day: 4, kanji: "快速", furigana: "かいそく", meaning: "Kereta cepat", example: "快速電車に乗ります。 - Naik kereta cepat.", type: "快速", details: "Materi No. 30 (Hari 4)" },
+            { id: 56, week: 1, day: 4, kanji: "高速道路", furigana: "こうそくどうろ", meaning: "Jalan tol", example: "高速道路を利用します。 - Menggunakan jalan tol.", type: "高速道路", details: "Materi No. 30 (Hari 4)" },
+            { id: 57, week: 1, day: 4, kanji: "速い", furigana: "はやい", meaning: "Cepat", example: "この電車は速いです。 - Kereta ini cepat.", type: "速い", details: "Materi No. 30 (Hari 4)" },
+            { id: 58, week: 1, day: 4, kanji: "速度", furigana: "そくど", meaning: "Kecepatan", example: "速度を守ってください。 - Tolong patuhi batas kecepatan.", type: "速度", details: "Materi No. 30 (Hari 4)" },
+            { id: 59, week: 1, day: 4, kanji: "通過", furigana: "つうか", meaning: "Melewati", example: "この電車は駅を通過します。 - Kereta ini melewati stasiun.", type: "通過", details: "Materi No. 31 (Hari 4)" },
+            { id: 60, week: 1, day: 4, kanji: "過ぎる", furigana: "すぎる", meaning: "Melewati / Terlalu", example: "駅を過ぎてしまいました。 - Saya sudah melewati stasiunnya.", type: "過ぎる", details: "Materi No. 31 (Hari 4)" },
+            { id: 61, week: 1, day: 4, kanji: "過去", furigana: "かこ", meaning: "Masa lalu", example: "過去を振り返ります。 - Menoleh kembali ke masa lalu.", type: "過去", details: "Materi No. 31 (Hari 4)" },
+            { id: 62, week: 1, day: 4, kanji: "地下鉄", furigana: "ちかてつ", meaning: "Kereta bawah tanah / MRT", example: "地下鉄で会社へ行きます。 - Saya pergi ke kantor dengan kereta bawah tanah.", type: "地下鉄", details: "Materi No. 32 (Hari 4)" },
+            { id: 63, week: 1, day: 4, kanji: "鉄", furigana: "てつ", meaning: "Besi", example: "この橋は鉄でできています。 - Jembatan ini terbuat dari besi.", type: "鉄", details: "Materi No. 32 (Hari 4)" },
+            { id: 64, week: 1, day: 4, kanji: "鉄道", furigana: "てつどう", meaning: "Jalur kereta api / Perkeretaapian", example: "日本の鉄道はとても便利です。 - Jalur kereta api di Jepang sangat praktis.", type: "鉄道", details: "Materi No. 32 (Hari 4)" },
+            
+            // === MATERI HARI 5 ===
+            { id: 65, week: 1, day: 5, kanji: "指定", furigana: "してい", meaning: "Penunjukan / Penetapan", example: "指定された場所へ行ってください。 - Silakan pergi ke tempat yang telah ditentukan.", type: "指定", details: "Materi No. 33 (Hari 5)" },
+            { id: 66, week: 1, day: 5, kanji: "指", furigana: "ゆび", meaning: "Jari", example: "指をけがしました。 - Saya melukai jari saya.", type: "指", details: "Materi No. 33 (Hari 5)" },
+            { id: 67, week: 1, day: 5, kanji: "指定席", furigana: "指定席", meaning: "Kursi reservasi", example: "指定席を予約しました。 - Saya memesan kursi reservasi.", type: "指定席", details: "Materi No. 33 (Hari 5)" },
+            { id: 68, week: 1, day: 5, kanji: "指輪", furigana: "ゆびわ", meaning: "Cincin", example: "きれいな指輪ですね。 - Cincinnya indah ya.", type: "指輪", details: "Materi No. 33 (Hari 5)" },
+            { id: 69, week: 1, day: 5, kanji: "定休日", furigana: "ていきゅうび", meaning: "Hari libur tetap", example: "今日は定休日です。 - Hari ini adalah hari libur tetap.", type: "定休日", details: "Materi No. 34 (Hari 5)" },
+            { id: 70, week: 1, day: 5, kanji: "安定", furigana: "あんてい", meaning: "Stabil", example: "仕事が安定しています。 - Pekerjaannya stabil.", type: "安定", details: "Materi No. 34 (Hari 5)" },
+            { id: 71, week: 1, day: 5, kanji: "席", furigana: "せき", meaning: "Kursi / Tempat duduk", example: "席に座ってください。 - Silakan duduk di kursi.", type: "席", details: "Materi No. 35 (Hari 5)" },
+            { id: 72, week: 1, day: 5, kanji: "出席", furigana: "しゅっせき", meaning: "Hadir", example: "会議に出席します。 - Saya menghadiri rapat.", type: "出席", details: "Materi No. 35 (Hari 5)" },
+            { id: 73, week: 1, day: 5, kanji: "欠席", furigana: "けっせき", meaning: "Tidak hadir", example: "今日は学校を欠席しました。 - Hari ini saya tidak masuk sekolah.", type: "欠席", details: "Materi No. 35 (Hari 5)" },
+            { id: 74, week: 1, day: 5, kanji: "自由", furigana: "じゆう", meaning: "Bebas", example: "自由に使ってください。 - Silakan gunakan dengan bebas.", type: "自由", details: "Materi No. 36 (Hari 5)" },
+            { id: 75, week: 1, day: 5, kanji: "理由", furigana: "りゆう", meaning: "Alasan", example: "理由を教えてください。 - Tolong beritahu alasannya.", type: "理由", details: "Materi No. 36 (Hari 5)" },
+            { id: 76, week: 1, day: 5, kanji: "自由席", furigana: "じゆうせき", meaning: "Kursi bebas (tanpa reservasi)", example: "自由席に座ります。 - Saya duduk di kursi bebas.", type: "自由席", details: "Materi No. 36 (Hari 5)" },
+            { id: 77, week: 1, day: 5, kanji: "番号", furigana: "ばんごう", meaning: "Nomor", example: "番号を書いてください。 - Tolong tuliskan nomornya.", type: "番号", details: "Materi No. 37 (Hari 5)" },
+            { id: 78, week: 1, day: 5, kanji: "～番", furigana: "～ばん", meaning: "Nomor ~", example: "私は一番です。 - Saya nomor satu.", type: "～番", details: "Materi No. 37 (Hari 5)" },
+            { id: 79, week: 1, day: 5, kanji: "窓", furigana: "まど", meaning: "Jendela", example: "窓を開けてください。 - Tolong buka jendelanya.", type: "窓", details: "Materi No. 38 (Hari 5)" },
+            { id: 80, week: 1, day: 5, kanji: "窓口", furigana: "まどぐち", meaning: "Loket", example: "窓口で切符を買います。 - Saya membeli tiket di loket.", type: "窓口", details: "Materi No. 38 (Hari 5)" },
+            { id: 81, week: 1, day: 5, kanji: "両側", furigana: "りょうがわ", meaning: "Kedua sisi", example: "道路の両側に木があります。 - Ada pohon di kedua sisi jalan.", type: "両側", details: "Materi No. 39 (Hari 5)" },
+            { id: 82, week: 1, day: 5, kanji: "窓側", furigana: "まどがわ", meaning: "Sisi jendela", example: "窓側の席をお願いします。 - Saya ingin kursi di sisi jendela.", type: "窓側", details: "Materi No. 39 (Hari 5)" },
+            { id: 83, week: 1, day: 5, kanji: "右側", furigana: "みぎがわ", meaning: "Sisi kanan", example: "右側に立ってください。 - Tolong berdiri di sisi kanan.", type: "右側", details: "Materi No. 39 (Hari 5)" },
+            { id: 84, week: 1, day: 5, kanji: "通路", furigana: "つうろ", meaning: "Lorong / Jalur", example: "通路をふさがないでください。 - Tolong jangan menghalangi lorong.", type: "通路", details: "Materi No. 40 (Hari 5)" },
+            { id: 85, week: 1, day: 5, kanji: "線路", furigana: "せんろ", meaning: "Rel kereta api", example: "線路に入らないでください。 - Tolong jangan masuk ke rel kereta.", type: "線路", details: "Materi No. 40 (Hari 5)" },
+            { id: 86, week: 1, day: 5, kanji: "道路", furigana: "どうろ", meaning: "Jalan", example: "道路を渡るときは気をつけてください。 - Tolong berhati-hati saat menyeberang jalan.", type: "道路", details: "Materi No. 41 (Hari 5)" },
+            
+            // === MATERI HARI 6 ===
+            { id: 87, week: 1, day: 6, kanji: "停車", furigana: "ていしゃ", meaning: "Berhenti (kendaraan)", example: "電車が駅に停車します。 - Kereta berhenti di stasiun.", type: "停車", details: "Materi No. 42 (Hari 6)" },
+            { id: 88, week: 1, day: 6, kanji: "バス停", furigana: "バスてい", meaning: "Halte bus", example: "バス停で待っています。 - Saya sedang menunggu di halte bus.", type: "バス停", details: "Materi No. 42 (Hari 6)" },
+            { id: 89, week: 1, day: 6, kanji: "整理", furigana: "せいり", meaning: "Mengatur / Merapikan", example: "部屋を整理します。 - Saya merapikan kamar.", type: "整理", details: "Materi No. 43 (Hari 6)" },
+            { id: 90, week: 1, day: 6, kanji: "整理券", furigana: "せいりけん", meaning: "Tiket bernomor / Tiket antrean", example: "整理券を取ってください。 - Silakan ambil tiket antrean.", type: "整理券", details: "Materi No. 43 (Hari 6)" },
+            { id: 91, week: 1, day: 6, kanji: "駐車券", furigana: "ちゅうしゃけん", meaning: "Tiket parkir", example: "駐車券をなくしました。 - Saya kehilangan tiket parkir.", type: "駐車券", details: "Materi No. 44 (Hari 6)" },
+            { id: 92, week: 1, day: 6, kanji: "回数券", furigana: "かいすうけん", meaning: "Tiket terusan", example: "回数券を買いました。 - Saya membeli tiket terusan.", type: "回数券", details: "Materi No. 44 (Hari 6)" },
+            { id: 93, week: 1, day: 6, kanji: "乗車券", furigana: "じょうしゃけん", meaning: "Tiket naik kendaraan", example: "乗車券を見せてください。 - Tolong tunjukkan tiket Anda.", type: "乗車券", details: "Materi No. 44 (Hari 6)" },
+            { id: 94, week: 1, day: 6, kanji: "現金", furigana: "げんきん", meaning: "Uang tunai", example: "現金で払います。 - Saya membayar dengan uang tunai.", type: "現金", details: "Materi No. 45 (Hari 6)" },
+            { id: 95, week: 1, day: 6, kanji: "現れる", furigana: "あらわれる", meaning: "Muncul", example: "虹が現れました。 - Pelangi muncul.", type: "現れる", details: "Materi No. 45 (Hari 6)" },
+            { id: 96, week: 1, day: 6, kanji: "表現", furigana: "ひょうげん", meaning: "Ekspresi", example: "日本語の表現を勉強します。 - Saya belajar ekspresi bahasa Jepang.", type: "表現", details: "Materi No. 45 (Hari 6)" },
+            { id: 97, week: 1, day: 6, kanji: "両親", furigana: "りょうしん", meaning: "Orang tua", example: "両親に電話しました。 - Saya menelepon orang tua saya.", type: "両親", details: "Materi No. 46 (Hari 6)" },
+            { id: 98, week: 1, day: 6, kanji: "～両", furigana: "～りょう", meaning: "Gerbong (kendaraan)", example: "八両編成です。 - Terdiri dari delapan gerbong.", type: "～両", details: "Materi No. 46 (Hari 6)" },
+            { id: 99, week: 1, day: 6, kanji: "取り替える", furigana: "とりかえる", meaning: "Menukar / Mengganti", example: "新しい電池に取り替えます。 - Saya mengganti dengan baterai baru.", type: "取り替える", details: "Materi No. 47 (Hari 6)" },
+            { id: 100, week: 1, day: 6, kanji: "着替える", furigana: "きがえる", meaning: "Berganti pakaian", example: "服を着替えます。 - Saya berganti pakaian.", type: "着替える", details: "Materi No. 47 (Hari 6)" },
+            { id: 101, week: 1, day: 6, kanji: "両替", furigana: "りょうがえ", meaning: "Menukar uang", example: "お金を両替します。 - Saya menukar uang.", type: "両替", details: "Materi No. 47 (Hari 6)" },
+            { id: 102, week: 1, day: 6, kanji: "優先席", furigana: "ゆうせんせき", meaning: "Kursi prioritas", example: "優先席では携帯電話を切ってください。 - Tolong matikan ponsel di kursi prioritas.", type: "優先席", details: "Materi No. 48 (Hari 6)" },
+            { id: 103, week: 1, day: 6, kanji: "優しい", furigana: "やさしい", meaning: "Baik hati / Ramah", example: "先生はとても優しいです。 - Guru itu sangat baik.", type: "優しい", details: "Materi No. 48 (Hari 6)" },
+            { id: 104, week: 1, day: 6, kanji: "女優", furigana: "じょゆう", meaning: "Aktris", example: "彼女は有名な女優です。 - Dia adalah aktris terkenal.", type: "女優", details: "Materi No. 48 (Hari 6)" },
+            { id: 105, week: 1, day: 6, kanji: "座席", furigana: "ざせき", meaning: "Tempat duduk", example: "座席を予約しました。 - Saya memesan tempat duduk.", type: "座席", details: "Materi No. 49 (Hari 6)" },
+            { id: 106, week: 1, day: 6, kanji: "座る", furigana: "すわる", meaning: "Duduk", example: "ここに座ってください。 - Silakan duduk di sini.", type: "座る", details: "Materi No. 49 (Hari 6)" },
+            { id: 107, week: 1, day: 6, kanji: "正座", furigana: "せいざ", meaning: "Duduk bersimpuh", example: "日本では正座をすることがあります。 - Di Jepang kadang duduk bersimpuh.", type: "正座", details: "Materi No. 49 (Hari 6)" },
+            { id: 108, week: 1, day: 6, kanji: "降車口", furigana: "こうしゃぐち", meaning: "Pintu keluar kendaraan", example: "降車口はこちらです。 - Pintu keluar ada di sini.", type: "降車口", details: "Materi No. 50 (Hari 6)" },
+            { id: 109, week: 1, day: 6, kanji: "降りる", furigana: "おりる", meaning: "Turun (kendaraan)", example: "次の駅で降ります。 - Saya turun di stasiun berikutnya.", type: "降りる", details: "Materi No. 50 (Hari 6)" },
+            { id: 110, week: 1, day: 6, kanji: "以降", furigana: "いこう", meaning: "Sejak / Setelah itu", example: "午後六時以降に来てください。 - Tolong datang setelah pukul enam sore.", type: "以降", details: "Materi No. 51 (Hari 6)" },
+            { id: 111, week: 1, day: 6, kanji: "降る", furigana: "ふる", meaning: "Turun (hujan/salju)", example: "今日は雨が降っています。 - Hari ini sedang turun hujan.", type: "降る", details: "Materi No. 51 (Hari 6)" },
+
+            // === MATERI HARI 7 ===
+            { id: 112, week: 1, day: 7, kanji: "未定", furigana: "みてい", meaning: "Belum ditentukan", example: "予定は未定です。 - Jadwalnya belum ditentukan.", type: "未定", details: "Materi No. 54 (Hari 7)" },
+            { id: 113, week: 1, day: 7, kanji: "未来", furigana: "みらい", meaning: "Masa depan", example: "未来について考えます。 - Saya memikirkan masa depan.", type: "未来", details: "Materi No. 54 (Hari 7)" },
+            { id: 114, week: 1, day: 7, kanji: "未満", furigana: "みまん", meaning: "Kurang dari", example: "十八歳未満は入れません。 - Yang berusia di bawah 18 tahun tidak boleh masuk.", type: "未満", details: "Materi No. 54 (Hari 7)" },
+            { id: 115, week: 1, day: 7, kanji: "週末", furigana: "しゅうまつ", meaning: "Akhir pekan", example: "週末に旅行します。 - Saya akan bepergian pada akhir pekan.", type: "週末", details: "Materi No. 55 (Hari 7)" },
+            { id: 116, week: 1, day: 7, kanji: "年末", furigana: "ねんまつ", meaning: "Akhir tahun", example: "年末は忙しいです。 - Akhir tahun sangat sibuk.", type: "年末", details: "Materi No. 55 (Hari 7)" },
+            { id: 117, week: 1, day: 7, kanji: "月末", furigana: "げつまつ", meaning: "Akhir bulan", example: "月末までに提出してください。 - Tolong kumpulkan sebelum akhir bulan.", type: "月末", details: "Materi No. 55 (Hari 7)" },
+            { id: 118, week: 1, day: 7, kanji: "若い", furigana: "わかい", meaning: "Muda", example: "彼はまだ若いです。 - Dia masih muda.", type: "若い", details: "Materi No. 56 (Hari 7)" },
+            { id: 119, week: 1, day: 7, kanji: "晩", furigana: "ばん", meaning: "Malam", example: "晩に電話します。 - Saya akan menelepon malam nanti.", type: "晩", details: "Materi No. 57 (Hari 7)" },
+            { id: 120, week: 1, day: 7, kanji: "晩ご飯", furigana: "ばんごはん", meaning: "Makan malam", example: "晩ご飯を食べましょう。 - Mari makan malam.", type: "晩ご飯", details: "Materi No. 57 (Hari 7)" },
+            { id: 121, week: 1, day: 7, kanji: "今晩", furigana: "こんばん", meaning: "Malam ini", example: "今晩は早く寝ます。 - Malam ini saya akan tidur lebih awal.", type: "今晩", details: "Materi No. 57 (Hari 7)" },
+            { id: 122, week: 1, day: 7, kanji: "毎晩", furigana: "まいばん", meaning: "Setiap malam", example: "毎晩本を読みます。 - Saya membaca buku setiap malam.", type: "毎晩", details: "Materi No. 57 (Hari 7)" },
+            { id: 123, week: 1, day: 7, kanji: "～島", furigana: "～とう", meaning: "Pulau ~", example: "北海道は日本の大きな島です。 - Hokkaido adalah pulau besar di Jepang.", type: "～島", details: "Materi No. 58 (Hari 7)" },
+            { id: 124, week: 1, day: 7, kanji: "島", furigana: "しま", meaning: "Pulau", example: "あの島へ行きたいです。 - Saya ingin pergi ke pulau itu.", type: "島", details: "Materi No. 58 (Hari 7)" },
+            { id: 125, week: 1, day: 7, kanji: "皿", furigana: "さら", meaning: "Piring", example: "皿を洗います。 - Saya mencuci piring.", type: "皿", details: "Materi No. 59 (Hari 7)" },
+            { id: 126, week: 1, day: 7, kanji: "灰皿", furigana: "はいざら", meaning: "Asbak", example: "灰皿を使ってください。 - Silakan gunakan asbak.", type: "灰皿", details: "Materi No. 59 (Hari 7)" },
+            { id: 127, week: 1, day: 7, kanji: "出血", furigana: "しゅっけつ", meaning: "Pendarahan", example: "出血が止まりません。 - Pendarahannya tidak berhenti.", type: "出血", details: "Materi No. 60 (Hari 7)" },
+            { id: 128, week: 1, day: 7, kanji: "血", furigana: "ち", meaning: "Darah", example: "血が出ています。 - Darahnya keluar.", type: "血", details: "Materi No. 60 (Hari 7)" },
+            { id: 129, week: 1, day: 7, kanji: "救助", furigana: "きゅうじょ", meaning: "Penyelamatan", example: "救助隊が到着しました。 - Tim penyelamat telah tiba.", type: "救助", details: "Materi No. 61 (Hari 7)" },
+            { id: 130, week: 1, day: 7, kanji: "助ける", furigana: "たすける", meaning: "Menolong", example: "困っている人を助けます。 - Saya menolong orang yang sedang kesulitan.", type: "助ける", details: "Materi No. 61 (Hari 7)" }
+        ];
+
+        // Soal Kuis Khusus Week 1 (Hari 1 s.d. Hari 7)
+        const QUIZ_QUESTIONS_W1 = [
+            // --- Kumpulan Soal Hari 1 (Day 1) ---
+            { week: 1, day: 1, section: "Hari 1 - Bagian I", question: "満車：...", options: ["a. 車を止める所がいっぱいだ (Parkir penuh)", "b. 車を止める所があいている (Parkir kosong)"], correctIndex: 0, explanation: "Jawaban benar adalah <b>a. いっぱいだ</b>. Kanji '満車' (mansha) merujuk pada area parkir yang tidak lagi menyisakan tempat kosong." },
+            { week: 1, day: 1, section: "Hari 1 - Bagian I", question: "禁止：...", options: ["a. 何かをしてもいい (Boleh dilakukan)", "b. 何かをしてはいけない (Dilarang dilakukan)"], correctIndex: 1, explanation: "Jawaban benar adalah <b>b. してはいけない</b>. Kanji '禁止' (kinshi) artinya sesuatu dilarang keras berdasarkan aturan." },
+            { week: 1, day: 1, section: "Hari 1 - Bagian I", question: "無料：...", options: ["a. 代金がいる (Butuh biaya)", "b. 代金がいらない (Gratis/Tanpa biaya)"], correctIndex: 1, explanation: "Jawaban benar adalah <b>b. いらない</b>. Kanji '無料' (muryou) berarti tidak membutuhkan pembayaran sama sekali." },
+            { week: 1, day: 1, section: "Hari 1 - Bagian I", question: "断水：...", options: ["a. 水道が使えなくなる (Aliran air mati)", "b. 水を飲んではいけない (Dilarang minum air)"], correctIndex: 0, explanation: "Jawaban benar adalah <b>a. 水道が使えなくなる</b>. '断水' (dansui) menghentikan sementara suplai air keran." },
+            { week: 1, day: 1, section: "Hari 1 - Bagian I", question: "無断：...", options: ["a. 許可がいらない (Tidak butuh izin)", "b. 許可をもらわない (Tanpa meminta izin)"], correctIndex: 1, explanation: "Jawaban benar adalah <b>b. 許可をもらわない</b>. '無断' (mudan) berarti melakukan perbuatan tanpa memohon restu terlebih dahulu." },
+            { week: 1, day: 1, section: "Hari 1 - Bagian I", question: "不満：...", options: ["a. 満足していない (Tidak merasa puas)", "b. いっぱいではない (Tidak penuh)"], correctIndex: 0, explanation: "Jawaban benar adalah <b>a. 満足していない</b>. '不満' (fuman) mengekspresikan kekecewaan atau rasa ketidakpuasan." },
+            { week: 1, day: 1, section: "Hari 1 - Bagian I", question: "日本文化に...", options: ["a. 関心がある (Tertarik pada budaya)", "b. 方向がある (Memiliki arah)"], correctIndex: 0, explanation: "Jawaban benar adalah <b>a. 関心がある</b>. '関心' (kanshin) menyatakan memiliki minat atau perhatian lebih terhadap suatu hal." },
+            { week: 1, day: 1, section: "Hari 1 - Bagian I", question: "あまり...をしないでください。", options: ["a. 不理 (Penulisan salah)", "b. 無理 (Mustahil/Memaksa diri)"], correctIndex: 1, explanation: "Jawaban benar adalah <b>b. 無理</b>. Kalimat utuh: 'あまり無理をしないでください' yang berarti tolong jangan memaksakan diri secara berlebih." },
+            { week: 1, day: 1, section: "Hari 1 - Bagian II", question: "Pilih cara membaca yang benar untuk Kanji: <b>空車</b>", options: ["1 からしゃ", "2 こうしゃ", "3 あきしゃ", "4 くうしゃ"], correctIndex: 3, explanation: "Jawaban benar adalah <b>4 くうしゃ</b> (kuusha). Berarti taksi atau mobil kosong yang siap mencari penumpang." },
+            { week: 1, day: 1, section: "Hari 1 - Bagian II", question: "Pilih cara membaca yang benar untuk Kanji: <b>お断り</b>", options: ["1 おこまわり", "2 おとこわり", "3 おことわり", "4 おたちわり"], correctIndex: 2, explanation: "Jawaban benar adalah <b>3 おことわり</b> (okotowari). Berarti penolakan atau larangan resmi." },
+            { week: 1, day: 1, section: "Hari 1 - Bagian II", question: "Pilih cara membaca yang benar untuk Kanji: <b>駐車</b>", options: ["1 じゅうしゃ", "2 ちゅうしゃ", "3 じゅうちゃ", "4 ちゅうちゃ"], correctIndex: 1, explanation: "Jawaban benar adalah <b>2 ちゅうしゃ</b> (chuusha), tindakan memarkir kendaraan bermotor." },
+            { week: 1, day: 1, section: "Hari 1 - Bagian II", question: "Pilih cara membaca yang benar untuk Kanji: <b>係の人</b>", options: ["1 けいりのひと", "2 かかりのひと", "3 けいのひと", "4 かけりのひと"], correctIndex: 1, explanation: "Jawaban benar adalah <b>2 かかりのひと</b> (kakari no hito). Orang atau penanggung jawab divisi tugas tertentu." },
+            { week: 1, day: 1, section: "Hari 1 - Bagian III", question: "Pilih tulisan Kanji yang benar untuk kata: <b>むこう</b>", options: ["1 向こう", "2 何こう", "3 同こう", "4 伺こう"], correctIndex: 0, explanation: "Jawaban benar adalah <b>1 向こう</b>. Merujuk pada area yang berada di sebelah seberang atau arah hadapan kita." },
+            { week: 1, day: 1, section: "Hari 1 - Bagian III", question: "Pilih tulisan Kanji yang benar untuk kata: <b>むきゅう</b>", options: ["1 未休", "2 不休", "3 無休", "4 末休"], correctIndex: 2, explanation: "Jawaban benar adalah <b>3 無休</b> (mukyuu), beroperasi tiada hari libur." },
+            { week: 1, day: 1, section: "Hari 1 - Bagian III", question: "Pilih tulisan Kanji yang benar untuk kata: <b>かんけい</b>", options: ["1 門係", "2 間係", "3 問係", "4 関係"], correctIndex: 3, explanation: "Jawaban benar adalah <b>4 関係</b> (kankei), memiliki keterkaitan atau hubungan sistemis." },
+            { week: 1, day: 1, section: "Hari 1 - Bagian III", question: "Pilih tulisan Kanji yang benar untuk kata: <b>ない</b>", options: ["1 禁い", "2 不い", "3 外い", "4 無い"], correctIndex: 3, explanation: "Jawaban benar adalah <b>4 無い</b> (nai), menandakan ketiadaan suatu benda fisik atau abstrak." },
+
+            // --- Kumpulan Soal Hari 2 (Day 2) ---
+            { week: 1, day: 2, section: "Hari 2 - Bagian I", question: "送信：...", options: ["a. 送る (Mengirim)", "b. 信じる (Percaya)"], correctIndex: 0, explanation: "Jawaban benar adalah <b>a. 送る</b>. '送信' (soushin) memiliki fungsi utama mentransmisi dokumen atau data." },
+            { week: 1, day: 2, section: "Hari 2 - Bagian I", question: "横断：...", options: ["a. わたる (Menyeberang)", "b. ことわる (Menolak)"], correctIndex: 0, explanation: "Jawaban benar adalah <b>a. わたる</b>. '横断' (oudan) berarti melintas dari satu sisi ke sisi jalan seberangnya." },
+            { week: 1, day: 2, section: "Hari 2 - Bagian I", question: "飛行：...", options: ["a. とぶ (Terbang)", "b. いく (Pergi)"], correctIndex: 0, explanation: "Jawaban benar adalah <b>a. とぶ</b>. Kanji '飛行' (hikou) berasosiasi langsung pada aktivitas melayang tinggi di awan." },
+            { week: 1, day: 2, section: "Hari 2 - Bagian I", question: "つぎの...を右にまがる。", options: ["a. 信号 (Lampu lalu lintas)", "b. 号車 (Nomor gerbong)"], correctIndex: 0, explanation: "Jawaban benar adalah <b>a. 信号</b> (shingou). '次の信号を右に曲がる' artinya adalah berbelok kanan di lampu lalu lintas berikutnya." },
+            { week: 1, day: 2, section: "Hari 2 - Bagian I", question: "...に物をしまう。", options: ["a. 飛び出し (Melompat keluar)", "b. 押し入れ (Lemari dinding)"], correctIndex: 1, explanation: "Jawaban benar adalah <b>b. 押し入れ</b> (oshiire). Lemari fungsional geser khas rumah tradisional Jepang." },
+            { week: 1, day: 2, section: "Hari 2 - Bagian I", question: "...を持ってスピーチをする。", options: ["a. 自信 (Percaya diri)", "b. 信用 (Kepercayaan)"], correctIndex: 0, explanation: "Jawaban benar adalah <b>a. 自信</b> (jishin). '自信を持って' berarti berpidato dengan memegang rasa kepercayaan pada potensi diri." },
+            { week: 1, day: 2, section: "Hari 2 - Bagian I", question: "...を向く。", options: ["a. 横 (Samping/Sebelah)", "b. 式 (Upacara)"], correctIndex: 0, explanation: "Jawaban benar adalah <b>a. 横</b> (yoko). Kalimat '横を向く' mengarahkan wajah ke sisi lateral samping kiri atau kanan." },
+            { week: 1, day: 2, section: "Hari 2 - Bagian I", question: "安全を...する。", options: ["a. 正確 (Akurat)", "b. 確認 (Mengonfirmasi/Memastikan)"], correctIndex: 1, explanation: "Jawaban benar adalah <b>b. 確認</b> (kakunin). Melakukan pengecekan menyeluruh demi validasi jaminan keamanan." },
+            { week: 1, day: 2, section: "Hari 2 - Bagian II", question: "Pilih cara membaca yang benar untuk Kanji: <b>認める</b>", options: ["1 みとめる", "2 もとめる", "3 まとめる", "4 かためる"], correctIndex: 0, explanation: "Jawaban benar adalah <b>1 みとめる</b> (mitomeru), memberikan persetujuan, pembenaran, atau pengakuan." },
+            { week: 1, day: 2, section: "Hari 2 - Bagian II", question: "Pilih cara membaca yang benar untuk Kanji: <b>確かめる</b>", options: ["1 たしかめる", "2 はちかめる", "3 たちかめる", "4 はしかめる"], correctIndex: 0, explanation: "Jawaban benar adalah <b>1 たしかめる</b> (tashikameru). Proses memeriksa kembali kebenaran suatu informasi." },
+            { week: 1, day: 2, section: "Hari 2 - Bagian II", question: "Pilih cara membaca yang benar untuk Kanji: <b>左右</b>", options: ["1 そう", "2 そゆう", "3 さう", "4 さゆう"], correctIndex: 3, explanation: "Jawaban benar adalah <b>4 さゆう</b> (sayuu), kombinasi literal kata kiri (左) dan kanan (右)." },
+            { week: 1, day: 2, section: "Hari 2 - Bagian II", question: "Pilih cara membaca yang benar untuk Kanji: <b>横断</b>", options: ["1 こうだん", "2 おうだん", "3 ぼうだん", "4 ゆうだん"], correctIndex: 1, explanation: "Jawaban benar adalah <b>2 おうだん</b> (oudan). Berarti menyeberang atau menembus arah melintang." },
+            { week: 1, day: 2, section: "Hari 2 - Bagian III", question: "Pilih tulisan Kanji yang benar untuk kata: <b>おす</b>", options: ["1 押す", "2 神す", "3 伸す", "4 理す"], correctIndex: 0, explanation: "Jawaban benar adalah <b>1 押す</b>. Karakter verb fisik yang bermakna mendesak maju atau menekan tombol." },
+            { week: 1, day: 2, section: "Hari 2 - Bagian III", question: "Pilih tulisan Kanji yang benar untuk kata: <b>しんじる</b>", options: ["1 心じる", "2 真じる", "3 信じる", "4 新じる"], correctIndex: 2, explanation: "Jawaban benar adalah <b>3 信じる</b> (shinjiru), menaruh rasa kepercayaan moral penuh pada seseorang." },
+            { week: 1, day: 2, section: "Hari 2 - Bagian III", question: "Pilih tulisan Kanji yang benar untuk kata: <b>とぶ</b>", options: ["1 都ぶ", "2 止ぶ", "3 登ぶ", "4 飛ぶ"], correctIndex: 3, explanation: "Jawaban benar adalah <b>4 飛ぶ</b> (tobu), bergerak melintasi lapisan udara di langit." },
+            { week: 1, day: 2, section: "Hari 2 - Bagian III", question: "Pilih tulisan Kanji yang benar untuk kata: <b>しき</b>", options: ["1 係", "2 式", "3 号", "4 向"], correctIndex: 1, explanation: "Jawaban benar adalah <b>2 式</b> (shiki). Menggambarkan upacara khidmat, prosedur, tipe, atau pemodelan sistem." },
+
+            // --- Kumpulan Soal Hari 3 (Day 3) ---
+            { week: 1, day: 3, section: "Hari 3 - Bagian I", question: "午後は（ ）に風が強くなるでしょう。", options: ["1 無断 (Tanpa izin)", "2 左右 (Kiri kanan)", "3 無理 (Memaksakan)", "4 非常 (Sangat/Amat)"], correctIndex: 3, explanation: "Jawaban benar adalah <b>4 非常</b>. Kalimatnya menjadi: '午後は<b>非常に</b>風が強くなるでしょう' (Di sore hari anginnya akan menjadi sangat kencang)." },
+            { week: 1, day: 3, section: "Hari 3 - Bagian I", question: "日本語の（ ）会話を習っています。", options: ["1 正常 (Normal)", "2 非常 (Luar biasa)", "3 日常 (Sehari-hari)", "4 無常 (Ketidakkekalan)"], correctIndex: 2, explanation: "Jawaban benar adalah <b>3 日常</b>. Kalimatnya menjadi: '日本語の<b>日常</b>会話を習っています' (Saya sedang mempelajari percakapan sehari-hari bahasa Jepang)." },
+            { week: 1, day: 3, section: "Hari 3 - Bagian I", question: "（ ）ですから、押さないでください。", options: ["1 危険 (Bahaya)", "2 満車 (Parkir penuh)", "3 信号 (Isyarat lampu)", "4 確認 (Peninjauan/Konfirmasi)"], correctIndex: 0, explanation: "Jawaban benar adalah <b>1 危険</b>. Kalimatnya menjadi: '<b>危険</b>ですから、押さないでください' (Karena berbahaya, tolong jangan mendorong)." },
+            { week: 1, day: 3, section: "Hari 3 - Bagian II", question: "Pilih cara membaca yang benar untuk kata yang digarisbawahi:<br>ホテルにとまったら、<u>非常口</u>を確かめておきましょう。", options: ["1 いじょうぐち", "2 ふじょうぐち", "3 むじょうぐち", "4 ひじょうぐち"], correctIndex: 3, explanation: "Jawaban benar adalah <b>4 ひじょうぐち</b>. Kanji '非常口' dibaca <i>hijouguchi</i> yang berarti pintu darurat." },
+            { week: 1, day: 3, section: "Hari 3 - Bagian II", question: "Pilih cara membaca yang benar untuk kata yang digarisbawahi:<br>エレベーターを使わずに、<u>階段</u>を使うようにしています。", options: ["1 けいらん", "2 けいだん", "3 かいらん", "4 かいだん"], correctIndex: 3, explanation: "Jawaban benar adalah <b>4 かいだん</b>. Kanji '階段' dibaca <i>kaidan</i> yang berarti tangga." },
+            { week: 1, day: 3, section: "Hari 3 - Bagian II", question: "Pilih cara membaca yang benar untuk kata yang digarisbawahi:<br>その<u>箱</u>の中に何が入っていますか。", options: ["1  ばこ", "2  ほこ", "3  はこ", "4  ぼこ"], correctIndex: 2, explanation: "Jawaban benar adalah <b>3 はこ</b>. Kanji '箱' dibaca <i>hako</i> yang berarti kotak / dus." },
+            { week: 1, day: 3, section: "Hari 3 - Bagian III", question: "Pilih tulisan Kanji yang benar untuk kata yang digarisbawahi:<br><u>あぶない</u>ですから、ここであそばないでください。", options: ["1 険ない", "2 危ない", "3 非ない", "4 注ない"], correctIndex: 1, explanation: "Jawaban benar adalah <b>2 危ない</b>. Kata <i>abunai</i> ditulis dengan karakter '危' menjadi '危ない' (berbahaya)." },
+            { week: 1, day: 3, section: "Hari 3 - Bagian III", question: "Pilih tulisan Kanji yang benar untuk kata yang digarisbawahi:<br>ここにごみを<u>すてない</u>でください。", options: ["1 捨てないで", "2 押さないで", "3 飛んでないで", "4 認めてないで"], correctIndex: 0, explanation: "Jawaban benar adalah <b>1 捨てないで</b>. Kata kerja dasar <i>suteru</i> (membuang) ditulis menggunakan Kanji '捨' menjadi '捨てる' / '捨てないで' (jangan membuang)." },
+
+            // --- Kumpulan Soal Hari 4 (Day 4) ---
+            { week: 1, day: 4, section: "Hari 4 - Bagian I", question: "普通電車:", options: ["1 各駅に止まる", "2 平日に運転する"], correctIndex: 0, explanation: "Jawaban benar adalah <b>1 各駅に止まる</b>. 普通電車 berarti kereta lokal yang berhenti di setiap stasiun." },
+            { week: 1, day: 4, section: "Hari 4 - Bagian I", question: "電車が通過する: その駅に...", options: ["1 止まる", "2 止まらない"], correctIndex: 1, explanation: "Jawaban benar adalah <b>2 止まらない</b>. 通過 berarti melewati stasiun tanpa berhenti." },
+            { week: 1, day: 4, section: "Hari 4 - Bagian I", question: "先発: 先に...", options: ["1 出ること", "2 着くこと"], correctIndex: 0, explanation: "Jawaban benar adalah <b>1 出ること</b>. 先発 berarti berangkat lebih dahulu." },
+            { week: 1, day: 4, section: "Hari 4 - Bagian I", question: "本の...を見る。", options: ["1 次回", "2 目次"], correctIndex: 1, explanation: "Jawaban benar adalah <b>2 目次</b>. 目次 berarti daftar isi." },
+            { week: 1, day: 4, section: "Hari 4 - Bagian I", question: "ノートパソコンの...は大きくない。", options: ["1 全面", "2 画面"], correctIndex: 1, explanation: "Jawaban benar adalah <b>2 画面</b>. 画面 berarti layar." },
+            { week: 1, day: 4, section: "Hari 4 - Bagian I", question: "世界...から人が集まる。", options: ["1 各国", "2 各自"], correctIndex: 0, explanation: "Jawaban benar adalah <b>1 各国</b>. 各国 berarti berbagai negara." },
+            { week: 1, day: 4, section: "Hari 4 - Bagian I", question: "...道路の料金をはらう。", options: ["1 快速", "2 高速"], correctIndex: 1, explanation: "Jawaban benar adalah <b>2 高速</b>. 高速道路 berarti jalan tol." },
+            { week: 1, day: 4, section: "Hari 4 - Bagian I", question: "彼は足が...", options: ["1 早い", "2 速い"], correctIndex: 1, explanation: "Jawaban benar adalah <b>2 速い</b>. 足が速い berarti berlari cepat (kecepatan)." },
+            { week: 1, day: 4, section: "Hari 4 - Bagian II", question: "<u>地下鉄</u>に乗りかえましょう。", options: ["1 ちがてつ", "2 ちかてつ"], correctIndex: 1, explanation: "Jawaban benar adalah <b>2 ちかてつ</b>. 地下鉄 dibaca ちかてつ." },
+            { week: 1, day: 4, section: "Hari 4 - Bagian II", question: "その駅はもう<u>過ぎました</u>よ。", options: ["1 すぎました", "2 つぎました"], correctIndex: 0, explanation: "Jawaban benar adalah <b>1 すぎました</b>. 過ぎました dibacaすぎました." },
+            { week: 1, day: 4, section: "Hari 4 - Bagian II", question: "<u>過去</u>のことは考えない。", options: ["1 かこ", "2 かきょ"], correctIndex: 0, explanation: "Jawaban benar adalah <b>1 かこ</b>. 過去 dibaca かこ." },
+            { week: 1, day: 4, section: "Hari 4 - Bagian II", question: "上り<u>方面</u>、電車がまいります。", options: ["1 かためん", "2 ほうめん"], correctIndex: 1, explanation: "Jawaban benar adalah <b>2 ほうめん</b>. 方面 dibaca ほうめん." },
+            { week: 1, day: 4, section: "Hari 4 - Bagian III", question: "<u>かいそく</u>はこの駅には止まりません。", options: ["1 快速", "2 特急"], correctIndex: 0, explanation: "Jawaban benar adalah <b>1 快速</b>. かいそく ditulis 快速." },
+            { week: 1, day: 4, section: "Hari 4 - Bagian III", question: "この駅ではタバコは<u>ぜんめん</u>禁止です。", options: ["1 前面", "2 全面"], correctIndex: 1, explanation: "Jawaban benar adalah <b>2 全面</b>. ぜんめん ditulis 全面." },
+            { week: 1, day: 4, section: "Hari 4 - Bagian III", question: "<u>つぎ</u>は東京、東京です。", options: ["1 次", "2 先"], correctIndex: 0, explanation: "Jawaban benar adalah <b>1 次</b>. つぎ ditulis 次." },
+            { week: 1, day: 4, section: "Hari 4 - Bagian III", question: "<u>ふつう</u>のきっぷと特急券を買う。", options: ["1 不通", "2 普通"], correctIndex: 1, explanation: "Jawaban benar adalah <b>2 普通</b>. ふつう ditulis 普通." },
+
+            // --- Kumpulan Soal Hari 5 (Day 5) ---
+            { week: 1, day: 5, section: "Hari 5 - Bagian I", question: "外が見えるように...に座る。", options: ["1 窓側", "2 通路側"], correctIndex: 0, explanation: "Jawaban benar adalah <b>1 窓側</b>. 窓側 berarti sisi jendela." },
+            { week: 1, day: 5, section: "Hari 5 - Bagian I", question: "この電車は全席...です。", options: ["1 安定", "2 指定"], correctIndex: 1, explanation: "Jawaban benar adalah <b>2 指定</b>. 全席指定 berarti semua kursi merupakan kursi reservasi." },
+            { week: 1, day: 5, section: "Hari 5 - Bagian I", question: "下り電車は...です。", options: ["1 2番線", "2 2号車"], correctIndex: 0, explanation: "Jawaban benar adalah <b>1 2番線</b>. 番線 digunakan untuk jalur kereta / peron." },
+            { week: 1, day: 5, section: "Hari 5 - Bagian I", question: "この店 is 年中...です。", options: ["1 無休", "2 定休"], correctIndex: 0, explanation: "Jawaban benar adalah <b>1 無休</b>. 年中無休 berarti buka sepanjang tahun tanpa hari libur." },
+            { week: 1, day: 5, section: "Hari 5 - Bagian I", question: "欠席の...を書く。", options: ["1 自由", "2 理由"], correctIndex: 1, explanation: "Jawaban benar adalah <b>2 理由</b>. 理由 berarti alasan." },
+            { week: 1, day: 5, section: "Hari 5 - Bagian I", question: "...を開ける。", options: ["1 席", "2 窓"], correctIndex: 1, explanation: "Jawaban benar adalah <b>2 窓</b>. Membuka jendela menggunakan Kanji 窓." },
+            { week: 1, day: 5, section: "Hari 5 - Bagian I", question: "電話...を教える。", options: ["1 番号", "2 信号"], correctIndex: 0, explanation: "Jawaban benar adalah <b>1 番号</b>. 電話番号 berarti nomor telepon." },
+            { week: 1, day: 5, section: "Hari 5 - Bagian I", question: "高速...を車で走る。", options: ["1 道路", "2 通路"], correctIndex: 0, explanation: "Jawaban benar adalah <b>1 道路</b>. 高速道路 berarti jalan tol." },
+            { week: 1, day: 5, section: "Hari 5 - Bagian II", question: "パーティーに<u>出席</u>する。", options: ["1 しゅっせき", "2 しゅせき"], correctIndex: 0, explanation: "Jawaban benar adalah <b>1 しゅっせき</b>. 出席 dibaca しゅっせき." },
+            { week: 1, day: 5, section: "Hari 5 - Bagian II", question: "細くて長い<u>指</u>。", options: ["1 ゆみ", "2 ゆび"], correctIndex: 1, explanation: "Jawaban benar adalah <b>2 ゆび</b>. 指 dibaca ゆび." },
+            { week: 1, day: 5, section: "Hari 5 - Bagian II", question: "<u>自由席</u>のきっぷを買う。", options: ["1 じゅうゆせき", "2 じゆうせき"], correctIndex: 1, explanation: "Jawaban benar adalah <b>2 じゆうせき</b>. 自由席 dibaca じゆうせき." },
+            { week: 1, day: 5, section: "Hari 5 - Bagian II", question: "道の<u>両側</u>に店がならんでいる。", options: ["1 りょうがわ", "2 りょうかわ"], correctIndex: 0, explanation: "Jawaban benar adalah <b>1 りょうがわ</b>. 両側 dibaca りょうがわ." },
+            { week: 1, day: 5, section: "Hari 5 - Bagian II", question: "ここは<u>指定席</u>です。", options: ["1 ちていせき", "2 していせき"], correctIndex: 1, explanation: "Jawaban benar adalah <b>2 していせき</b>. 指定席 dibaca していせき." },
+            { week: 1, day: 5, section: "Hari 5 - Bagian II", question: "田中さんは<u>欠席</u>です。", options: ["1 けっせき", "2 くうせき"], correctIndex: 0, explanation: "Jawaban benar adalah <b>1 けっせき</b>. 欠席 dibaca けっせき." },
+            { week: 1, day: 5, section: "Hari 5 - Bagian III", question: "今日の天気は<u>ふ不安てい</u>だ。", options: ["1 非安定", "2 不安定"], correctIndex: 1, explanation: "Jawaban benar adalah <b>2 不安定</b>. ふあんてい ditulis 不安定." },
+            { week: 1, day: 5, section: "Hari 5 - Bagian III", question: "<u>つうろ</u>に物をおかないでください。", options: ["1 通路", "2 線路"], correctIndex: 0, explanation: "Jawaban benar adalah <b>1 通路</b>. つうろ ditulis 通路." },
+
+            // --- Kumpulan Soal Hari 6 (Day 6) ---
+            { week: 1, day: 6, section: "Hari 6 - Bagian I", question: "お年寄りや体の不自由な人のための席:", options: ["1 優先席", "2 指定席"], correctIndex: 0, explanation: "Jawaban benar adalah <b>1 優先席</b>. 優先席 adalah kursi prioritas." },
+            { week: 1, day: 6, section: "Hari 6 - Bagian I", question: "バスが止まるところ:", options: ["1 降車口", "2 バス停"], correctIndex: 1, explanation: "Jawaban benar adalah <b>2 バス停</b>. バス停 berarti halte bus." },
+            { week: 1, day: 6, section: "Hari 6 - Bagian I", question: "円をドルに...する。", options: ["1 両側", "2 両替"], correctIndex: 1, explanation: "Jawaban benar adalah <b>2 両替</b>. 両替 berarti menukar uang." },
+            { week: 1, day: 6, section: "Hari 6 - Bagian I", question: "たたみの部屋で...する。", options: ["1 正座", "2 座席"], correctIndex: 0, explanation: "Jawaban benar adalah <b>1 正座</b>. 正座 berarti duduk bersimpuh ala Jepang." },
+            { week: 1, day: 6, section: "Hari 6 - Bagian I", question: "カードでも...でもいいです。", options: ["1 現金", "2 料金"], correctIndex: 0, explanation: "Jawaban benar adalah <b>1 現金</b>. 現金 berarti uang tunai." },
+            { week: 1, day: 6, section: "Hari 6 - Bagian I", question: "パジャマに...寝る。", options: ["1 着替えて", "2 取り替えて"], correctIndex: 0, explanation: "Jawaban benar adalah <b>1 着替えて</b>. 着替える berarti berganti pakaian." },
+            { week: 1, day: 6, section: "Hari 6 - Bagian I", question: "...をもらって順番を待つ。", options: ["1 回数券", "2 整理券"], correctIndex: 1, explanation: "Jawaban benar adalah <b>2 整理券</b>. 整理券 adalah tiket antrean bernomor." },
+            { week: 1, day: 6, section: "Hari 6 - Bagian I", question: "バスを...", options: ["1 降りる", "2 降る"], correctIndex: 0, explanation: "Jawaban benar adalah <b>1 降りる</b>. バスを降りる berarti turun dari bus." },
+            { week: 1, day: 6, section: "Hari 6 - Bagian II", question: "田中さんが<u>現れた</u>。", options: ["1 あらわれた", "2 あわられた"], correctIndex: 0, explanation: "Jawaban benar adalah <b>1 あらわれた</b>. 現れる dibaca あらわれる." },
+            { week: 1, day: 6, section: "Hari 6 - Bagian II", question: "席に<u>座る</u>。", options: ["1 さわる", "2 すわる"], correctIndex: 1, explanation: "Jawaban benar adalah <b>2 すわる</b>. 座る dibaca すわる." },
+            { week: 1, day: 6, section: "Hari 6 - Bagian II", question: "きれいな<u>女優</u>さん。", options: ["1 じょゆう", "2 じょうゆう"], correctIndex: 0, explanation: "Jawaban benar adalah <b>1 じょゆう</b>. 女優 dibaca じょゆう." },
+            { week: 1, day: 6, section: "Hari 6 - Bagian II", question: "<u>両親</u>に会う。", options: ["1 りょうしん", "2 りゅうしん"], correctIndex: 0, explanation: "Jawaban benar adalah <b>1 りょうしん</b>. 両親 dibaca りょうしん." },
+            { week: 1, day: 6, section: "Hari 6 - Bagian III", question: "各駅<u>ていしゃ</u>", options: ["1 駐車", "2 停車"], correctIndex: 1, explanation: "Jawaban benar adalah <b>2 停車</b>. ていしゃ ditulis 停車." },
+            { week: 1, day: 6, section: "Hari 6 - Bagian III", question: "3時<u>いこう</u>に来てください。", options: ["1 以後", "2 以降"], correctIndex: 1, explanation: "Jawaban benar adalah <b>2 以降</b>. いこう ditulis 以降." },
+            { week: 1, day: 6, section: "Hari 6 - Bagian III", question: "<u>じょうしゃけん</u>を買う。", options: ["1 乗車券", "2 駐車券"], correctIndex: 0, explanation: "Jawaban benar adalah <b>1 乗車券</b>. じょうしゃけん ditulis 乗車券." },
+            { week: 1, day: 6, section: "Hari 6 - Bagian III", question: "あの人は<u>やさしい</u>。", options: ["1 楽しい", "2 優しい"], correctIndex: 1, explanation: "Jawaban benar adalah <b>2 優しい</b>. やさしい ditulis 優しい." },
+
+            // --- Kumpulan Soal Hari 7 (Day 7 - Uji Komprehensif Minggu 1) ---
+            { week: 1, day: 7, section: "Hari 7 - Bagian I", question: "「飛び出し注意」と書いてあります。", options: ["1 よびだしちゅうい", "2 とびだしちゅうい", "3 とびだしじゅうい", "4 よびだしじゅうい"], correctIndex: 1, explanation: "Jawaban benar adalah <b>2 とびだしちゅうい</b>. 飛び出し注意 dibaca とびだしちゅうい." },
+            { week: 1, day: 7, section: "Hari 7 - Bagian I", question: "この時計は<u>正確</u>です。", options: ["1 せいかく", "2 せっかく", "3 しょうかく", "4 しょうがく"], correctIndex: 0, explanation: "Jawaban benar adalah <b>1 せいかく</b>. 正確 dibaca せいかく." },
+            { week: 1, day: 7, section: "Hari 7 - Bagian I", question: "<u>横断歩道</u>をわたりましょう。", options: ["1 こうだん", "2 おうだん", "3 きんだん", "4 そうだん"], correctIndex: 1, explanation: "Jawaban benar adalah <b>2 おうだん</b>. 横断歩道 dibaca おうだんほどう." },
+            { week: 1, day: 7, section: "Hari 7 - Bagian I", question: "このなべは<u>鉄</u>で作られています。", options: ["1 しつ", "2 ねつ", "3 れつ", "4 てつ"], correctIndex: 3, explanation: "Jawaban benar adalah <b>4 てつ</b>. 鉄 dibaca てつ." },
+            { week: 1, day: 7, section: "Hari 7 - Bagian I", question: "<u>優先席</u>ではけいたい電話を使わないでください。", options: ["1 うせん", "2 にゅうせん", "3 ゆうせん", "4 よやく"], correctIndex: 2, explanation: "Jawaban benar adalah <b>3 ゆうせん</b>. 優先席 dibaca ゆうせんせき." },
+            { week: 1, day: 7, section: "Hari 7 - Bagian I", question: "料金は<u>降りる</u>ときにはらってください。", options: ["1 のりる", "2 ふりる", "3 こりる", "4 おりる"], correctIndex: 3, explanation: "Jawaban benar adalah <b>4 おりる</b>. 降りる dibaca おりる." },
+            { week: 1, day: 7, section: "Hari 7 - Bagian I", question: "<u>関係者</u>以外入らないでください。", options: ["1 かんけいしゃ", "2 かんれんしゃ", "3 けいけんしゃ", "4 かんきょうしゃ"], correctIndex: 0, explanation: "Jawaban benar adalah <b>1 かんけいしゃ</b>. 関係者 dibaca かんけいしゃ." },
+            { week: 1, day: 7, section: "Hari 7 - Bagian I", question: "<u>確認</u>ボタンを押します。", options: ["1 せきにん", "2 かくにん", "3 しょうにん", "4 こうにん"], correctIndex: 1, explanation: "Jawaban benar adalah <b>2 かくにん</b>. 確認 dibaca かくにん." },
+            { week: 1, day: 7, section: "Hari 7 - Bagian I", question: "ドアの<u>横</u>にスイッチがあります。", options: ["1 そば", "2 よこ", "3 たて", "4 となり"], correctIndex: 1, explanation: "Jawaban benar adalah <b>2 よこ</b>. 横 dibaca よこ." },
+            { week: 1, day: 7, section: "Hari 7 - Bagian I", question: "高速道路から<u>飛行場</u>が見えます。", options: ["1 こうくう", "2 ひこうば", "3 くうこう", "4 ひこうじょう"], correctIndex: 3, explanation: "Jawaban benar adalah <b>4 ひこうじょう</b>. 飛行場 dibaca ひこうじょう." },
+            { week: 1, day: 7, section: "Hari 7 - Bagian II", question: "席は<u>なんばん</u>ですか。", options: ["1 何号", "2 向番", "3 何番", "4 向号"], correctIndex: 2, explanation: "Jawaban benar adalah <b>3 何番</b>. なんばん ditulis 何番." },
+            { week: 1, day: 7, section: "Hari 7 - Bagian II", question: "黄色い<u>せん</u>まで下がってお待ちください。", options: ["1 線", "2 信", "3 段", "4 側"], correctIndex: 0, explanation: "Jawaban benar adalah <b>1 線</b>. せん ditulis 線." },
+            { week: 1, day: 7, section: "Hari 7 - Bagian II", question: "あの女優は<u>ひょうげん</u>力がある。", options: ["1 表信", "2 表見", "3 表言", "4 表現"], correctIndex: 3, explanation: "Jawaban benar adalah <b>4 表現</b>. ひょうげん ditulis 表現." },
+            { week: 1, day: 7, section: "Hari 7 - Bagian II", question: "社長はまちがいを<u>みとめた</u>。", options: ["1 定めた", "2 認めた", "3 窓めた", "4 面めた"], correctIndex: 1, explanation: "Jawaban benar adalah <b>2 認めた</b>. みとめた ditulis 認めた." },
+            { week: 1, day: 7, section: "Hari 7 - Bagian III", question: "この電車は ( ) 駅に止まります。", options: ["1 毎", "2 次", "3 各", "4 両"], correctIndex: 2, explanation: "Jawaban benar adalah <b>3 各</b>. 各駅 (kakueki) berarti setiap stasiun." },
+            { week: 1, day: 7, section: "Hari 7 - Bagian III", question: "あの信号は押しボタン ( ) です。", options: ["1 箱", "2 席", "3 向", "4 式"], correctIndex: 3, explanation: "Jawaban benar adalah <b>4 式</b>. 押しボタン式 berarti tipe tombol tekan." },
+            { week: 1, day: 7, section: "Hari 7 - Bagian III", question: "駐車場はただいま ( ) 車です。", options: ["1 両", "2 満", "3 禁", "4 非"], correctIndex: 1, explanation: "Jawaban benar adalah <b>2 満</b>. 満車 berarti parkiran penuh." },
+            { week: 1, day: 7, section: "Hari 7 - Bagian III", question: "1万円以上は、送料( )料です。", options: ["1 非", "2 不", "3 無", "4 禁"], correctIndex: 2, explanation: "Jawaban benar adalah <b>3 無</b>. 無料 berarti gratis." },
+            { week: 1, day: 7, section: "Hari 7 - Bagian III", question: "整理( )を取ってお待ちください。", options: ["1 停", "2 箱", "3 路", "4 券"], correctIndex: 3, explanation: "Jawaban benar adalah <b>4 券</b>. 整理券 berarti nomor antrean." },
+            { week: 1, day: 7, section: "Hari 7 - Bagian III", question: "お金は料金( )に入れてください。", options: ["1 箱", "2 式", "3 側", "4 券"], correctIndex: 0, explanation: "Jawaban benar adalah <b>1 箱</b>. 料金箱 berarti kotak pembayaran." }
+        ];
+
+        const playJapaneseTTS = (text) => {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'ja-JP';
+                utterance.rate = 0.85;
+                const voices = window.speechSynthesis.getVoices();
+                const jps = voices.filter(v => v.lang.includes('ja-JP'));
+                if (jps.length > 0) utterance.voice = jps[0];
+                window.speechSynthesis.speak(utterance);
+            }
+        };
+
+        function App() {
+            const [currentView, setCurrentView] = useState('landing'); // 'landing' | 'study'
+            const [selectedDay, setSelectedDay] = useState(1);
+            const [activeTab, setActiveTab] = useState('flashcards'); // 'flashcards' | 'quiz'
+
+            const [currentFlashIndex, setCurrentFlashIndex] = useState(0);
+            const [isFlipped, setIsFlipped] = useState(false);
+            const [searchQuery, setSearchQuery] = useState("");
+
+            // Persistence localStorage states
+            const [learnedStatus, setLearnedStatus] = useState(() => {
+                try {
+                    const saved = localStorage.getItem('ns_kanji_w1_learned');
+                    return saved ? JSON.parse(saved) : {};
+                } catch (e) { return {}; }
+            });
+
+            const [quizScores, setQuizScores] = useState(() => {
+                try {
+                    const saved = localStorage.getItem('ns_kanji_w1_scores');
+                    return saved ? JSON.parse(saved) : {};
+                } catch (e) { return {}; }
+            });
+
+            const [showResetConfirm, setShowResetConfirm] = useState(false);
+            const [statusNotification, setStatusNotification] = useState(null);
+
+            // Active Quiz states
+            const [quizStep, setQuizStep] = useState('start'); 
+            const [currentQuizIndex, setCurrentQuizIndex] = useState(0);
+            const [selectedOption, setSelectedOption] = useState(null);
+            const [hasSubmittedAnswer, setHasSubmittedAnswer] = useState(false);
+            const [quizScore, setQuizScore] = useState(0);
+            const [incorrectAnswers, setIncorrectAnswers] = useState([]);
+
+            useEffect(() => {
+                localStorage.setItem('ns_kanji_w1_learned', JSON.stringify(learnedStatus));
+            }, [learnedStatus]);
+
+            useEffect(() => {
+                localStorage.setItem('ns_kanji_w1_scores', JSON.stringify(quizScores));
+            }, [quizScores]);
+
+            const triggerNotification = (text, type = "success") => {
+                setStatusNotification({ text, type });
+                setTimeout(() => setStatusNotification(null), 4000);
+            };
+
+            const handleToggleLearned = (kanjiId) => {
+                setLearnedStatus(prev => ({
+                    ...prev,
+                    [kanjiId]: !prev[kanjiId]
+                }));
+            };
+
+            const handleResetAllProgress = () => {
+                setLearnedStatus({});
+                setQuizScores({});
+                localStorage.removeItem('ns_kanji_w1_learned');
+                localStorage.removeItem('ns_kanji_w1_scores');
+                setShowResetConfirm(false);
+                triggerNotification("Semua progress belajar Week 1 berhasil di-reset.", "success");
+            };
+
+            const filteredKanjiList = useMemo(() => {
+                return KANJI_DATA_W1.filter(k => k.day === selectedDay);
+            }, [selectedDay]);
+
+            const filteredQuizQuestions = useMemo(() => {
+                return QUIZ_QUESTIONS_W1.filter(q => q.day === selectedDay);
+            }, [selectedDay]);
+
+            const handleGoToDay = (day) => {
+                setSelectedDay(day);
+                setCurrentFlashIndex(0);
+                setIsFlipped(false);
+                setSearchQuery("");
+                setQuizStep('start');
+                setCurrentQuizIndex(0);
+                setSelectedOption(null);
+                setHasSubmittedAnswer(false);
+                setQuizScore(0);
+                setIncorrectAnswers([]);
+                setActiveTab('flashcards');
+                setCurrentView('study');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
+
+            const filteredDictionaryGrid = useMemo(() => {
+                if (!searchQuery) return filteredKanjiList;
+                const query = searchQuery.toLowerCase();
+                return filteredKanjiList.filter(k => 
+                    k.kanji.toLowerCase().includes(query) ||
+                    k.furigana.toLowerCase().includes(query) ||
+                    k.meaning.toLowerCase().includes(query) ||
+                    k.example.toLowerCase().includes(query)
+                );
+            }, [filteredKanjiList, searchQuery]);
+
+            // --- VIEW LANDING ---
+            if (currentView === 'landing') {
+                const totalKanjisWeek = KANJI_DATA_W1.length;
+                const learnedKanjisCount = KANJI_DATA_W1.filter(k => learnedStatus[k.id]).length;
+                const totalProgressPercent = totalKanjisWeek > 0 ? Math.round((learnedKanjisCount / totalKanjisWeek) * 100) : 0;
+
+                return (
+                    <div className="min-h-screen bg-slate-50 font-sans">
+                        {showResetConfirm && (
+                            <div className="fixed inset-0 bg-slate-950/65 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
+                                <div className="bg-white rounded-3xl border border-slate-200 shadow-xl max-w-sm w-full p-6 text-center space-y-4">
+                                    <div className="w-14 h-14 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center mx-auto shadow-inner text-xl">
+                                        <i className="fa-solid fa-triangle-exclamation"></i>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <h3 className="text-base font-black text-slate-900">Mulai Ulang Progress Week 1?</h3>
+                                        <p className="text-xs text-slate-500 leading-relaxed">Tindakan ini akan menghapus status hafalan kanji dan skor kuis terbaik untuk Minggu ke-1 secara permanen.</p>
+                                    </div>
+                                    <div className="flex gap-2 pt-2">
+                                        <button onClick={() => setShowResetConfirm(false)} className="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all">Batalkan</button>
+                                        <button onClick={handleResetAllProgress} className="flex-1 py-2.5 bg-rose-500 hover:bg-rose-600 text-white font-bold text-xs rounded-xl transition-all">Ya, Reset</button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Top Header */}
+                        <header className="bg-slate-900 text-white shadow-md relative overflow-hidden">
+                            <div className="max-w-4xl mx-auto px-6 pt-4 flex justify-between items-center text-xs">
+                                <a href="DashboardKanji.html" className="flex items-center gap-2 hover:text-white transition-colors bg-slate-800 text-slate-300 px-3.5 py-2 rounded-full border border-slate-700/50 hover:bg-slate-700 font-medium">
+                                    <i className="fa-solid fa-house text-indigo-400"></i>
+                                    <span>Kembali</span>
+                                </a>
+                                <button onClick={() => setShowResetConfirm(true)} className="flex items-center gap-2 hover:text-white transition-colors bg-rose-950/40 text-rose-300 px-3.5 py-2 rounded-full border border-rose-900/50 hover:bg-rose-900/60 font-medium">
+                                    <i className="fa-solid fa-trash-can text-rose-400"></i>
+                                    <span>Reset Progress</span>
+                                </button>
+                            </div>
+                            
+                            <div className="max-w-4xl mx-auto px-6 py-12 text-center relative z-10 flex flex-col items-center">
+                                <span className="bg-indigo-500/20 text-indigo-400 text-xs px-3.5 py-1.5 rounded-full font-bold uppercase tracking-wider mb-3 inline-block border border-indigo-500/20">
+                                    日本語総まとめ N3 : 漢字
+                                </span>
+                                <h1 className="text-3xl md:text-4xl font-black tracking-tight mt-1">
+                                    第1週 (Week 1)
+                                </h1>
+                                <p className="text-slate-400 font-medium mt-2 text-sm md:text-base">
+                                    1日目〜7日目の漢字学習・クイズ
+                                </p>
+                            </div>
+                        </header>
+
+                        {/* Dashboard Progress Overview */}
+                        <main className="max-w-4xl mx-auto px-4 md:px-6 py-10 space-y-8">
+                            {statusNotification && (
+                                <div className={`p-4 rounded-2xl flex items-center gap-3 border shadow-sm ${
+                                    statusNotification.type === "success" ? "bg-emerald-50 text-emerald-800 border-emerald-200" : "bg-rose-50 text-rose-800 border-rose-200"
+                                }`}>
+                                    <i className={`fa-solid ${statusNotification.type === "success" ? "fa-circle-check text-emerald-600" : "fa-circle-xmark text-rose-600"} text-lg`}></i>
+                                    <span className="text-xs font-bold">{statusNotification.text}</span>
+                                </div>
+                            )}
+
+                            <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm">
+                                <h3 className="text-sm font-extrabold text-slate-400 uppercase tracking-widest mb-4">Statistik Progres Hafalan Week 1</h3>
+                                <div className="flex items-center justify-between gap-4 bg-slate-50 p-5 rounded-2xl border border-slate-100">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-14 h-14 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl font-black border border-indigo-100">
+                                            {totalProgressPercent}%
+                                        </div>
+                                        <div>
+                                            <h4 className="text-base font-bold text-slate-800">Total Hafalan Kanji</h4>
+                                            <p className="text-slate-500 text-xs mt-0.5">
+                                                Sudah menghafal <span className="text-indigo-600 font-bold">{learnedKanjisCount}</span> dari total <span className="font-bold">{totalKanjisWeek}</span> karakter.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="w-32 bg-slate-200 h-2.5 rounded-full overflow-hidden hidden sm:block">
+                                        <div className="bg-indigo-600 h-full transition-all duration-500" style={{ width: `${totalProgressPercent}%` }}></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Selection Day Grid */}
+                            <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden p-6">
+                                <h2 className="text-xl font-bold text-slate-800 border-b border-slate-100 pb-3 mb-5 flex items-center gap-2">
+                                    <i className="fa-solid fa-calendar-days text-indigo-600 text-base"></i>
+                                    <span>Pemilihan Hari (Week 1)</span>
+                                </h2>
+                                <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-3">
+                                    {[1, 2, 3, 4, 5, 6, 7].map((dayNum) => {
+                                        const isPracticeTest = dayNum === 7;
+                                        const dayKanjis = KANJI_DATA_W1.filter(k => k.day === dayNum);
+                                        const totalDayKanjis = dayKanjis.length;
+                                        const learnedDayKanjis = dayKanjis.filter(k => learnedStatus[k.id]).length;
+                                        const isDayCompleted = totalDayKanjis > 0 && learnedDayKanjis === totalDayKanjis;
+                                        const dayHighScore = quizScores[`w1d${dayNum}`];
+
+                                        return (
+                                            <button
+                                                key={dayNum}
+                                                onClick={() => handleGoToDay(dayNum)}
+                                                className={`py-4 px-2 rounded-2xl border text-center transition-all relative flex flex-col justify-between min-h-[100px] bg-indigo-50/40 border-indigo-200 text-indigo-900 hover:bg-indigo-100/70 hover:shadow-sm active:scale-95`}
+                                            >
+                                                {isDayCompleted && (
+                                                    <span className="absolute -top-1 -right-1 bg-emerald-500 text-white text-[8px] w-4.5 h-4.5 rounded-full flex items-center justify-center shadow-sm z-10">
+                                                        <i className="fa-solid fa-check"></i>
+                                                    </span>
+                                                )}
+                                                <div>
+                                                    <div className="text-[10px] text-indigo-600/70 font-bold leading-none mb-1">
+                                                        {isPracticeTest ? '実戦' : `${dayNum}日目`}
+                                                    </div>
+                                                    <div className="text-sm font-extrabold leading-none mb-1">
+                                                        {isPracticeTest ? '7日目' : `${dayNum}日`}
+                                                    </div>
+                                                </div>
+
+                                                <div className="text-[10px] mt-2 space-y-1 border-t border-dashed border-indigo-200 pt-2 w-full">
+                                                    <div className={`font-bold leading-none ${isDayCompleted ? 'text-emerald-600' : 'text-slate-500'}`}>
+                                                        {learnedDayKanjis}/{totalDayKanjis} Kanji
+                                                    </div>
+                                                    {dayHighScore !== undefined && (
+                                                        <div className="bg-indigo-100 text-indigo-800 px-1 py-0.5 rounded font-bold text-[9px]">
+                                                            🎯 {dayHighScore}%
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        </main>
+
+                        <footer className="mt-12 border-t border-slate-200 py-8 text-center text-slate-400 text-xs">
+                            <p>© Nihongo Soumatome N3 Kanji Explorer • Week 1</p>
+                        </footer>
+                    </div>
+                );
+            }
+
+            // --- VIEW STUDY (FLASHCARDS & QUIZ) ---
+            const activeKanjiItem = filteredKanjiList[currentFlashIndex];
+
+            return (
+                <div className="min-h-screen pb-20 bg-slate-50">
+                    <header className="bg-slate-900 text-white shadow-md relative overflow-hidden">
+                        <div className="max-w-4xl mx-auto px-6 py-5 flex flex-col sm:flex-row justify-between items-center gap-4">
+                            <div className="flex items-center gap-4">
+                                <button 
+                                    onClick={() => setCurrentView('landing')} 
+                                    className="p-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl transition-all"
+                                >
+                                    <i className="fa-solid fa-arrow-left"></i>
+                                </button>
+                                <div>
+                                    <span className="text-indigo-400 text-xs font-black uppercase tracking-wider block">JLPT N3 Kanji • Week 1</span>
+                                    <h1 className="text-base md:text-lg font-black leading-tight">
+                                        第1週 {selectedDay}日目 ({selectedDay === 7 ? '実戦問題' : `${selectedDay}日目`})
+                                    </h1>
+                                </div>
+                            </div>
+
+                            <nav className="flex space-x-1 bg-slate-800 p-1 rounded-xl border border-slate-700/50">
+                                <button 
+                                    onClick={() => setActiveTab('flashcards')}
+                                    className={`px-4 py-2 text-xs font-extrabold rounded-lg transition ${
+                                        activeTab === 'flashcards' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-400 hover:text-white'
+                                    }`}
+                                >
+                                    Hafalan
+                                </button>
+                                <button 
+                                    onClick={() => {
+                                        setActiveTab('quiz');
+                                        setQuizStep('start');
+                                    }}
+                                    className={`px-4 py-2 text-xs font-extrabold rounded-lg transition ${
+                                        activeTab === 'quiz' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-400 hover:text-white'
+                                    }`}
+                                >
+                                    Latihan Kuis
+                                </button>
+                            </nav>
+                        </div>
+                    </header>
+
+                    <main className="max-w-4xl mx-auto px-4 md:px-6 mt-8 font-sans">
+                        {activeTab === 'flashcards' && activeKanjiItem && (
+                            <div className="space-y-8 animate-fade-in">
+                                <div className="max-w-md mx-auto">
+                                    <div className="flex justify-between items-center mb-4">
+                                        <div>
+                                            <h2 className="text-sm font-bold text-slate-900">Kartu Imbas (Flashcard)</h2>
+                                            <p className="text-[10px] text-slate-400">Ketuk kartu untuk melihat cara baca dan arti.</p>
+                                        </div>
+                                        <span className="text-xs font-bold bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full border border-indigo-100">
+                                            {currentFlashIndex + 1} / {filteredKanjiList.length} Kanji
+                                        </span>
+                                    </div>
+
+                                    <div 
+                                        className="flashcard-container w-full h-80 relative cursor-pointer" 
+                                        onClick={() => setIsFlipped(!isFlipped)}
+                                    >
+                                        <div className={`flashcard w-full h-full rounded-3xl shadow-sm relative border border-slate-200/80 ${isFlipped ? 'flipped' : ''}`}>
+                                            {/* FRONT */}
+                                            <div className="flashcard-front bg-white rounded-3xl p-6 flex flex-col justify-between items-center">
+                                                <div className="w-full flex justify-between items-center">
+                                                    <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest">Depan (Kanji)</span>
+                                                    <button 
+                                                        onClick={(e) => { e.stopPropagation(); playJapaneseTTS(activeKanjiItem.kanji); }}
+                                                        className="p-2.5 bg-slate-50 hover:bg-indigo-50 rounded-full text-slate-400 hover:text-indigo-600 transition"
+                                                    >
+                                                        <i className="fa-solid fa-volume-high text-sm"></i>
+                                                    </button>
+                                                </div>
+                                                <div className="text-center">
+                                                    <h1 className="text-6xl font-black text-indigo-950 tracking-wide mb-3 font-mono japanese-text">
+                                                        {activeKanjiItem.kanji}
+                                                    </h1>
+                                                    <span className="text-[10px] text-slate-400 bg-slate-100 px-3 py-1.5 rounded-full font-bold">
+                                                        Ketuk untuk membalik <i className="fa-solid fa-arrows-rotate ml-1"></i>
+                                                    </span>
+                                                </div>
+                                                <div className="w-full text-center text-[10px] text-slate-300 font-bold tracking-wide">
+                                                    N3 KANJI • WEEK 1
+                                                </div>
+                                            </div>
+
+                                            {/* BACK */}
+                                            <div className="flashcard-back bg-gradient-to-br from-indigo-950 to-slate-900 text-white rounded-3xl p-6 flex flex-col justify-between">
+                                                <div className="w-full flex justify-between items-center">
+                                                    <span className="text-[9px] font-black text-indigo-300 uppercase tracking-widest">Belakang (Makna)</span>
+                                                    <button 
+                                                        onClick={(e) => { e.stopPropagation(); playJapaneseTTS(activeKanjiItem.kanji); }}
+                                                        className="p-2.5 bg-white/10 hover:bg-white/20 rounded-full text-indigo-200 hover:text-white transition"
+                                                    >
+                                                        <i className="fa-solid fa-volume-high text-sm"></i>
+                                                    </button>
+                                                </div>
+                                                <div className="text-center space-y-3 px-2">
+                                                    <span className="text-amber-300 text-xl font-bold tracking-wide font-mono block japanese-text">
+                                                        {activeKanjiItem.furigana}
+                                                    </span>
+                                                    <h2 className="text-2xl font-black text-white tracking-tight leading-tight">
+                                                        {activeKanjiItem.meaning}
+                                                    </h2>
+                                                    <div className="pt-2 border-t border-white/10 max-w-xs mx-auto">
+                                                        <p className="text-xs text-slate-300 italic leading-relaxed text-center">
+                                                            {activeKanjiItem.example}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div className="flex justify-center">
+                                                    <span className="text-[9px] text-indigo-200 bg-white/5 px-3 py-1.5 rounded-full font-bold">
+                                                        Ketuk untuk membalik kembali <i className="fa-solid fa-arrows-rotate ml-1"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Flashcard Controls */}
+                                    <div className="mt-6 flex justify-between items-center gap-3">
+                                        <button 
+                                            onClick={() => {
+                                                setIsFlipped(false);
+                                                setCurrentFlashIndex(prev => Math.max(0, prev - 1));
+                                            }}
+                                            className="bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 p-4 rounded-xl transition shadow-sm disabled:opacity-40"
+                                            disabled={currentFlashIndex === 0}
+                                        >
+                                            <i className="fa-solid fa-chevron-left text-sm"></i>
+                                        </button>
+
+                                        <button 
+                                            onClick={() => handleToggleLearned(activeKanjiItem.id)}
+                                            className={`flex-grow py-3.5 px-4 rounded-xl font-bold text-xs transition shadow-sm flex items-center justify-center space-x-2 ${
+                                                learnedStatus[activeKanjiItem.id]
+                                                    ? 'bg-emerald-500 hover:bg-emerald-600 text-white'
+                                                    : 'bg-white hover:bg-slate-50 border border-slate-200 text-slate-700'
+                                            }`}
+                                        >
+                                            <i className={`fa-solid ${learnedStatus[activeKanjiItem.id] ? 'fa-circle-check' : 'fa-circle'}`}></i>
+                                            <span>{learnedStatus[activeKanjiItem.id] ? 'Sudah Hafal' : 'Tandai Sudah Hafal'}</span>
+                                        </button>
+
+                                        <button 
+                                            onClick={() => {
+                                                setIsFlipped(false);
+                                                setCurrentFlashIndex(prev => Math.min(filteredKanjiList.length - 1, prev + 1));
+                                            }}
+                                            className="bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 p-4 rounded-xl transition shadow-sm disabled:opacity-40"
+                                            disabled={currentFlashIndex === filteredKanjiList.length - 1}
+                                        >
+                                            <i className="fa-solid fa-chevron-right text-sm"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Dictionary Search Grid */}
+                                <div className="bg-white rounded-3xl p-6 md:p-8 border border-slate-200 shadow-sm">
+                                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                                        <div>
+                                            <h3 className="text-base font-bold text-slate-900">Daftar Kanji Hari Ini</h3>
+                                            <p className="text-xs text-slate-500">Pencarian cepat Kanji, furigana, dan makna.</p>
+                                        </div>
+                                        <div className="relative w-full sm:w-64">
+                                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                                                <i className="fa-solid fa-magnifying-glass text-xs"></i>
+                                            </span>
+                                            <input 
+                                                type="text" 
+                                                value={searchQuery}
+                                                onChange={(e) => setSearchQuery(e.target.value)}
+                                                placeholder="Cari Kanji..." 
+                                                className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 pl-9 pr-4 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        {filteredDictionaryGrid.map((item) => (
+                                            <div 
+                                                key={item.id} 
+                                                onClick={() => playJapaneseTTS(item.kanji)}
+                                                className="p-4 border border-slate-100 rounded-2xl bg-slate-50 hover:bg-indigo-50/30 transition cursor-pointer flex items-start gap-4 relative overflow-hidden"
+                                            >
+                                                {learnedStatus[item.id] && (
+                                                    <div className="absolute right-0 top-0 bg-emerald-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-bl-lg">
+                                                        Hafal
+                                                    </div>
+                                                )}
+                                                <div className="text-3xl font-black text-indigo-950 japanese-text pt-1">
+                                                    {item.kanji}
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="text-xs font-bold text-indigo-600 japanese-text">{item.furigana}</div>
+                                                    <h4 className="text-sm font-bold text-slate-800 truncate">{item.meaning}</h4>
+                                                    <p className="text-[11px] text-slate-500 italic truncate mt-1">{item.example}</p>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* TAB QUIZ */}
+                        {activeTab === 'quiz' && (
+                            <div className="max-w-xl mx-auto animate-fade-in">
+                                {quizStep === 'start' && (
+                                    <div className="text-center space-y-6 py-8">
+                                        <div className="w-20 h-20 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center mx-auto shadow-inner">
+                                            <i className="fa-solid fa-graduation-cap text-3xl"></i>
+                                        </div>
+                                        <div>
+                                            <h2 className="text-2xl font-black text-slate-900 tracking-tight">Kuis Kanji Hari Ke-{selectedDay}</h2>
+                                            <p className="text-sm text-slate-500 mt-2">Uji ingatan Anda terhadap materi Kanji yang telah dipelajari hari ini.</p>
+                                        </div>
+                                        <button 
+                                            onClick={() => setQuizStep('active')}
+                                            className="bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold py-4 px-10 rounded-2xl shadow-md transition inline-block text-xs uppercase tracking-wider active:scale-95"
+                                        >
+                                            Mulai Kuis Sekarang
+                                        </button>
+                                    </div>
+                                )}
+
+                                {quizStep === 'active' && filteredQuizQuestions.length > 0 && (
+                                    <div className="space-y-6">
+                                        <div className="space-y-2">
+                                            <div className="flex justify-between items-center text-xs text-slate-500">
+                                                <span className="font-black text-indigo-600 uppercase tracking-widest">
+                                                    {filteredQuizQuestions[currentQuizIndex].section}
+                                                </span>
+                                                <span className="font-bold">
+                                                    Soal {currentQuizIndex + 1} dari {filteredQuizQuestions.length}
+                                                </span>
+                                            </div>
+                                            <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                                                <div 
+                                                    className="bg-indigo-600 h-full transition-all duration-300" 
+                                                    style={{ width: `${((currentQuizIndex) / filteredQuizQuestions.length) * 100}%` }}
+                                                ></div>
+                                            </div>
+                                        </div>
+
+                                        <div className="bg-white rounded-3xl p-6 md:p-8 border border-slate-200 shadow-sm space-y-6">
+                                            <h3 className="text-xl font-bold text-slate-900 leading-relaxed japanese-text" dangerouslySetInnerHTML={{ __html: filteredQuizQuestions[currentQuizIndex].question }}></h3>
+
+                                            <div className="space-y-3">
+                                                {filteredQuizQuestions[currentQuizIndex].options.map((option, optIdx) => {
+                                                    const isSelected = selectedOption === optIdx;
+                                                    const isCorrectAnswer = optIdx === filteredQuizQuestions[currentQuizIndex].correctIndex;
+                                                    let optStyle = "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700";
+                                                    
+                                                    if (isSelected) optStyle = "bg-indigo-600 border-indigo-700 text-white ring-2 ring-indigo-200";
+                                                    if (hasSubmittedAnswer) {
+                                                        if (isCorrectAnswer) optStyle = "bg-emerald-500 border-emerald-600 text-white font-bold ring-2 ring-emerald-200";
+                                                        else if (isSelected) optStyle = "bg-rose-500 border-rose-600 text-white ring-2 ring-rose-200";
+                                                        else optStyle = "bg-slate-50 text-slate-400 border-slate-100 opacity-60 pointer-events-none";
+                                                    }
+
+                                                    return (
+                                                        <button
+                                                            key={optIdx}
+                                                            disabled={hasSubmittedAnswer}
+                                                            onClick={() => setSelectedOption(optIdx)}
+                                                            className={`p-4 w-full text-left rounded-2xl border text-sm transition-all flex items-center justify-between japanese-text font-medium ${optStyle}`}
+                                                        >
+                                                            <span>{option}</span>
+                                                        </button>
+                                                    );
+                                                })}
+                                            </div>
+
+                                            {hasSubmittedAnswer && (
+                                                <div className={`rounded-2xl p-4 text-xs leading-relaxed ${selectedOption === filteredQuizQuestions[currentQuizIndex].correctIndex ? 'bg-emerald-50 text-emerald-900' : 'bg-rose-50 text-rose-900'}`} dangerouslySetInnerHTML={{ __html: filteredQuizQuestions[currentQuizIndex].explanation }}></div>
+                                            )}
+                                        </div>
+
+                                        <div className="flex justify-end">
+                                            {!hasSubmittedAnswer ? (
+                                                <button 
+                                                    disabled={selectedOption === null}
+                                                    onClick={() => {
+                                                        setHasSubmittedAnswer(true);
+                                                        if (selectedOption === filteredQuizQuestions[currentQuizIndex].correctIndex) {
+                                                            setQuizScore(prev => prev + 1);
+                                                        }
+                                                    }}
+                                                    className={`font-extrabold py-3.5 px-8 rounded-2xl transition text-xs uppercase tracking-wider ${selectedOption !== null ? 'bg-slate-900 text-white' : 'bg-slate-200 text-slate-400 cursor-not-allowed'}`}
+                                                >
+                                                    Periksa
+                                                </button>
+                                            ) : (
+                                                <button 
+                                                    onClick={() => {
+                                                        if (currentQuizIndex + 1 < filteredQuizQuestions.length) {
+                                                            setCurrentQuizIndex(prev => prev + 1);
+                                                            setSelectedOption(null);
+                                                            setHasSubmittedAnswer(false);
+                                                        } else {
+                                                            setQuizStep('result');
+                                                            const percent = Math.round((quizScore / filteredQuizQuestions.length) * 100);
+                                                            const dayKey = `w1d${selectedDay}`;
+                                                            if (percent > (quizScores[dayKey] || 0)) {
+                                                                setQuizScores(prev => ({ ...prev, [dayKey]: percent }));
+                                                            }
+                                                        }
+                                                    }}
+                                                    className="bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold py-3.5 px-8 rounded-2xl transition text-xs uppercase tracking-wider"
+                                                >
+                                                    Lanjutkan
+                                                </button>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {quizStep === 'result' && (
+                                    <div className="bg-white border border-slate-200 rounded-3xl p-6 text-center space-y-6">
+                                        <div className="w-20 h-20 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center mx-auto text-3xl">
+                                            🎉
+                                        </div>
+                                        <h2 className="text-2xl font-black text-slate-900">Kuis Selesai!</h2>
+                                        <div className="bg-slate-50 rounded-2xl p-6 max-w-sm mx-auto">
+                                            <span className="text-xs text-slate-400 font-bold uppercase">Skor Akhir</span>
+                                            <h1 className="text-5xl font-black text-indigo-600 mt-1">
+                                                {Math.round((quizScore / filteredQuizQuestions.length) * 100)}%
+                                            </h1>
+                                        </div>
+                                        <button 
+                                            onClick={() => { setQuizStep('active'); setCurrentQuizIndex(0); setSelectedOption(null); setHasSubmittedAnswer(false); setQuizScore(0); }}
+                                            className="bg-slate-900 text-white font-extrabold py-3.5 px-8 rounded-2xl text-xs uppercase"
+                                        >
+                                            Ulangi Kuis
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </main>
+
+                    <footer className="mt-20 border-t border-slate-200 py-8 text-center text-slate-400 text-xs">
+                        <p>© Nihongo Soumatome N3 Kanji Explorer • Week 1</p>
+                    </footer>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
