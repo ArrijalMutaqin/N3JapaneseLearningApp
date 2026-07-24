@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>日本語総まとめ N3 — Learning Portal</title>
+    <title>日本語総まとめ N3 — Learning Portal & Feedback</title>
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Load Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -26,9 +27,24 @@
             50% { transform: translateY(-10px); }
             100% { transform: translateY(0px); }
         }
+        /* Custom scrollbar for modals */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
     </style>
 </head>
-<body class="antialiased text-slate-800 min-h-screen flex flex-col justify-between">
+<body class="antialiased text-slate-800 min-h-screen flex flex-col justify-between relative">
 
     <div>
         <!-- Premium Navigation / Header -->
@@ -44,23 +60,24 @@
                     Nihongo Portal N3
                 </h1>
                 <p class="text-slate-400 font-medium mt-3 text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
-                    Kuasai materi Kanji, Tata Bahasa, Kosakata, dan Pemahaman Membaca level JLPT N3 secara sistematis berdasarkan kurikulum terpercaya <span class="text-indigo-300">Nihongo Soumatome</span>.
+                    Kuasai materi Kanji, Tata Bahasa, Kosakata, Pemahaman Membaca, dan Latihan Percakapan (Kaiwa) AI secara sistematis berdasarkan kurikulum terpercaya <span class="text-indigo-300">Nihongo Soumatome</span>.
                 </p>
-                <div class="mt-4 flex justify-center items-center gap-1.5 text-xs text-indigo-400/80 font-bold tracking-wide uppercase">
-                    <span>Mulai Belajar</span>
-                    <i class="fa-solid fa-chevron-down animate-bounce mt-0.5"></i>
+                <div class="mt-6 flex flex-wrap justify-center items-center gap-3">
+                    <div class="flex justify-center items-center gap-1.5 text-xs text-indigo-400/80 font-bold tracking-wide uppercase">
+                        <span>Mulai Belajar di Bawah</span>
+                        <i class="fa-solid fa-chevron-down animate-bounce mt-0.5"></i>
+                    </div>
                 </div>
             </div>
         </header>
 
         <!-- Main Core Modules Grid -->
-        <main class="max-w-5xl mx-auto px-4 md:px-6 py-12">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <main class="max-w-6xl mx-auto px-4 md:px-6 py-12">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
                 
                 <!-- CARD 1: KANJI EXPLORER -->
                 <a href="DashboardKanji.html" class="group bg-white rounded-3xl border border-slate-200 p-5 shadow-sm hover:shadow-xl hover:border-indigo-500 transition-all duration-300 transform hover:-translate-y-1.5 flex flex-col justify-between">
                     <div>
-                        <!-- Icon/Visual Header -->
                         <div class="flex justify-between items-start mb-4">
                             <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center text-xl font-black border border-indigo-100 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300 shadow-sm japanese-text">
                                 漢
@@ -69,20 +86,14 @@
                                 Kanji
                             </span>
                         </div>
-                        
-                        <!-- Card Titles -->
-                        <h2 class="text-xl font-extrabold text-slate-800 mb-2 flex items-center gap-1.5 group-hover:text-indigo-600 transition-colors">
+                        <h2 class="text-lg font-extrabold text-slate-800 mb-2 flex items-center gap-1.5 group-hover:text-indigo-600 transition-colors">
                             <span>Kanji</span>
                             <span class="text-[10px] text-slate-400 font-normal font-sans japanese-text">(漢字)</span>
                         </h2>
-                        
-                        <!-- Description -->
                         <p class="text-slate-500 text-xs leading-relaxed mb-4">
-                            Pendalaman materi Kanji N3, Onyomi & Kunyomi, terjemahan Indonesia, Audio TTS asli, serta kuis mandiri harian.
+                            Pendalaman Kanji N3, Onyomi &amp; Kunyomi, terjemahan Indonesia, Audio TTS, serta kuis mandiri.
                         </p>
                     </div>
-                    
-                    <!-- Badges & Action Trigger -->
                     <div>
                         <div class="flex flex-wrap gap-1.5 mb-4">
                             <span class="bg-slate-50 text-slate-600 text-[9px] font-bold px-2 py-0.5 rounded-lg border border-slate-100">
@@ -102,7 +113,6 @@
                 <!-- CARD 2: GRAMMAR (BUNPOU) EXPLORER -->
                 <a href="DashboardBunpou.html" class="group bg-white rounded-3xl border border-slate-200 p-5 shadow-sm hover:shadow-xl hover:border-emerald-500 transition-all duration-300 transform hover:-translate-y-1.5 flex flex-col justify-between">
                     <div>
-                        <!-- Icon/Visual Header -->
                         <div class="flex justify-between items-start mb-4">
                             <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-xl font-black border border-emerald-100 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300 shadow-sm japanese-text">
                                 文
@@ -111,20 +121,14 @@
                                 Grammar
                             </span>
                         </div>
-                        
-                        <!-- Card Titles -->
-                        <h2 class="text-xl font-extrabold text-slate-800 mb-2 flex items-center gap-1.5 group-hover:text-emerald-600 transition-colors">
+                        <h2 class="text-lg font-extrabold text-slate-800 mb-2 flex items-center gap-1.5 group-hover:text-emerald-600 transition-colors">
                             <span>Bunpou</span>
                             <span class="text-[10px] text-slate-400 font-normal font-sans japanese-text">(文法)</span>
                         </h2>
-                        
-                        <!-- Description -->
                         <p class="text-slate-500 text-xs leading-relaxed mb-4">
-                            Struktur tata bahasa N3, penjelasan bahasa Indonesia komprehensif, serta latihan interaktif menyusun kalimat bintang.
+                            Struktur tata bahasa N3, penjelasan bahasa Indonesia komprehensif, &amp; latihan susun kalimat.
                         </p>
                     </div>
-                    
-                    <!-- Badges & Action Trigger -->
                     <div>
                         <div class="flex flex-wrap gap-1.5 mb-4">
                             <span class="bg-slate-50 text-slate-600 text-[9px] font-bold px-2 py-0.5 rounded-lg border border-slate-100">
@@ -141,10 +145,9 @@
                     </div>
                 </a>
 
-                <!-- CARD 3: MOJI GOI (VOCABULARY) EXPLORER (ACTIVATED) -->
+                <!-- CARD 3: MOJI GOI (VOCABULARY) EXPLORER -->
                 <a href="DashboardMojiGoi.html" class="group bg-white rounded-3xl border border-slate-200 p-5 shadow-sm hover:shadow-xl hover:border-purple-500 transition-all duration-300 transform hover:-translate-y-1.5 flex flex-col justify-between">
                     <div>
-                        <!-- Icon/Visual Header -->
                         <div class="flex justify-between items-start mb-4">
                             <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center text-xl font-black border border-purple-100 group-hover:bg-purple-600 group-hover:text-white transition-all duration-300 shadow-sm japanese-text">
                                 語
@@ -153,20 +156,14 @@
                                 Vocab
                             </span>
                         </div>
-                        
-                        <!-- Card Titles -->
-                        <h2 class="text-xl font-extrabold text-slate-800 mb-2 flex items-center gap-1.5 group-hover:text-purple-600 transition-colors">
+                        <h2 class="text-lg font-extrabold text-slate-800 mb-2 flex items-center gap-1.5 group-hover:text-purple-600 transition-colors">
                             <span>Moji Goi</span>
                             <span class="text-[10px] text-slate-400 font-normal font-sans japanese-text">(語彙)</span>
                         </h2>
-                        
-                        <!-- Description -->
                         <p class="text-slate-500 text-xs leading-relaxed mb-4">
-                            Kumpulan kosakata harian N3, antonim, sinonim, penggolongan kata benda, kata sifat, dan ungkapan idiomatis.
+                            Kosakata harian N3, antonim, sinonim, kata benda, kata sifat, dan ungkapan idiomatis.
                         </p>
                     </div>
-                    
-                    <!-- Badges & Action Trigger -->
                     <div>
                         <div class="flex flex-wrap gap-1.5 mb-4">
                             <span class="bg-slate-50 text-slate-600 text-[9px] font-bold px-2 py-0.5 rounded-lg border border-slate-100">
@@ -186,7 +183,6 @@
                 <!-- CARD 4: DOKKAI (READING) EXPLORER -->
                 <a href="DashboardDokkai.html" class="group bg-white rounded-3xl border border-slate-200 p-5 shadow-sm hover:shadow-xl hover:border-amber-500 transition-all duration-300 transform hover:-translate-y-1.5 flex flex-col justify-between">
                     <div>
-                        <!-- Icon/Visual Header -->
                         <div class="flex justify-between items-start mb-4">
                             <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center text-xl font-black border border-amber-100 group-hover:bg-amber-500 group-hover:text-white transition-all duration-300 shadow-sm japanese-text">
                                 読
@@ -195,20 +191,14 @@
                                 Reading
                             </span>
                         </div>
-                        
-                        <!-- Card Titles -->
-                        <h2 class="text-xl font-extrabold text-slate-800 mb-2 flex items-center gap-1.5 group-hover:text-amber-600 transition-colors">
+                        <h2 class="text-lg font-extrabold text-slate-800 mb-2 flex items-center gap-1.5 group-hover:text-amber-600 transition-colors">
                             <span>Dokkai</span>
                             <span class="text-[10px] text-slate-400 font-normal font-sans japanese-text">(読解)</span>
                         </h2>
-                        
-                        <!-- Description -->
                         <p class="text-slate-500 text-xs leading-relaxed mb-4">
-                            Latihan pemahaman teks bacaan tingkat N3, pemahaman surat kabar, email kasual, instruksi tertulis, dan trik ujian.
+                            Latihan pemahaman teks bacaan N3, pemahaman email kasual, instruksi tertulis, &amp; trik ujian.
                         </p>
                     </div>
-                    
-                    <!-- Badges & Action Trigger -->
                     <div>
                         <div class="flex flex-wrap gap-1.5 mb-4">
                             <span class="bg-slate-50 text-slate-600 text-[9px] font-bold px-2 py-0.5 rounded-lg border border-slate-100">
@@ -220,6 +210,41 @@
                         </div>
                         <div class="text-[10px] font-black text-amber-600 group-hover:text-amber-700 flex items-center gap-1 uppercase tracking-wider">
                             <span>Masuk Modul</span>
+                            <i class="fa-solid fa-arrow-right transition-transform group-hover:translate-x-0.5 text-[9px]"></i>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- CARD 5: AI KAIWA PRACTICE EXPLORER -->
+                <a href="DashboardKaiwa.html" class="group bg-white rounded-3xl border border-slate-200 p-5 shadow-sm hover:shadow-xl hover:border-rose-500 transition-all duration-300 transform hover:-translate-y-1.5 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="w-12 h-12 bg-rose-50 text-rose-600 rounded-xl flex items-center justify-center text-xl font-black border border-rose-100 group-hover:bg-rose-600 group-hover:text-white transition-all duration-300 shadow-sm japanese-text">
+                                話
+                            </div>
+                            <span class="bg-rose-50 text-rose-700 text-[9px] font-bold px-2.5 py-0.5 rounded-full border border-rose-100 uppercase tracking-wider flex items-center gap-1">
+                                <i class="fa-solid fa-robot text-[9px] text-rose-500"></i> AI Kaiwa
+                            </span>
+                        </div>
+                        <h2 class="text-lg font-extrabold text-slate-800 mb-2 flex items-center gap-1.5 group-hover:text-rose-600 transition-colors">
+                            <span>Kaiwa AI</span>
+                            <span class="text-[10px] text-slate-400 font-normal font-sans japanese-text">(会話)</span>
+                        </h2>
+                        <p class="text-slate-500 text-xs leading-relaxed mb-4">
+                            Partner percakapan bahasa Jepang AI interaktif. Bebas atur persona role, audio TTS, &amp; koreksi grammar.
+                        </p>
+                    </div>
+                    <div>
+                        <div class="flex flex-wrap gap-1.5 mb-4">
+                            <span class="bg-slate-50 text-slate-600 text-[9px] font-bold px-2 py-0.5 rounded-lg border border-slate-100">
+                                <i class="fa-solid fa-comments mr-1 text-rose-500"></i> Persona
+                            </span>
+                            <span class="bg-slate-50 text-slate-600 text-[9px] font-bold px-2 py-0.5 rounded-lg border border-slate-100">
+                                <i class="fa-solid fa-microphone mr-1 text-rose-500"></i> Voice/STT
+                            </span>
+                        </div>
+                        <div class="text-[10px] font-black text-rose-600 group-hover:text-rose-700 flex items-center gap-1 uppercase tracking-wider">
+                            <span>Mulai Kaiwa</span>
                             <i class="fa-solid fa-arrow-right transition-transform group-hover:translate-x-0.5 text-[9px]"></i>
                         </div>
                     </div>
@@ -256,17 +281,163 @@
                     </div>
 
                     <div class="bg-white border border-slate-100 rounded-2xl p-5 text-center shadow-sm">
-                        <div class="w-12 h-12 bg-amber-50 text-amber-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <i class="fa-solid fa-ear-listen text-lg"></i>
+                        <div class="w-12 h-12 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fa-solid fa-robot text-lg"></i>
                         </div>
-                        <h4 class="font-bold text-slate-800 text-sm mb-1.5">Akurasi Pengucapan</h4>
+                        <h4 class="font-bold text-slate-800 text-sm mb-1.5">Latihan Percakapan AI</h4>
                         <p class="text-slate-500 text-[11px] leading-relaxed">
-                            Gunakan integrasi suara Text-to-Speech (TTS) untuk mendengarkan intonasi asli pengucapan bahasa Jepang.
+                            Simulasi percakapan waktu nyata dengan lawan bicara AI untuk melatih kelancaran berbicara (Kaiwa) N3.
                         </p>
                     </div>
                 </div>
             </section>
         </main>
+    </div>
+
+    <!-- FLOATING FEEDBACK BUTTON (FAB) - SINGLE BUTTON -->
+    <div class="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-2">
+        <button id="fabFeedbackBtn" onclick="openFeedbackModal()" class="group bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white px-4 py-3.5 rounded-2xl shadow-xl shadow-indigo-600/30 flex items-center gap-2.5 transition-all duration-300 transform hover:scale-105 active:scale-95 border border-indigo-400/30">
+            <div class="relative">
+                <i class="fa-solid fa-comment-dots text-lg group-hover:rotate-12 transition-transform duration-300"></i>
+                <span class="absolute -top-1 -right-1 flex h-2.5 w-2.5">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                </span>
+            </div>
+            <span class="font-bold text-xs tracking-wide pr-1">Feedback</span>
+        </button>
+    </div>
+
+    <!-- FEEDBACK MODAL DIALOG -->
+    <div id="feedbackModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="bg-white rounded-3xl max-w-lg w-full shadow-2xl overflow-hidden transform scale-95 transition-transform duration-300 flex flex-col max-h-[90vh]" id="feedbackModalContainer">
+            
+            <!-- Modal Header -->
+            <div class="bg-slate-900 text-white p-6 relative flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-indigo-500/20 rounded-xl flex items-center justify-center text-indigo-400 border border-indigo-500/30">
+                        <i class="fa-solid fa-code-pull-request text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-extrabold text-base leading-tight">Ulasan &amp; Feedback Developer</h3>
+                        <p class="text-slate-400 text-xs">Bantu kami meningkatkan kualitas Nihongo Portal N3</p>
+                    </div>
+                </div>
+                <button onclick="closeFeedbackModal()" class="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition-colors">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+            </div>
+
+            <!-- Modal Form Content -->
+            <div class="p-6 overflow-y-auto custom-scrollbar space-y-5 flex-1">
+                <form id="feedbackForm" onsubmit="submitFeedback(event)" class="space-y-5">
+                    
+                    <!-- Kategori Feedback -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                            Kategori Masukan <span class="text-rose-500">*</span>
+                        </label>
+                        <div class="grid grid-cols-2 gap-2" id="categoryOptions">
+                            <label class="cursor-pointer border border-slate-200 rounded-xl p-3 flex items-center gap-2 hover:border-indigo-500 has-[:checked]:border-indigo-600 has-[:checked]:bg-indigo-50/50 transition-all">
+                                <input type="radio" name="category" value="bug" class="accent-indigo-600 hidden" checked>
+                                <i class="fa-solid fa-bug text-indigo-600 text-sm"></i>
+                                <span class="text-xs font-semibold text-slate-700">Laporan Bug</span>
+                            </label>
+                            
+                            <label class="cursor-pointer border border-slate-200 rounded-xl p-3 flex items-center gap-2 hover:border-indigo-500 has-[:checked]:border-indigo-600 has-[:checked]:bg-indigo-50/50 transition-all">
+                                <input type="radio" name="category" value="feature" class="accent-indigo-600 hidden">
+                                <i class="fa-solid fa-lightbulb text-amber-500 text-sm"></i>
+                                <span class="text-xs font-semibold text-slate-700">Usul Fitur Baru</span>
+                            </label>
+
+                            <label class="cursor-pointer border border-slate-200 rounded-xl p-3 flex items-center gap-2 hover:border-indigo-500 has-[:checked]:border-indigo-600 has-[:checked]:bg-indigo-50/50 transition-all">
+                                <input type="radio" name="category" value="content" class="accent-indigo-600 hidden">
+                                <i class="fa-solid fa-spell-check text-emerald-600 text-sm"></i>
+                                <span class="text-xs font-semibold text-slate-700">Koreksi Materi</span>
+                            </label>
+
+                            <label class="cursor-pointer border border-slate-200 rounded-xl p-3 flex items-center gap-2 hover:border-indigo-500 has-[:checked]:border-indigo-600 has-[:checked]:bg-indigo-50/50 transition-all">
+                                <input type="radio" name="category" value="general" class="accent-indigo-600 hidden">
+                                <i class="fa-solid fa-heart text-rose-500 text-sm"></i>
+                                <span class="text-xs font-semibold text-slate-700">Ulasan Umum</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Star Rating Selector -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                            Tingkat Kepuasan Portal
+                        </label>
+                        <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl p-3 justify-between">
+                            <span class="text-xs text-slate-500 font-medium">Beri Penilaian:</span>
+                            <div class="flex items-center gap-1" id="starContainer">
+                                <button type="button" onclick="setRating(1)" class="star-btn text-amber-400 text-xl transition-colors"><i class="fa-solid fa-star"></i></button>
+                                <button type="button" onclick="setRating(2)" class="star-btn text-amber-400 text-xl transition-colors"><i class="fa-solid fa-star"></i></button>
+                                <button type="button" onclick="setRating(3)" class="star-btn text-amber-400 text-xl transition-colors"><i class="fa-solid fa-star"></i></button>
+                                <button type="button" onclick="setRating(4)" class="star-btn text-amber-400 text-xl transition-colors"><i class="fa-solid fa-star"></i></button>
+                                <button type="button" onclick="setRating(5)" class="star-btn text-amber-400 text-xl transition-colors"><i class="fa-solid fa-star"></i></button>
+                            </div>
+                            <input type="hidden" id="ratingValue" value="5">
+                        </div>
+                    </div>
+
+                    <!-- Identitas & Kontak Required -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Nama (Opsional)</label>
+                            <input type="text" id="userName" placeholder="Contoh: Budi Susanto" class="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">
+                                Email / Telegram <span class="text-rose-500">*</span>
+                            </label>
+                            <input type="text" id="userContact" required placeholder="Format: Email atau Angka No. HP / ID" class="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all">
+                        </div>
+                    </div>
+
+                    <!-- Detail Pesan Feedback -->
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                                Pesan Masukan <span class="text-rose-500">*</span>
+                            </label>
+                            <span class="text-[10px] text-slate-400" id="charCounter">0 / 500</span>
+                        </div>
+                        <textarea id="feedbackMessage" rows="4" maxlength="500" required placeholder="Tuliskan saran, kendala fitur, atau ide pengembangan Anda di sini secara rinci..." oninput="updateCharCount()" class="w-full text-xs p-3.5 rounded-xl border border-slate-200 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all resize-none"></textarea>
+                    </div>
+
+                    <!-- Context Tag (Auto-attached info) -->
+                    <div class="bg-indigo-50/60 rounded-xl p-3 border border-indigo-100 flex items-center gap-2 text-[11px] text-indigo-700">
+                        <i class="fa-solid fa-circle-info text-indigo-500"></i>
+                        <span>Informasi halaman (Portal Utama Level N3) akan disertakan secara otomatis.</span>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="pt-2 flex items-center justify-end gap-2">
+                        <button type="button" onclick="closeFeedbackModal()" class="px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-colors">
+                            Batal
+                        </button>
+                        <button type="submit" id="submitFeedbackBtn" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-md shadow-indigo-600/30 flex items-center gap-2 transition-all">
+                            <i class="fa-solid fa-paper-plane text-xs"></i>
+                            <span>Kirim Feedback</span>
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toast" class="fixed top-5 right-5 z-50 transform translate-y-[-100px] opacity-0 transition-all duration-300 flex items-center gap-3 bg-slate-900 text-white px-5 py-3.5 rounded-2xl shadow-2xl border border-slate-800">
+        <div id="toastIcon" class="w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-sm font-bold">
+            <i class="fa-solid fa-check"></i>
+        </div>
+        <div>
+            <h4 id="toastTitle" class="text-xs font-bold leading-tight">Berhasil!</h4>
+            <p id="toastMessage" class="text-[11px] text-slate-300">Feedback Anda telah tersimpan.</p>
+        </div>
     </div>
 
     <!-- Portal Footer Banner -->
@@ -276,13 +447,161 @@
                 継続は力なり (Keberlanjutan adalah Kekuatan)
             </p>
             <p class="text-[11px] text-slate-500 font-sans">
-                Belajar secara konsisten setiap hari adalah kunci utama menguasai kosakata dan tata bahasa baru.
+                Belajar secara konsisten setiap hari adalah kunci utama menguasai kosakata, tata bahasa, dan kemampuan percakapan baru.
             </p>
-            <div class="pt-4 text-[10px] text-slate-600 border-t border-slate-800/80">
+            <div class="pt-4 text-[10px] text-slate-600 border-t border-slate-800/80 flex flex-wrap justify-center items-center max-w-md mx-auto">
                 <p>© Nihongo Soumatome N3 Portal • Kurikulum Mandiri JLPT</p>
             </div>
         </div>
     </footer>
 
+    <script>
+        // URL Web App Google Apps Script Aktif
+        const DEFAULT_GSHEET_URL = 'https://script.google.com/macros/s/AKfycbxO3sgPZfTub03UKzAk4kR5v3XJB_8QKSvMhDFMd9Uy1-ge-CIv_MQANr4bNlUG7bsDfQ/exec';
+
+        // State variables
+        let currentRating = 5;
+
+        // Initialize state when DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            setRating(5);
+        });
+
+        // Open Modal Function
+        function openFeedbackModal() {
+            const modal = document.getElementById('feedbackModal');
+            const container = document.getElementById('feedbackModalContainer');
+            modal.classList.remove('pointer-events-none', 'opacity-0');
+            modal.classList.add('opacity-100');
+            container.classList.remove('scale-95');
+            container.classList.add('scale-100');
+        }
+
+        // Close Modal Function
+        function closeFeedbackModal() {
+            const modal = document.getElementById('feedbackModal');
+            const container = document.getElementById('feedbackModalContainer');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            modal.classList.remove('opacity-100');
+            container.classList.add('scale-95');
+            container.classList.remove('scale-100');
+        }
+
+        // Star Rating Setter
+        function setRating(rating) {
+            currentRating = rating;
+            document.getElementById('ratingValue').value = rating;
+            const buttons = document.querySelectorAll('#starContainer .star-btn');
+            buttons.forEach((btn, idx) => {
+                if (idx < rating) {
+                    btn.className = 'star-btn text-amber-400 text-xl transition-colors';
+                } else {
+                    btn.className = 'star-btn text-slate-300 hover:text-amber-400 text-xl transition-colors';
+                }
+            });
+        }
+
+        // Character counter for textarea
+        function updateCharCount() {
+            const textarea = document.getElementById('feedbackMessage');
+            const counter = document.getElementById('charCounter');
+            counter.innerText = `${textarea.value.length} / 500`;
+        }
+
+        // Submit Feedback
+        function submitFeedback(event) {
+            event.preventDefault();
+            
+            const submitBtn = document.getElementById('submitFeedbackBtn');
+            const contactInput = document.getElementById('userContact').value.trim();
+            
+            // Validasi Format Kontak: Harus Email atau Angka (ID/No. HP)
+            const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactInput);
+            const isDigitsOrPhone = /^[0-9+\s\-@]{3,}$/.test(contactInput) && /\d/.test(contactInput);
+
+            if (!contactInput) {
+                showToast('Validasi Gagal', 'Harap isi Email atau Kontak/ID Telegram Anda.', 'error');
+                return;
+            }
+
+            if (!isEmail && !isDigitsOrPhone) {
+                showToast('Format Tidak Valid', 'Masukkan email valid atau nomor HP / ID Telegram berupa angka.', 'error');
+                return;
+            }
+
+            const category = document.querySelector('input[name="category"]:checked')?.value || 'general';
+            const name = document.getElementById('userName').value.trim() || 'Anonim';
+            const message = document.getElementById('feedbackMessage').value.trim();
+
+            if (!message) {
+                showToast('Pesan Kosong', 'Harap tuliskan isi feedback Anda.', 'error');
+                return;
+            }
+
+            // Disable submit button during processing
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> <span>Mengirim...</span>';
+
+            const feedbackPayload = {
+                id: Date.now(),
+                timestamp: new Date().toLocaleString('id-ID'),
+                category: category,
+                rating: currentRating,
+                name: name,
+                contact: contactInput,
+                message: message,
+                page: 'Nihongo Portal N3 (Main)'
+            };
+
+            // Send automatically to Google Sheets
+            fetch(DEFAULT_GSHEET_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'text/plain;charset=utf-8'
+                },
+                body: JSON.stringify(feedbackPayload)
+            }).then(() => {
+                showToast('Terkirim ke Server!', 'Terima kasih, masukan Anda telah dikirim ke developer.');
+            }).catch(err => {
+                console.error('Google Sheets send error:', err);
+                showToast('Gagal Mengirim', 'Terjadi kesalahan saat mengirim feedback. Silakan coba lagi.', 'error');
+            }).finally(() => {
+                // Reset Form and close modal
+                document.getElementById('feedbackForm').reset();
+                setRating(5);
+                updateCharCount();
+                
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane text-xs"></i> <span>Kirim Feedback</span>';
+                
+                closeFeedbackModal();
+            });
+        }
+
+        // Toast Notification System
+        function showToast(title, message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const icon = document.getElementById('toastIcon');
+            document.getElementById('toastTitle').innerText = title;
+            document.getElementById('toastMessage').innerText = message;
+
+            if (type === 'error') {
+                icon.className = 'w-7 h-7 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center text-sm font-bold';
+                icon.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+            } else {
+                icon.className = 'w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-sm font-bold';
+                icon.innerHTML = '<i class="fa-solid fa-check"></i>';
+            }
+
+            toast.classList.remove('translate-y-[-100px]', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-[-100px]', 'opacity-0');
+            }, 3500);
+        }
+    </script>
 </body>
 </html>

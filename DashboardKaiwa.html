@@ -1,0 +1,1741 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日本語総まとめ N3 会話 - AI Kaiwa Practice</title>
+    
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        rose: {
+                            50: '#fff1f2',
+                            100: '#ffe4e6',
+                            200: '#fecdd3',
+                            500: '#f43f5e',
+                            600: '#e11d48',
+                            700: '#be123c',
+                            800: '#9f1239',
+                            900: '#881337',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', '"Noto Sans JP"', 'sans-serif'],
+                        japanese: ['"Noto Sans JP"', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Load React, ReactDOM, Babel Standalone -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Load Fonts & FontAwesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body { 
+            font-family: 'Plus Jakarta Sans', 'Noto Sans JP', sans-serif; 
+            background-color: #f8fafc; 
+        }
+        .japanese-text { 
+            font-family: 'Noto Sans JP', sans-serif; 
+            line-height: 2.2rem;
+            letter-spacing: 0.03em;
+        }
+        ruby { 
+            ruby-position: over; 
+            ruby-align: center; 
+        }
+        rt { 
+            font-size: 0.6em; 
+            color: #e11d48;
+            user-select: none;
+            padding-bottom: 0.1rem;
+            font-weight: 700;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="antialiased text-slate-800 min-h-screen flex flex-col justify-between">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        const DEFAULT_GEMINI_KEY = "AQ.Ab8RN6K8mTwRGqjTJ--rk4APi5hkKo4JhSnaz94etEwxMumUrQ";
+
+        const QUICK_ROLES = [
+            'Teman sekolah', 'Guru', 'Atasan', 'Rekan kerja', 'Pelanggan', 
+            'Pegawai toko', 'Kasir konbini', 'Pelayan restoran', 'Polisi', 
+            'Dokter', 'Perawat', 'Tetangga', 'Orang asing', 'Pewawancara kerja', 
+            'Penguji JLPT', 'Partner bahasa', 'Keluarga', 'Custom'
+        ];
+
+        const QUICK_LOCATIONS = [
+            'Rumah', 'Sekolah', 'Universitas', 'Kantor', 'Bandara', 'Restoran', 
+            'Konbini', 'Hotel', 'Rumah sakit', 'Kantor polisi', 'Stasiun', 
+            'Kereta', 'Bus', 'Taman', 'Supermarket', 'Mall', 'Tempat wisata', 'Custom'
+        ];
+
+        const QUICK_TIMES = [
+            'Pagi', 'Siang', 'Sore', 'Malam', 'Musim Semi', 'Musim Panas', 
+            'Musim Gugur', 'Musim Dingin', 'Tahun Baru', 'Festival', 
+            'Hari Kerja', 'Akhir Pekan', 'Custom'
+        ];
+
+        const JLPT_LEVELS = [
+            { level: 'JLPT N5', tag: 'Pemula', desc: 'Kalimat pendek, kosakata dasar' },
+            { level: 'JLPT N4', tag: 'Dasar', desc: 'Tata bahasa sehari-hari sederhana' },
+            { level: 'JLPT N3', tag: 'Menengah', desc: 'Kalimat majemuk & ekspresi alami' },
+            { level: 'JLPT N2', tag: 'Lanjutan', desc: 'Keigo halus & idiomatis' },
+            { level: 'JLPT N1', tag: 'Mahir', desc: 'Nuansa kompleks & wacana luas' },
+            { level: 'Native', tag: 'Alami', desc: 'Kecepatan & dialek native sejati' }
+        ];
+
+        const SPEECH_STYLES = ['Casual', 'Polite', 'Keigo', 'Campuran'];
+
+        const GOALS = [
+            'Percakapan bebas', 'Latihan wawancara', 'Memesan makanan', 'Belanja', 
+            'Bertanya arah', 'Bandara', 'Hotel', 'Rumah sakit', 'Presentasi', 
+            'Meeting', 'Small Talk', 'Dating', 'SSW', 'JLPT Speaking', 'Custom'
+        ];
+
+        const SCENARIO_PRESETS = [
+            {
+                title: 'Kehilangan Bagasi di Haneda',
+                role: 'Ground Handling Haneda',
+                location: 'Bandara',
+                time: 'Siang',
+                level: 'JLPT N3',
+                style: 'Polite',
+                goal: 'Bandara',
+                prompt: 'Saya kehilangan koper di area pengambilan bagasi Bandara Haneda. Tolong bantu saya melapor dan mengisi formulir pelacakan.'
+            },
+            {
+                title: 'Beli Bento & Hangatkan di Konbini',
+                role: 'Kasir konbini',
+                location: 'Konbini',
+                time: 'Malam',
+                level: 'JLPT N5',
+                style: 'Polite',
+                goal: 'Belanja',
+                prompt: 'Saya ingin membeli bento, meminta dihangatkan (atatame), dan membeli kopi panas.'
+            },
+            {
+                title: 'Wawancara Kerja Tokutei Ginou (SSW)',
+                role: 'Pewawancara kerja',
+                location: 'Kantor',
+                time: 'Pagi',
+                level: 'JLPT N4',
+                style: 'Keigo',
+                goal: 'Latihan wawancara',
+                prompt: 'Saya sedang diwawancarai untuk pekerjaan bidang pengolahan makanan (food processing) di Jepang.'
+            },
+            {
+                title: 'Konsultasi Sakit Kepala di Klinik',
+                role: 'Dokter',
+                location: 'Rumah sakit',
+                time: 'Pagi',
+                level: 'JLPT N3',
+                style: 'Polite',
+                goal: 'Rumah sakit',
+                prompt: 'Saya mengalami pusing dan demam sejak kemarin. Dokter menanyakan gejala dan memberikan arahan obat.'
+            }
+        ];
+
+        function pcmToWav(pcmData, sampleRate = 24000, numChannels = 1) {
+            const buffer = new ArrayBuffer(44 + pcmData.length * 2);
+            const view = new DataView(buffer);
+            const writeString = (view, offset, string) => {
+                for (let i = 0; i < string.length; i++) {
+                    view.setUint8(offset + i, string.charCodeAt(i));
+                }
+            };
+
+            writeString(view, 0, 'RIFF');
+            view.setUint32(4, 36 + pcmData.length * 2, true);
+            writeString(view, 8, 'WAVE');
+            writeString(view, 12, 'fmt ');
+            view.setUint32(16, 16, true);
+            view.setUint16(20, 1, true);
+            view.setUint16(22, numChannels, true);
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, sampleRate * numChannels * 2, true);
+            view.setUint16(32, numChannels * 2, true);
+            view.setUint16(34, 16, true);
+            writeString(view, 36, 'data');
+            view.setUint32(40, pcmData.length * 2, true);
+
+            let offset = 44;
+            for (let i = 0; i < pcmData.length; i++, offset += 2) {
+                view.setInt16(offset, pcmData[i], true);
+            }
+            return new Blob([buffer], { type: 'audio/wav' });
+        }
+
+        function base64ToArrayBuffer(base64) {
+            const binaryString = window.atob(base64);
+            const len = binaryString.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+
+        function App() {
+            // State for API Key
+            const [apiKey, setApiKey] = useState(() => {
+                return localStorage.getItem('kaiwa_gemini_api_key') || DEFAULT_GEMINI_KEY;
+            });
+            const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
+            const [apiKeyModalTab, setApiKeyModalTab] = useState('input'); // 'input' | 'tutorial'
+
+            // Session Config State
+            const [sessionConfig, setSessionConfig] = useState({
+                role: 'Kasir konbini',
+                customRole: { name: '', age: '25', personality: 'Ramah', style: 'Sopan', relation: 'Pegawai Toko', goal: 'Melayani Pembeli' },
+                location: 'Konbini',
+                customLocation: '',
+                time: 'Malam',
+                customTime: '',
+                level: 'JLPT N3',
+                style: 'Polite',
+                goal: 'Belanja',
+                customGoal: '',
+                length: 'Normal',
+                mode: 'text',
+                scenarioText: ''
+            });
+
+            // UI Navigation & Chat States
+            const [activeTab, setActiveTab] = useState('setup');
+            const [chatMessages, setChatMessages] = useState([]);
+            const [inputMessage, setInputMessage] = useState('');
+            const [isLoading, setIsLoading] = useState(false);
+            const [history, setHistory] = useState([]);
+            const [currentSessionId, setCurrentSessionId] = useState(null);
+            const [sessionStartTime, setSessionStartTime] = useState(null);
+
+            // Audio & STT States
+            const [isListening, setIsListening] = useState(false);
+            const [speechSupported, setSpeechSupported] = useState(true);
+            const [audioPlayingIndex, setAudioPlayingIndex] = useState(null);
+            const speechRecognitionRef = useRef(null);
+
+            // Display Assist Toggles
+            const [globalFurigana, setGlobalFurigana] = useState(true);
+            const [globalTranslation, setGlobalTranslation] = useState(false);
+            const [expandedDetails, setExpandedDetails] = useState({});
+
+            // Evaluation State
+            const [evaluation, setEvaluation] = useState(null);
+            const [hints, setHints] = useState([]);
+            const [isLoadingHints, setIsLoadingHints] = useState(false);
+
+            useEffect(() => {
+                const savedHistory = localStorage.getItem('kaiwa_history');
+                if (savedHistory) {
+                    try { setHistory(JSON.parse(savedHistory)); } catch (e) {}
+                }
+
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                if (SpeechRecognition) {
+                    const recognition = new SpeechRecognition();
+                    recognition.continuous = false;
+                    recognition.interimResults = true;
+                    recognition.lang = 'ja-JP';
+
+                    recognition.onresult = (event) => {
+                        let transcript = '';
+                        for (let i = event.resultIndex; i < event.results.length; i++) {
+                            transcript += event.results[i][0].transcript;
+                        }
+                        setInputMessage(transcript);
+                    };
+                    recognition.onerror = () => setIsListening(false);
+                    recognition.onend = () => setIsListening(false);
+                    speechRecognitionRef.current = recognition;
+                } else {
+                    setSpeechSupported(false);
+                }
+            }, []);
+
+            const saveApiKey = (newKey) => {
+                const keyToSave = newKey.trim() || DEFAULT_GEMINI_KEY;
+                setApiKey(keyToSave);
+                localStorage.setItem('kaiwa_gemini_api_key', keyToSave);
+                setIsApiKeyModalOpen(false);
+            };
+
+            const toggleListening = () => {
+                if (!speechRecognitionRef.current) return;
+                if (isListening) {
+                    speechRecognitionRef.current.stop();
+                    setIsListening(false);
+                } else {
+                    try {
+                        speechRecognitionRef.current.start();
+                        setIsListening(true);
+                    } catch (e) { console.error(e); }
+                }
+            };
+
+            const callGeminiChatAPI = async (messages, currentConfig) => {
+                const roleTitle = currentConfig.role === 'Custom' 
+                    ? `${currentConfig.customRole.name} (${currentConfig.customRole.personality}, ${currentConfig.customRole.style})`
+                    : currentConfig.role;
+
+                const loc = currentConfig.location === 'Custom' ? currentConfig.customLocation : currentConfig.location;
+                const timeVal = currentConfig.time === 'Custom' ? currentConfig.customTime : currentConfig.time;
+                const goalVal = currentConfig.goal === 'Custom' ? currentConfig.scenarioText : currentConfig.goal;
+
+                const systemPrompt = `
+Anda adalah partner percakapan bahasa Jepang interaktif.
+ATURAN PERAN KETAT:
+- Karakter Peran: ${roleTitle}
+- Lokasi: ${loc}
+- Waktu/Musim: ${timeVal}
+- Tingkat Kesulitan: ${currentConfig.level}
+- Gaya Bahasa: ${currentConfig.style}
+- Tujuan Percakapan: ${goalVal}
+- Panjang Respon AI: ${currentConfig.length}
+- Skenario Tambahan: ${currentConfig.scenarioText || 'Tidak ada'}
+
+ATURAN UTAMA:
+1. Tetap berada dalam karakter (never break character).
+2. Tulis balasan bahasa Jepang yang sangat alami sesuai level ${currentConfig.level}.
+3. Untuk tag HTML furigana pada "furigana_html", selalu gunakan sintaks HTML baku: <ruby>漢字<rt>かんじ</rt></ruby>.
+4. Jika pengguna membuat kesalahan dalam bahasa Jepang (tata bahasa, partikel, keigo, kosakata):
+   - Jawablah terlebih dahulu secara natural untuk menjaga alur percakapan.
+   - Kemudian berikan koreksi dalam properti "user_correction".
+5. Kembalikan HANYA format JSON valid tanpa markdown wrapper jika memungkinkan.
+`;
+
+                const promptPayload = {
+                    contents: messages.map(m => ({
+                        role: m.sender === 'user' ? 'user' : 'model',
+                        parts: [{ text: typeof m.content === 'string' ? m.content : JSON.stringify(m.content) }]
+                    })),
+                    systemInstruction: { parts: [{ text: systemPrompt }] },
+                    generationConfig: {
+                        responseMimeType: "application/json",
+                        responseSchema: {
+                            type: "OBJECT",
+                            properties: {
+                                "ai_response_ja": { "type": "STRING", "description": "Balasan AI utama dalam bahasa Jepang" },
+                                "furigana_html": { "type": "STRING", "description": "Teks bahasa Jepang bermata kanji dengan tag HTML <ruby>kanji<rt>yomi</rt></ruby>" },
+                                "indonesian_translation": { "type": "STRING", "description": "Terjemahan Bahasa Indonesia" },
+                                "explanation": { "type": "STRING", "description": "Penjelasan tata bahasa dan kosakata" },
+                                "alternatives": { 
+                                    "type": "ARRAY", 
+                                    "items": { "type": "STRING" },
+                                    "description": "2-3 variasi alternatif pengucapan" 
+                                },
+                                "native_version": { "type": "STRING", "description": "Versi paling alami penutur asli Jepang" },
+                                "user_correction": {
+                                    "type": "OBJECT",
+                                    "properties": {
+                                        "has_error": { "type": "BOOLEAN" },
+                                        "user_original": { "type": "STRING" },
+                                        "corrected": { "type": "STRING" },
+                                        "explanation": { "type": "STRING" }
+                                    }
+                                }
+                            },
+                            required: ["ai_response_ja", "furigana_html", "indonesian_translation", "explanation", "alternatives", "native_version"]
+                        }
+                    }
+                };
+
+                const activeKey = apiKey.trim() || DEFAULT_GEMINI_KEY;
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${activeKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(promptPayload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Gagal menghubungkan ke AI (Status: ${response.status}). Periksa API Key Anda.`);
+                }
+
+                const data = await response.json();
+                let jsonText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (!jsonText) throw new Error("Respons AI kosong.");
+
+                jsonText = jsonText.replace(/^```json\s*/i, '').replace(/\s*```$/i, '').trim();
+                return JSON.parse(jsonText);
+            };
+
+            const playJapaneseTTS = async (text, index) => {
+                if (audioPlayingIndex === index) {
+                    setAudioPlayingIndex(null);
+                    window.speechSynthesis?.cancel();
+                    return;
+                }
+                setAudioPlayingIndex(index);
+
+                try {
+                    const activeKey = apiKey.trim() || DEFAULT_GEMINI_KEY;
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${activeKey}`;
+                    
+                    const payload = {
+                        contents: [{ parts: [{ text: `Say naturally in Japanese: ${text}` }] }],
+                        generationConfig: {
+                            responseModalities: ["AUDIO"],
+                            speechConfig: {
+                                voiceConfig: {
+                                    prebuiltVoiceConfig: { voiceName: "Aoede" }
+                                }
+                            }
+                        }
+                    };
+
+                    const res = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const data = await res.json();
+                    const part = data?.candidates?.[0]?.content?.parts?.[0];
+                    const audioData = part?.inlineData?.data;
+                    const mimeType = part?.inlineData?.mimeType;
+
+                    if (audioData && mimeType && mimeType.startsWith("audio/")) {
+                        const sampleRateMatch = mimeType.match(/rate=(\d+)/);
+                        const sampleRate = sampleRateMatch ? parseInt(sampleRateMatch[1], 10) : 24000;
+                        const pcmBuffer = base64ToArrayBuffer(audioData);
+                        const pcm16 = new Int16Array(pcmBuffer);
+                        const wavBlob = pcmToWav(pcm16, sampleRate);
+                        const audioUrl = URL.createObjectURL(wavBlob);
+
+                        const audio = new Audio(audioUrl);
+                        audio.onended = () => setAudioPlayingIndex(null);
+                        audio.onerror = () => fallbackWebSpeech(text, index);
+                        await audio.play();
+                        return;
+                    }
+                } catch (e) {
+                    console.warn("Gemini TTS fallback:", e);
+                }
+
+                fallbackWebSpeech(text, index);
+            };
+
+            const fallbackWebSpeech = (text, index) => {
+                if ('speechSynthesis' in window) {
+                    window.speechSynthesis.cancel();
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.lang = 'ja-JP';
+                    utterance.rate = 0.9;
+                    utterance.onend = () => setAudioPlayingIndex(null);
+                    utterance.onerror = () => setAudioPlayingIndex(null);
+                    window.speechSynthesis.speak(utterance);
+                } else {
+                    setAudioPlayingIndex(null);
+                }
+            };
+
+            const handleStartSession = async () => {
+                setIsLoading(true);
+                setActiveTab('chat');
+                setChatMessages([]);
+                setSessionStartTime(Date.now());
+                setCurrentSessionId('session_' + Date.now());
+
+                try {
+                    const initialUserPrompt = [{
+                        sender: 'user',
+                        content: `[Sistem: Sesi dimulai. Berikan sapaan pembuka pertama dalam peran ${sessionConfig.role} di tempat ${sessionConfig.location}, sesuai waktu ${sessionConfig.time}.]`
+                    }];
+
+                    const aiResponse = await callGeminiChatAPI(initialUserPrompt, sessionConfig);
+                    const firstMessage = {
+                        id: Date.now(),
+                        sender: 'ai',
+                        data: aiResponse,
+                        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                    };
+
+                    setChatMessages([firstMessage]);
+                    if (sessionConfig.mode === 'voice') {
+                        playJapaneseTTS(aiResponse.ai_response_ja, 0);
+                    }
+                } catch (err) {
+                    alert("Gagal memulai sesi: " + err.message);
+                    setActiveTab('setup');
+                } finally {
+                    setIsLoading(false);
+                }
+            };
+
+            const handleSendMessage = async (textToSend = null) => {
+                const text = textToSend || inputMessage;
+                if (!text.trim() || isLoading) return;
+
+                setInputMessage('');
+                if (isListening && speechRecognitionRef.current) {
+                    speechRecognitionRef.current.stop();
+                    setIsListening(false);
+                }
+
+                const userMsgObj = {
+                    id: Date.now(),
+                    sender: 'user',
+                    content: text,
+                    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                };
+
+                const updatedMessages = [...chatMessages, userMsgObj];
+                setChatMessages(updatedMessages);
+                setIsLoading(true);
+
+                try {
+                    const formattedHistory = updatedMessages.map(m => ({
+                        sender: m.sender,
+                        content: m.sender === 'user' ? m.content : m.data?.ai_response_ja || ''
+                    }));
+
+                    const aiResponse = await callGeminiChatAPI(formattedHistory, sessionConfig);
+                    const aiMsgObj = {
+                        id: Date.now() + 1,
+                        sender: 'ai',
+                        data: aiResponse,
+                        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                    };
+
+                    setChatMessages(prev => [...prev, aiMsgObj]);
+                    if (sessionConfig.mode === 'voice') {
+                        playJapaneseTTS(aiResponse.ai_response_ja, updatedMessages.length);
+                    }
+                } catch (err) {
+                    alert("Terjadi kesalahan: " + err.message);
+                } finally {
+                    setIsLoading(false);
+                }
+            };
+
+            const handleGetHints = async () => {
+                setIsLoadingHints(true);
+                try {
+                    const activeKey = apiKey.trim() || DEFAULT_GEMINI_KEY;
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${activeKey}`;
+                    const historyContext = chatMessages.slice(-4).map(m => `${m.sender}: ${m.sender === 'user' ? m.content : m.data?.ai_response_ja}`).join('\n');
+
+                    const payload = {
+                        contents: [{
+                            parts: [{
+                                text: `Berdasarkan riwayat percakapan berikut:\n${historyContext}\n\nBerikan 3 contoh balasan bahasa Jepang yang alami yang bisa dikatakan pengguna saat ini sesuai level ${sessionConfig.level}. Sertakan terjemahan Indonesia.`
+                            }]
+                        }],
+                        generationConfig: {
+                            responseMimeType: "application/json",
+                            responseSchema: {
+                                type: "ARRAY",
+                                items: {
+                                    type: "OBJECT",
+                                    properties: {
+                                        "japanese": { "type": "STRING" },
+                                        "indonesian": { "type": "STRING" }
+                                    },
+                                    required: ["japanese", "indonesian"]
+                                }
+                            }
+                        }
+                    };
+
+                    const res = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const data = await res.json();
+                    let rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '[]';
+                    rawText = rawText.replace(/^```json\s*/i, '').replace(/\s*```$/i, '').trim();
+                    setHints(JSON.parse(rawText));
+                } catch (e) {
+                    console.error(e);
+                } finally {
+                    setIsLoadingHints(false);
+                }
+            };
+
+            const handleFinishSession = async () => {
+                if (chatMessages.length <= 1) {
+                    alert("Percakapan masih terlalu singkat untuk dinilai.");
+                    return;
+                }
+
+                setIsLoading(true);
+                try {
+                    const chatLog = chatMessages.map(m => `${m.sender.toUpperCase()}: ${m.sender === 'user' ? m.content : m.data?.ai_response_ja}`).join('\n');
+                    const activeKey = apiKey.trim() || DEFAULT_GEMINI_KEY;
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${activeKey}`;
+
+                    const evalPrompt = `
+Evaluasi percakapan bahasa Jepang pengguna berikut:
+${chatLog}
+
+Skenario:
+- Peran AI: ${sessionConfig.role}
+- Level Target: ${sessionConfig.level}
+
+Berikan nilai (0-100) dan ringkasan untuk:
+1. Grammar
+2. Vocabulary
+3. Naturalness
+4. Fluency
+5. Pronunciation
+
+Kelompokkan kesalahan ke dalam kategori: Partikel, Tata Bahasa, Pilihan Kata, Keigo, Pengucapan.
+`;
+
+                    const payload = {
+                        contents: [{ parts: [{ text: evalPrompt }] }],
+                        generationConfig: {
+                            responseMimeType: "application/json",
+                            responseSchema: {
+                                type: "OBJECT",
+                                properties: {
+                                    "scores": {
+                                        "type": "OBJECT",
+                                        "properties": {
+                                            "grammar": { "type": "NUMBER" },
+                                            "vocabulary": { "type": "NUMBER" },
+                                            "naturalness": { "type": "NUMBER" },
+                                            "fluency": { "type": "NUMBER" },
+                                            "pronunciation": { "type": "NUMBER" },
+                                            "overall": { "type": "NUMBER" }
+                                        },
+                                        "required": ["grammar", "vocabulary", "naturalness", "fluency", "pronunciation", "overall"]
+                                    },
+                                    "mistakes_breakdown": {
+                                        "type": "ARRAY",
+                                        "items": {
+                                            "type": "OBJECT",
+                                            "properties": {
+                                                "category": { "type": "STRING" },
+                                                "user_said": { "type": "STRING" },
+                                                "better_way": { "type": "STRING" },
+                                                "explanation": { "type": "STRING" }
+                                            },
+                                            "required": ["category", "user_said", "better_way", "explanation"]
+                                        }
+                                    },
+                                    "strengths": { "type": "ARRAY", "items": { "type": "STRING" } },
+                                    "improvements": { "type": "ARRAY", "items": { "type": "STRING" } },
+                                    "summary": { "type": "STRING" }
+                                },
+                                required: ["scores", "mistakes_breakdown", "strengths", "improvements", "summary"]
+                            }
+                        }
+                    };
+
+                    const res = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const data = await res.json();
+                    let rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+                    rawText = rawText.replace(/^```json\s*/i, '').replace(/\s*```$/i, '').trim();
+                    const evalData = JSON.parse(rawText);
+                    setEvaluation(evalData);
+
+                    // Save History
+                    const durationSeconds = Math.round((Date.now() - (sessionStartTime || Date.now())) / 1000);
+                    const minutes = Math.floor(durationSeconds / 60);
+                    const seconds = durationSeconds % 60;
+                    const durationStr = `${minutes}m ${seconds}s`;
+
+                    const historyItem = {
+                        id: currentSessionId,
+                        date: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+                        role: sessionConfig.role === 'Custom' ? sessionConfig.customRole.name : sessionConfig.role,
+                        location: sessionConfig.location === 'Custom' ? sessionConfig.customLocation : sessionConfig.location,
+                        time: sessionConfig.time === 'Custom' ? sessionConfig.customTime : sessionConfig.time,
+                        level: sessionConfig.level,
+                        mode: sessionConfig.mode,
+                        duration: durationStr,
+                        scores: evalData.scores,
+                        messages: chatMessages,
+                        evalData: evalData
+                    };
+
+                    const updatedHist = [historyItem, ...history];
+                    setHistory(updatedHist);
+                    localStorage.setItem('kaiwa_history', JSON.stringify(updatedHist));
+                    setActiveTab('eval');
+                } catch (e) {
+                    alert("Gagal memproses penilaian: " + e.message);
+                } finally {
+                    setIsLoading(false);
+                }
+            };
+
+            return (
+                <div className="min-h-screen bg-slate-50 flex flex-col justify-between">
+                    
+                    {/* Header Component matching Bunpou Style */}
+                    <header className="bg-slate-900 text-white shadow-md">
+                        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                                <a href="index.html" className="p-2 hover:bg-slate-800 rounded-lg transition-colors text-slate-300 hover:text-white" title="Kembali ke Portal">
+                                    <i className="fa-solid fa-arrow-left"></i>
+                                </a>
+                                <div>
+                                    <span className="text-xs text-rose-400 font-bold uppercase tracking-wider block font-sans">
+                                        JLPT N3 Kaiwa Practice
+                                    </span>
+                                    <h1 className="text-base md:text-lg font-black leading-tight font-sans flex items-center gap-2">
+                                        日本語総まとめ N3 : 会話
+                                    </h1>
+                                </div>
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                                {activeTab === 'chat' && (
+                                    <button
+                                        onClick={handleFinishSession}
+                                        className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl shadow-sm transition-all flex items-center gap-1.5"
+                                    >
+                                        <i className="fa-solid fa-award"></i>
+                                        <span className="hidden sm:inline">Simpan percakapan & Nilai</span>
+                                    </button>
+                                )}
+
+                                <button
+                                    onClick={() => {
+                                        setApiKeyModalTab('input');
+                                        setIsApiKeyModalOpen(true);
+                                    }}
+                                    className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-amber-300 text-xs font-bold rounded-xl border border-slate-700 transition-all flex items-center gap-1.5"
+                                    title="Pengaturan API Key"
+                                >
+                                    <i className="fa-solid fa-key"></i>
+                                    <span className="hidden sm:inline">API Key</span>
+                                </button>
+
+                                <button
+                                    onClick={() => setActiveTab('history')}
+                                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border flex items-center gap-1.5 ${
+                                        activeTab === 'history'
+                                            ? 'bg-rose-600 text-white border-rose-500'
+                                            : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'
+                                    }`}
+                                >
+                                    <i className="fa-solid fa-clock-rotate-left"></i>
+                                    <span className="hidden sm:inline">Riwayat</span>
+                                </button>
+
+                                <button
+                                    onClick={() => setActiveTab('setup')}
+                                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border flex items-center gap-1.5 ${
+                                        activeTab === 'setup'
+                                            ? 'bg-rose-600 text-white border-rose-500'
+                                            : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'
+                                    }`}
+                                >
+                                    <i className="fa-solid fa-plus"></i>
+                                    <span className="hidden sm:inline">Sesi Baru</span>
+                                </button>
+                            </div>
+                        </div>
+                    </header>
+
+                    {}
+                    {isApiKeyModalOpen && (
+                        <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in font-sans">
+                            <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-lg w-full overflow-hidden flex flex-col max-h-[90vh]">
+                                
+                                {/* Modal Header */}
+                                <div className="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-900 text-white">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center">
+                                            <i className="fa-solid fa-key text-sm"></i>
+                                        </div>
+                                        <div>
+                                            <h3 className="font-bold text-sm text-white">Pengaturan API Key Google Gemini</h3>
+                                            <p className="text-[10px] text-slate-400">Gunakan API Key sendiri untuk limit lebih luas</p>
+                                        </div>
+                                    </div>
+                                    <button 
+                                        onClick={() => setIsApiKeyModalOpen(false)} 
+                                        className="text-slate-400 hover:text-white p-1 rounded-lg transition-colors"
+                                    >
+                                        <i className="fa-solid fa-xmark text-lg"></i>
+                                    </button>
+                                </div>
+
+                                {/* Modal Sub-Nav Tabs */}
+                                <div className="flex border-b border-slate-100 bg-slate-50 px-4 pt-3 gap-2">
+                                    <button
+                                        onClick={() => setApiKeyModalTab('input')}
+                                        className={`px-4 py-2 text-xs font-bold rounded-t-xl transition-all border-t border-x ${
+                                            apiKeyModalTab === 'input'
+                                                ? 'bg-white text-rose-600 border-slate-200 shadow-sm'
+                                                : 'text-slate-500 hover:text-slate-800 border-transparent'
+                                        }`}
+                                    >
+                                        <i className="fa-solid fa-sliders mr-1.5"></i> Simpan Key
+                                    </button>
+                                    <button
+                                        onClick={() => setApiKeyModalTab('tutorial')}
+                                        className={`px-4 py-2 text-xs font-bold rounded-t-xl transition-all border-t border-x ${
+                                            apiKeyModalTab === 'tutorial'
+                                                ? 'bg-white text-rose-600 border-slate-200 shadow-sm'
+                                                : 'text-slate-500 hover:text-slate-800 border-transparent'
+                                        }`}
+                                    >
+                                        <i className="fa-solid fa-graduation-cap mr-1.5"></i> Panduan Gratis (5 Langkah)
+                                    </button>
+                                </div>
+
+                                {/* Modal Body - Tab Content */}
+                                <div className="p-6 overflow-y-auto custom-scrollbar flex-1 space-y-4">
+                                    {apiKeyModalTab === 'input' ? (
+                                        <div className="space-y-4">
+                                            <div className="p-3.5 bg-amber-50 border border-amber-200/80 rounded-2xl text-xs space-y-1.5 text-amber-900">
+                                                <div className="font-bold flex items-center gap-1.5">
+                                                    <i className="fa-solid fa-lightbulb text-amber-600"></i>
+                                                    Mengapa pakai API Key milik sendiri?
+                                                </div>
+                                                <p className="text-[11px] text-amber-800 leading-relaxed">
+                                                    Google menyediakan kuota Gemini AI gratis setiap bulannya untuk tiap email. Dengan memasukkan API Key pribadi, kuota pesan Anda tidak akan terbagi dengan pengguna aplikasi lainnya.
+                                                </p>
+                                            </div>
+
+                                            <div className="space-y-1.5">
+                                                <label className="text-xs font-bold text-slate-700 block">
+                                                    Gemini API Key Anda:
+                                                </label>
+                                                <input
+                                                    type="password"
+                                                    defaultValue={apiKey === DEFAULT_GEMINI_KEY ? '' : apiKey}
+                                                    id="apiKeyInput"
+                                                    placeholder="Tempelkan API Key di sini (AIzaSy...)"
+                                                    className="w-full text-xs p-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-rose-500 font-mono"
+                                                />
+                                                <span className="text-[10px] text-slate-400 block">
+                                                    🔒 API Key disimpan secara lokal di browser Anda dan tidak pernah dikirim ke server pihak ketiga.
+                                                </span>
+                                            </div>
+
+                                            <div className="pt-2 flex items-center justify-between border-t border-slate-100">
+                                                <button
+                                                    onClick={() => setApiKeyModalTab('tutorial')}
+                                                    className="text-xs text-rose-600 hover:text-rose-700 font-bold flex items-center gap-1"
+                                                >
+                                                    <i className="fa-solid fa-circle-question"></i>
+                                                    Belum punya API Key? Lihat Tutorial
+                                                </button>
+
+                                                <div className="flex gap-2">
+                                                    <button
+                                                        onClick={() => setIsApiKeyModalOpen(false)}
+                                                        className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl"
+                                                    >
+                                                        Batal
+                                                    </button>
+                                                    <button
+                                                        onClick={() => saveApiKey(document.getElementById('apiKeyInput').value)}
+                                                        className="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs rounded-xl shadow-md"
+                                                    >
+                                                        Simpan Key
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="space-y-5">
+                                            <div className="flex items-center justify-between bg-slate-50 p-3 rounded-2xl border border-slate-200">
+                                                <span className="text-xs font-bold text-slate-700">
+                                                    Portal Pembuatan Key Resmi Google:
+                                                </span>
+                                                <a 
+                                                    href="https://aistudio.google.com/app/apikey" 
+                                                    target="_blank" 
+                                                    rel="noopener noreferrer"
+                                                    className="px-3 py-1.5 bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold rounded-xl shadow-sm transition-all flex items-center gap-1.5"
+                                                >
+                                                    <span>Buka AI Studio</span>
+                                                    <i className="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                                                </a>
+                                            </div>
+
+                                            {/* Tutorial Steps */}
+                                            <div className="space-y-3">
+                                                <div className="flex gap-3 items-start p-3 rounded-2xl border border-slate-200 bg-white shadow-sm">
+                                                    <div className="w-6 h-6 rounded-full bg-rose-100 text-rose-700 font-bold text-xs flex items-center justify-center shrink-0">1</div>
+                                                    <div className="space-y-0.5 text-xs">
+                                                        <h4 className="font-bold text-slate-800">Buka Google AI Studio</h4>
+                                                        <p className="text-slate-500 leading-relaxed">
+                                                            Klik tombol <strong className="text-slate-700">"Buka AI Studio"</strong> di atas atau kunjungi <code className="bg-slate-100 px-1 py-0.5 rounded text-rose-600 font-mono">aistudio.google.com/app/apikey</code>.
+                                                        </p>
+                                                    </div>
+                                                </div>
+
+                                                <div className="flex gap-3 items-start p-3 rounded-2xl border border-slate-200 bg-white shadow-sm">
+                                                    <div className="w-6 h-6 rounded-full bg-rose-100 text-rose-700 font-bold text-xs flex items-center justify-center shrink-0">2</div>
+                                                    <div className="space-y-0.5 text-xs">
+                                                        <h4 className="font-bold text-slate-800">Login dengan Akun Google (Gmail)</h4>
+                                                        <p className="text-slate-500 leading-relaxed">
+                                                            Masuk menggunakan email Google Anda. Bebas menggunakan email pribadi atau email apa saja.
+                                                        </p>
+                                                    </div>
+                                                </div>
+
+                                                <div className="flex gap-3 items-start p-3 rounded-2xl border border-slate-200 bg-white shadow-sm">
+                                                    <div className="w-6 h-6 rounded-full bg-rose-100 text-rose-700 font-bold text-xs flex items-center justify-center shrink-0">3</div>
+                                                    <div className="space-y-0.5 text-xs">
+                                                        <h4 className="font-bold text-slate-800">Klik "Create API Key"</h4>
+                                                        <p className="text-slate-500 leading-relaxed">
+                                                            Pilih tombol berwarna biru <strong className="text-slate-700">"Create API key"</strong> di sudut kiri/tengah halaman.
+                                                        </p>
+                                                    </div>
+                                                </div>
+
+                                                <div className="flex gap-3 items-start p-3 rounded-2xl border border-slate-200 bg-white shadow-sm">
+                                                    <div className="w-6 h-6 rounded-full bg-rose-100 text-rose-700 font-bold text-xs flex items-center justify-center shrink-0">4</div>
+                                                    <div className="space-y-0.5 text-xs">
+                                                        <h4 className="font-bold text-slate-800">Pilih Proyek & Salin Kode</h4>
+                                                        <p className="text-slate-500 leading-relaxed">
+                                                            Pilih <i>"Create API key in new project"</i>, lalu klik tombol <strong className="text-slate-700">"Copy"</strong> untuk menyalin string kunci Anda (berawalan <code className="bg-slate-100 px-1 py-0.5 rounded text-slate-700 font-mono">AIzaSy...</code>).
+                                                        </p>
+                                                    </div>
+                                                </div>
+
+                                                <div className="flex gap-3 items-start p-3 rounded-2xl border border-slate-200 bg-white shadow-sm">
+                                                    <div className="w-6 h-6 rounded-full bg-rose-100 text-rose-700 font-bold text-xs flex items-center justify-center shrink-0">5</div>
+                                                    <div className="space-y-0.5 text-xs">
+                                                        <h4 className="font-bold text-slate-800">Tempelkan di Aplikasi Ini</h4>
+                                                        <p className="text-slate-500 leading-relaxed">
+                                                            Kembali ke aplikasi ini, buka tab <strong className="text-slate-700">"Simpan Key"</strong>, tempelkan kunci Anda, lalu klik <strong className="text-slate-700">"Simpan Key"</strong>.
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="pt-2 flex justify-end border-t border-slate-100">
+                                                <button
+                                                    onClick={() => setApiKeyModalTab('input')}
+                                                    className="px-5 py-2 bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-1.5"
+                                                >
+                                                    <span>Saya Sudah Punya Key, Masukkan Sekarang</span>
+                                                    <i className="fa-solid fa-arrow-right"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Main Screen Body View Router */}
+                    <main className="max-w-4xl mx-auto px-4 md:px-6 py-8 flex-1 w-full">
+                        {activeTab === 'setup' && (
+                            <SetupScreen 
+                                sessionConfig={sessionConfig}
+                                setSessionConfig={setSessionConfig}
+                                onStart={handleStartSession}
+                                isLoading={isLoading}
+                            />
+                        )}
+
+                        {activeTab === 'chat' && (
+                            <ChatScreen 
+                                sessionConfig={sessionConfig}
+                                chatMessages={chatMessages}
+                                inputMessage={inputMessage}
+                                setInputMessage={setInputMessage}
+                                onSendMessage={handleSendMessage}
+                                isLoading={isLoading}
+                                isListening={isListening}
+                                toggleListening={toggleListening}
+                                speechSupported={speechSupported}
+                                audioPlayingIndex={audioPlayingIndex}
+                                playJapaneseTTS={playJapaneseTTS}
+                                globalFurigana={globalFurigana}
+                                setGlobalFurigana={setGlobalFurigana}
+                                globalTranslation={globalTranslation}
+                                setGlobalTranslation={setGlobalTranslation}
+                                expandedDetails={expandedDetails}
+                                setExpandedDetails={setExpandedDetails}
+                                hints={hints}
+                                setHints={setHints}
+                                onGetHints={handleGetHints}
+                                isLoadingHints={isLoadingHints}
+                            />
+                        )}
+
+                        {activeTab === 'eval' && evaluation && (
+                            <EvaluationScreen 
+                                evaluation={evaluation}
+                                sessionConfig={sessionConfig}
+                                onRestart={() => setActiveTab('setup')}
+                            />
+                        )}
+
+                        {activeTab === 'history' && (
+                            <HistoryScreen 
+                                history={history}
+                                onSelectSession={(sess) => {
+                                    setChatMessages(sess.messages);
+                                    setSessionConfig(prev => ({
+                                        ...prev,
+                                        role: sess.role,
+                                        location: sess.location,
+                                        level: sess.level,
+                                        mode: sess.mode
+                                    }));
+                                    if (sess.evalData) setEvaluation(sess.evalData);
+                                    setActiveTab('chat');
+                                }}
+                                onClearHistory={() => {
+                                    if (confirm('Hapus semua riwayat percakapan?')) {
+                                        setHistory([]);
+                                        localStorage.removeItem('kaiwa_history');
+                                    }
+                                }}
+                            />
+                        )}
+                    </main>
+
+                    {/* Footer */}
+                    <footer className="mt-12 border-t border-slate-200 py-8 text-center text-slate-400 text-xs font-sans">
+                        <p>© Nihongo Soumatome N3 Kaiwa Practice • AI Conversational Learning</p>
+                    </footer>
+                </div>
+            );
+        }
+
+        function SetupScreen({ sessionConfig, setSessionConfig, onStart, isLoading }) {
+            const [activePreset, setActivePreset] = useState(null);
+
+            const updateConfig = (key, val) => setSessionConfig(prev => ({ ...prev, [key]: val }));
+
+            const applyPreset = (preset) => {
+                setActivePreset(preset.title);
+                setSessionConfig(prev => ({
+                    ...prev,
+                    role: preset.role,
+                    location: preset.location,
+                    time: preset.time,
+                    level: preset.level,
+                    style: preset.style,
+                    goal: preset.goal,
+                    scenarioText: preset.prompt
+                }));
+            };
+
+            return (
+                <div className="space-y-8 animate-fade-in">
+                    
+                    {/* Hero Welcome Card */}
+                    <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 md:p-8">
+                        <div className="border-b-2 border-slate-900 pb-4 mb-6 flex justify-between items-center">
+                            <span className="text-xs font-bold uppercase tracking-wider text-rose-700 bg-rose-50 px-3 py-1 rounded-full border border-rose-100 font-sans">
+                                会話トレーニング (Kaiwa Practice)
+                            </span>
+                            <span className="text-xs text-slate-400 font-medium">JLPT N3 Level Focus</span>
+                        </div>
+                        <h2 className="text-2xl md:text-3xl font-extrabold text-slate-800 mb-2 japanese-text">
+                            Latihan Percakapan Bahasa Jepang AI
+                        </h2>
+                        <p className="text-slate-600 text-sm leading-relaxed font-sans">
+                            Atur lawan bicara, situasi tempat, waktu, serta tingkat bahasa yang diinginkan. AI akan mempertahankan karakter secara konsisten selama percakapan berlangsung.
+                        </p>
+                    </div>
+
+                    {/* Preset Scenarios Carousel */}
+                    <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 md:p-8">
+                        <h3 className="text-sm font-extrabold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                            <i className="fa-solid fa-bolt text-amber-500"></i> Skenario Siap Pakai
+                        </h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            {SCENARIO_PRESETS.map((preset, idx) => (
+                                <div
+                                    key={idx}
+                                    onClick={() => applyPreset(preset)}
+                                    className={`cursor-pointer p-4 rounded-2xl border transition-all flex flex-col justify-between ${
+                                        activePreset === preset.title 
+                                            ? 'bg-rose-50 border-rose-500 ring-2 ring-rose-200' 
+                                            : 'bg-slate-50 border-slate-200 hover:border-slate-300'
+                                    }`}
+                                >
+                                    <div>
+                                        <div className="flex items-center justify-between text-[11px] font-bold text-rose-600 mb-1">
+                                            <span>{preset.level}</span>
+                                            <span className="text-slate-400 font-normal">{preset.location}</span>
+                                        </div>
+                                        <h4 className="font-bold text-sm text-slate-800 mb-1 line-clamp-1">{preset.title}</h4>
+                                        <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">{preset.prompt}</p>
+                                    </div>
+                                    <div className="mt-3 pt-2 border-t border-slate-200/80 flex items-center justify-between text-[11px] text-slate-400">
+                                        <span>{preset.role}</span>
+                                        <i className="fa-solid fa-chevron-right text-[10px]"></i>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Setup Form Controls */}
+                    <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 md:p-8 space-y-6">
+                        <h3 className="text-lg font-bold text-slate-800 border-b border-slate-100 pb-3">
+                            Pengaturan Sesi Percakapan
+                        </h3>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            
+                            {/* 1. Lawan Bicara */}
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
+                                    1. Lawan Bicara (Role)
+                                </label>
+                                <select
+                                    value={sessionConfig.role}
+                                    onChange={(e) => updateConfig('role', e.target.value)}
+                                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 font-semibold focus:outline-none focus:border-rose-500 focus:ring-2 focus:ring-rose-100"
+                                >
+                                    {QUICK_ROLES.map(r => <option key={r} value={r}>{r}</option>)}
+                                </select>
+                            </div>
+
+                            {/* 2. JLPT Level */}
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
+                                    2. Tingkat Kesulitan (Level)
+                                </label>
+                                <select
+                                    value={sessionConfig.level}
+                                    onChange={(e) => updateConfig('level', e.target.value)}
+                                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 font-semibold focus:outline-none focus:border-rose-500 focus:ring-2 focus:ring-rose-100"
+                                >
+                                    {JLPT_LEVELS.map(l => <option key={l.level} value={l.level}>{l.level} — {l.tag}</option>)}
+                                </select>
+                            </div>
+
+                            {/* 3. Tempat */}
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
+                                    3. Tempat (Location)
+                                </label>
+                                <select
+                                    value={sessionConfig.location}
+                                    onChange={(e) => updateConfig('location', e.target.value)}
+                                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 font-semibold focus:outline-none focus:border-rose-500 focus:ring-2 focus:ring-rose-100"
+                                >
+                                    {QUICK_LOCATIONS.map(l => <option key={l} value={l}>{l}</option>)}
+                                </select>
+                            </div>
+
+                            {/* 4. Waktu */}
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
+                                    4. Waktu / Musim (Time & Season)
+                                </label>
+                                <select
+                                    value={sessionConfig.time}
+                                    onChange={(e) => updateConfig('time', e.target.value)}
+                                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 font-semibold focus:outline-none focus:border-rose-500 focus:ring-2 focus:ring-rose-100"
+                                >
+                                    {QUICK_TIMES.map(t => <option key={t} value={t}>{t}</option>)}
+                                </select>
+                            </div>
+
+                            {/* 5. Gaya Bahasa */}
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
+                                    5. Gaya Bahasa
+                                </label>
+                                <select
+                                    value={sessionConfig.style}
+                                    onChange={(e) => updateConfig('style', e.target.value)}
+                                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 font-semibold focus:outline-none focus:border-rose-500 focus:ring-2 focus:ring-rose-100"
+                                >
+                                    {SPEECH_STYLES.map(s => <option key={s} value={s}>{s}</option>)}
+                                </select>
+                            </div>
+
+                            {/* 6. Tujuan Latihan */}
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
+                                    6. Tujuan Latihan
+                                </label>
+                                <select
+                                    value={sessionConfig.goal}
+                                    onChange={(e) => updateConfig('goal', e.target.value)}
+                                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 font-semibold focus:outline-none focus:border-rose-500 focus:ring-2 focus:ring-rose-100"
+                                >
+                                    {GOALS.map(g => <option key={g} value={g}>{g}</option>)}
+                                </select>
+                            </div>
+
+                        </div>
+
+                        {/* Custom Fields conditional input */}
+                        {sessionConfig.role === 'Custom' && (
+                            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3 mt-3 animate-fade-in">
+                                <h4 className="text-xs font-bold text-rose-600 uppercase tracking-wider">Detail Karakter Custom</h4>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                                    <input
+                                        type="text"
+                                        placeholder="Nama Karakter (Contoh: Tanaka-san)"
+                                        value={sessionConfig.customRole.name}
+                                        onChange={(e) => setSessionConfig({ ...sessionConfig, customRole: { ...sessionConfig.customRole, name: e.target.value } })}
+                                        className="bg-white border border-slate-200 rounded-xl p-2.5 outline-none focus:border-rose-500"
+                                    />
+                                    <input
+                                        type="text"
+                                        placeholder="Kepribadian (Contoh: Ramah tapi tegas)"
+                                        value={sessionConfig.customRole.personality}
+                                        onChange={(e) => setSessionConfig({ ...sessionConfig, customRole: { ...sessionConfig.customRole, personality: e.target.value } })}
+                                        className="bg-white border border-slate-200 rounded-xl p-2.5 outline-none focus:border-rose-500"
+                                    />
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Custom Narrative Scenario */}
+                        <div className="space-y-2 pt-2 border-t border-slate-100">
+                            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
+                                Skenario Bebas Tambahan (Opsional)
+                            </label>
+                            <textarea
+                                rows={2}
+                                placeholder="Contoh: Saya ingin latihan melaporkan koper hilang di Bandara Haneda..."
+                                value={sessionConfig.scenarioText}
+                                onChange={(e) => updateConfig('scenarioText', e.target.value)}
+                                className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 focus:outline-none focus:border-rose-500 focus:ring-2 focus:ring-rose-100 resize-none"
+                            />
+                        </div>
+
+                        {/* Launch Action Bar */}
+                        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-100">
+                            <div className="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200 w-full sm:w-auto">
+                                <button
+                                    type="button"
+                                    onClick={() => updateConfig('mode', 'text')}
+                                    className={`flex-1 sm:flex-initial px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+                                        sessionConfig.mode === 'text' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-800'
+                                    }`}
+                                >
+                                    <i className="fa-solid fa-keyboard mr-1.5"></i> Mode Text
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => updateConfig('mode', 'voice')}
+                                    className={`flex-1 sm:flex-initial px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+                                        sessionConfig.mode === 'voice' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-800'
+                                    }`}
+                                >
+                                    <i className="fa-solid fa-microphone mr-1.5"></i> Mode Voice
+                                </button>
+                            </div>
+
+                            <button
+                                type="button"
+                                onClick={onStart}
+                                disabled={isLoading}
+                                className="w-full sm:w-auto px-8 py-3.5 bg-rose-600 hover:bg-rose-500 active:scale-95 text-white font-extrabold text-sm rounded-2xl shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                            >
+                                {isLoading ? (
+                                    <>
+                                        <i className="fa-solid fa-spinner animate-spin"></i>
+                                        <span>Menyiapkan Persona AI...</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <i className="fa-solid fa-comments"></i>
+                                        <span>Mulai Percakapan Kaiwa</span>
+                                    </>
+                                )}
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            );
+        }
+
+        function ChatScreen({
+            sessionConfig,
+            chatMessages,
+            inputMessage,
+            setInputMessage,
+            onSendMessage,
+            isLoading,
+            isListening,
+            toggleListening,
+            speechSupported,
+            audioPlayingIndex,
+            playJapaneseTTS,
+            globalFurigana,
+            setGlobalFurigana,
+            globalTranslation,
+            setGlobalTranslation,
+            expandedDetails,
+            setExpandedDetails,
+            hints,
+            setHints,
+            onGetHints,
+            isLoadingHints
+        }) {
+            const chatEndRef = useRef(null);
+
+            useEffect(() => {
+                chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+            }, [chatMessages, isLoading]);
+
+            const toggleDetail = (id, section) => {
+                setExpandedDetails(prev => ({
+                    ...prev,
+                    [id]: { ...prev[id], [section]: !prev[id]?.[section] }
+                }));
+            };
+
+            return (
+                <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col h-[75vh]">
+                    
+                    {/* Session Bar Header */}
+                    <div className="bg-slate-900 text-white px-5 py-3 flex items-center justify-between flex-wrap gap-2">
+                        <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-xl bg-rose-500/20 text-rose-400 border border-rose-500/30 flex items-center justify-center font-bold text-xs">
+                                {sessionConfig.role.charAt(0)}
+                            </div>
+                            <div>
+                                <div className="flex items-center gap-2">
+                                    <h3 className="font-bold text-sm text-white">{sessionConfig.role}</h3>
+                                    <span className="text-[10px] bg-rose-500/20 text-rose-300 border border-rose-500/30 px-2 py-0.2 rounded-full font-mono">
+                                        {sessionConfig.level}
+                                    </span>
+                                </div>
+                                <p className="text-[10px] text-slate-400">📍 {sessionConfig.location} • 🕒 {sessionConfig.time}</p>
+                            </div>
+                        </div>
+
+                        {/* Universal Furigana & Translation Toggles */}
+                        <div className="flex items-center gap-2">
+                            <button
+                                onClick={() => setGlobalFurigana(!globalFurigana)}
+                                className={`px-2.5 py-1 rounded-lg text-xs font-bold border transition-all ${
+                                    globalFurigana ? 'bg-rose-600 text-white border-rose-500' : 'bg-slate-800 text-slate-400 border-slate-700'
+                                }`}
+                            >
+                                ふりがな
+                            </button>
+                            <button
+                                onClick={() => setGlobalTranslation(!globalTranslation)}
+                                className={`px-2.5 py-1 rounded-lg text-xs font-bold border transition-all ${
+                                    globalTranslation ? 'bg-rose-600 text-white border-rose-500' : 'bg-slate-800 text-slate-400 border-slate-700'
+                                }`}
+                            >
+                                🇮🇩 Terjemahan
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Chat Messages Stream */}
+                    <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 custom-scrollbar bg-slate-50/50">
+                        {chatMessages.map((msg, idx) => {
+                            if (msg.sender === 'user') {
+                                return (
+                                    <div key={msg.id} className="flex justify-end animate-fade-in">
+                                        <div className="max-w-[85%] sm:max-w-[70%] bg-rose-600 text-white rounded-2xl rounded-tr-none p-4 shadow-sm space-y-1">
+                                            <p className="text-sm font-medium leading-relaxed font-japanese">{msg.content}</p>
+                                            <span className="text-[9px] text-rose-200 block text-right">{msg.timestamp}</span>
+                                        </div>
+                                    </div>
+                                );
+                            }
+
+                            const aiData = msg.data || {};
+                            const details = expandedDetails[msg.id] || {};
+
+                            return (
+                                <div key={msg.id} className="flex flex-col items-start gap-2 max-w-[95%] sm:max-w-[85%] animate-fade-in">
+                                    <div className="w-full bg-white border border-slate-200 rounded-3xl rounded-tl-none p-5 shadow-sm space-y-3">
+                                        
+                                        {/* Card Header & Audio */}
+                                        <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                                            <span className="text-xs font-bold text-rose-600 flex items-center gap-1.5">
+                                                <i className="fa-solid fa-robot"></i> {sessionConfig.role}
+                                            </span>
+                                            <button
+                                                onClick={() => playJapaneseTTS(aiData.ai_response_ja, idx)}
+                                                className={`p-2 rounded-full transition-all ${
+                                                    audioPlayingIndex === idx
+                                                        ? 'bg-rose-600 text-white animate-pulse'
+                                                        : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
+                                                }`}
+                                                title="Dengarkan Suara TTS"
+                                            >
+                                                <i className="fa-solid fa-volume-high text-xs"></i>
+                                            </button>
+                                        </div>
+
+                                        {/* Japanese Text Rendering */}
+                                        <div className="text-base sm:text-lg font-medium text-slate-800 japanese-text">
+                                            {globalFurigana && aiData.furigana_html ? (
+                                                <div dangerouslySetInnerHTML={{ __html: aiData.furigana_html }} />
+                                            ) : (
+                                                <span>{aiData.ai_response_ja}</span>
+                                            )}
+                                        </div>
+
+                                        {/* Indonesian Translation */}
+                                        {(globalTranslation || details.showTrans) && (
+                                            <p className="text-xs text-slate-600 bg-slate-50 p-2.5 rounded-xl border border-slate-200/80 italic font-sans">
+                                                🇮🇩 {aiData.indonesian_translation}
+                                            </p>
+                                        )}
+
+                                        {/* User Error Correction Card */}
+                                        {aiData.user_correction && aiData.user_correction.has_error && (
+                                            <div className="p-3 bg-amber-50 border border-amber-200 rounded-2xl space-y-1.5 text-xs font-sans">
+                                                <div className="flex items-center gap-1.5 text-amber-800 font-bold">
+                                                    <i className="fa-solid fa-triangle-exclamation"></i>
+                                                    <span>Koreksi Bahasa</span>
+                                                </div>
+                                                <div className="text-slate-700">
+                                                    <span className="line-through text-slate-400">{aiData.user_correction.user_original}</span>
+                                                    <span className="mx-2">➔</span>
+                                                    <span className="text-emerald-600 font-bold">{aiData.user_correction.corrected}</span>
+                                                </div>
+                                                <p className="text-[11px] text-amber-900 leading-relaxed">
+                                                    {aiData.user_correction.explanation}
+                                                </p>
+                                            </div>
+                                        )}
+
+                                        {/* In-Card Tool Actions */}
+                                        <div className="pt-2 border-t border-slate-100 flex flex-wrap items-center gap-1.5 text-xs font-sans">
+                                            <button
+                                                onClick={() => toggleDetail(msg.id, 'showTrans')}
+                                                className="px-2.5 py-1 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-600 border border-slate-200 flex items-center gap-1"
+                                            >
+                                                <i className="fa-solid fa-language text-indigo-500"></i> Terjemahkan
+                                            </button>
+
+                                            <button
+                                                onClick={() => toggleDetail(msg.id, 'showExplain')}
+                                                className="px-2.5 py-1 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-600 border border-slate-200 flex items-center gap-1"
+                                            >
+                                                <i className="fa-solid fa-book-open text-emerald-500"></i> Penjelasan
+                                            </button>
+
+                                            <button
+                                                onClick={() => toggleDetail(msg.id, 'showAlt')}
+                                                className="px-2.5 py-1 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-600 border border-slate-200 flex items-center gap-1"
+                                            >
+                                                <i className="fa-solid fa-arrows-rotate text-amber-500"></i> Alternatif
+                                            </button>
+
+                                            <button
+                                                onClick={() => toggleDetail(msg.id, 'showNative')}
+                                                className="px-2.5 py-1 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-600 border border-slate-200 flex items-center gap-1"
+                                            >
+                                                <i className="fa-solid fa-wand-magic-sparkles text-rose-500"></i> Native Version
+                                            </button>
+                                        </div>
+
+                                        {/* Expandable Explanation Drawer */}
+                                        {details.showExplain && (
+                                            <div className="p-3 bg-slate-50 rounded-2xl border border-slate-200 text-xs space-y-1 text-slate-700 font-sans animate-fade-in">
+                                                <h5 className="font-bold text-emerald-700">Grammar & Kosakata:</h5>
+                                                <p className="leading-relaxed text-[11px] whitespace-pre-wrap">{aiData.explanation}</p>
+                                            </div>
+                                        )}
+
+                                        {/* Expandable Alternatives Drawer */}
+                                        {details.showAlt && (
+                                            <div className="p-3 bg-slate-50 rounded-2xl border border-slate-200 text-xs space-y-1.5 text-slate-700 font-sans animate-fade-in">
+                                                <h5 className="font-bold text-amber-700">Variasi Kalimat Lain:</h5>
+                                                <ul className="list-disc list-inside space-y-1 text-[11px] japanese-text">
+                                                    {aiData.alternatives?.map((alt, aIdx) => (
+                                                        <li key={aIdx} className="text-slate-800">{alt}</li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        )}
+
+                                        {/* Expandable Native Version Drawer */}
+                                        {details.showNative && (
+                                            <div className="p-3 bg-slate-50 rounded-2xl border border-slate-200 text-xs space-y-1 text-slate-700 font-sans animate-fade-in">
+                                                <h5 className="font-bold text-rose-700">Penutur Asli (Native):</h5>
+                                                <p className="text-slate-800 font-bold japanese-text text-sm">{aiData.native_version}</p>
+                                            </div>
+                                        )}
+
+                                    </div>
+                                    <span className="text-[10px] text-slate-400 pl-2">{msg.timestamp}</span>
+                                </div>
+                            );
+                        })}
+
+                        {/* Loading Indicator */}
+                        {isLoading && (
+                            <div className="flex items-center gap-2 text-slate-500 text-xs bg-white p-3 rounded-2xl border border-slate-200 w-fit animate-pulse font-sans">
+                                <i className="fa-solid fa-circle-notch animate-spin text-rose-500"></i>
+                                <span>AI sedang berpikir dan menyiapkan balasan...</span>
+                            </div>
+                        )}
+
+                        <div ref={chatEndRef} />
+                    </div>
+
+                    {/* Hints Drawer */}
+                    {hints.length > 0 && (
+                        <div className="bg-slate-100 border-t border-slate-200 p-3 space-y-2 font-sans">
+                            <div className="flex items-center justify-between text-xs text-amber-700 font-bold">
+                                <span><i className="fa-solid fa-lightbulb mr-1"></i> Rekomendasi Ide Balasan:</span>
+                                <button onClick={() => setHints([])} className="text-slate-400 hover:text-slate-600"><i className="fa-solid fa-xmark"></i></button>
+                            </div>
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                                {hints.map((h, hIdx) => (
+                                    <button
+                                        key={hIdx}
+                                        onClick={() => {
+                                            onSendMessage(h.japanese);
+                                            setHints([]);
+                                        }}
+                                        className="p-2 rounded-xl bg-white border border-slate-200 hover:border-amber-400 text-left transition-all text-xs space-y-0.5"
+                                    >
+                                        <div className="font-bold text-slate-800 japanese-text line-clamp-1">{h.japanese}</div>
+                                        <div className="text-[10px] text-slate-500 line-clamp-1">{h.indonesian}</div>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Bottom Controls Bar */}
+                    <div className="p-3 bg-white border-t border-slate-200 space-y-2 font-sans">
+                        <div className="flex items-center justify-between px-1 text-[11px]">
+                            <button
+                                onClick={onGetHints}
+                                disabled={isLoadingHints || chatMessages.length === 0}
+                                className="text-amber-600 hover:text-amber-700 font-bold flex items-center gap-1 disabled:opacity-40"
+                            >
+                                <i className="fa-solid fa-lightbulb"></i>
+                                {isLoadingHints ? 'Mencari ide...' : 'Bingung mau jawab apa? Get Hint'}
+                            </button>
+                            <span className="text-slate-400">
+                                {sessionConfig.mode === 'voice' ? '🎙️ Voice Mode Active' : '⌨️ Text Mode Active'}
+                            </span>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                            {speechSupported && (
+                                <button
+                                    onClick={toggleListening}
+                                    className={`p-3 rounded-2xl border transition-all ${
+                                        isListening ? 'bg-rose-600 text-white border-rose-500 animate-bounce' : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200'
+                                    }`}
+                                    title={isListening ? 'Berhenti Bicara' : 'Mulai Bicara'}
+                                >
+                                    <i className={`fa-solid ${isListening ? 'fa-microphone-slash' : 'fa-microphone'}`}></i>
+                                </button>
+                            )}
+
+                            <input
+                                type="text"
+                                value={inputMessage}
+                                onChange={(e) => setInputMessage(e.target.value)}
+                                onKeyDown={(e) => e.key === 'Enter' && onSendMessage()}
+                                placeholder={isListening ? 'Mendengarkan suara Jepang Anda...' : 'Ketik kalimat bahasa Jepang...'}
+                                className="flex-1 bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs md:text-sm text-slate-800 focus:outline-none focus:border-rose-500 japanese-text"
+                            />
+
+                            <button
+                                onClick={() => onSendMessage()}
+                                disabled={!inputMessage.trim() || isLoading}
+                                className="px-5 py-3 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-2xl transition-all disabled:opacity-40 shadow-sm"
+                            >
+                                <i className="fa-solid fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            );
+        }
+
+        function EvaluationScreen({ evaluation, sessionConfig, onRestart }) {
+            const scores = evaluation.scores || {};
+
+            return (
+                <div className="space-y-6 animate-fade-in font-sans max-w-4xl mx-auto">
+                    
+                    {/* Score Overview Banner */}
+                    <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">
+                        <div className="space-y-1 text-center md:text-left">
+                            <span className="px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-full text-xs font-bold">
+                                Sesi Selesai
+                            </span>
+                            <h2 className="text-2xl font-black text-slate-800">Hasil Evaluasi Percakapan</h2>
+                            <p className="text-xs text-slate-500">
+                                Peran: <span className="text-slate-800 font-bold">{sessionConfig.role}</span> • Level: <span className="text-slate-800 font-bold">{sessionConfig.level}</span>
+                            </p>
+                        </div>
+
+                        <div className="w-24 h-24 rounded-full bg-rose-50 border-4 border-rose-500 flex flex-col items-center justify-center shadow-sm">
+                            <span className="text-2xl font-black text-rose-600">{scores.overall || 88}</span>
+                            <span className="text-[9px] text-slate-400 uppercase tracking-widest">Overall</span>
+                        </div>
+                    </div>
+
+                    {/* Breakdown Grid */}
+                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+                        {[
+                            { label: 'Grammar', value: scores.grammar },
+                            { label: 'Vocabulary', value: scores.vocabulary },
+                            { label: 'Naturalness', value: scores.naturalness },
+                            { label: 'Fluency', value: scores.fluency },
+                            { label: 'Pronunciation', value: scores.pronunciation }
+                        ].map((s, idx) => (
+                            <div key={idx} className="bg-white p-4 rounded-2xl border border-slate-200 text-center space-y-1 shadow-sm">
+                                <span className="text-xs text-slate-400 font-medium">{s.label}</span>
+                                <div className="text-2xl font-black text-slate-800">{s.value || 0}<span className="text-xs text-slate-400">/100</span></div>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Detailed Mistakes Card */}
+                    <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm space-y-4">
+                        <h3 className="font-bold text-slate-800 text-base flex items-center gap-2">
+                            <i className="fa-solid fa-triangle-exclamation text-amber-500"></i> Catatan Evaluasi Kesalahan
+                        </h3>
+
+                        {evaluation.mistakes_breakdown && evaluation.mistakes_breakdown.length > 0 ? (
+                            <div className="space-y-3">
+                                {evaluation.mistakes_breakdown.map((m, idx) => (
+                                    <div key={idx} className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2 text-xs">
+                                        <span className="px-2 py-0.5 rounded bg-rose-100 text-rose-700 text-[10px] font-bold">
+                                            {m.category}
+                                        </span>
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                            <div className="p-2.5 rounded-xl bg-white border border-slate-200">
+                                                <span className="text-[10px] text-slate-400 block">Dikatakan:</span>
+                                                <span className="text-slate-800 line-through japanese-text">{m.user_said}</span>
+                                            </div>
+                                            <div className="p-2.5 rounded-xl bg-white border border-emerald-200">
+                                                <span className="text-[10px] text-emerald-600 block">Lebih Alami:</span>
+                                                <span className="text-emerald-700 font-bold japanese-text">{m.better_way}</span>
+                                            </div>
+                                        </div>
+                                        <p className="text-slate-600 text-[11px] pt-1 leading-relaxed">
+                                            💡 {m.explanation}
+                                        </p>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <p className="text-xs text-slate-500 italic">Luar biasa! Tidak ada kesalahan fatal ditemukan.</p>
+                        )}
+                    </div>
+
+                    {/* Restart Button */}
+                    <div className="flex justify-center pt-2">
+                        <button
+                            onClick={onRestart}
+                            className="px-8 py-3.5 bg-rose-600 hover:bg-rose-500 text-white font-extrabold text-sm rounded-2xl shadow-md transition-all flex items-center gap-2"
+                        >
+                            <i className="fa-solid fa-rotate-right"></i> Mulai Sesi Baru Lainnya
+                        </button>
+                    </div>
+
+                </div>
+            );
+        }
+
+        function HistoryScreen({ history, onSelectSession, onClearHistory }) {
+            return (
+                <div className="space-y-6 animate-fade-in font-sans max-w-4xl mx-auto">
+                    <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm flex justify-between items-center">
+                        <div>
+                            <h2 className="text-2xl font-black text-slate-800">Riwayat Percakapan</h2>
+                            <p className="text-xs text-slate-500">Sesi tersimpan secara lokal di perangkat Anda</p>
+                        </div>
+                        {history.length > 0 && (
+                            <button
+                                onClick={onClearHistory}
+                                className="px-3 py-1.5 text-xs text-rose-600 hover:bg-rose-50 rounded-xl border border-rose-200 font-bold"
+                            >
+                                Hapus Riwayat
+                            </button>
+                        )}
+                    </div>
+
+                    {history.length === 0 ? (
+                        <div className="text-center py-16 bg-white rounded-3xl border border-slate-200 text-slate-400 space-y-2">
+                            <i className="fa-solid fa-inbox text-3xl"></i>
+                            <p className="text-xs font-bold">Belum Ada Sesi Tersimpan</p>
+                        </div>
+                    ) : (
+                        <div className="space-y-3">
+                            {history.map((sess) => (
+                                <div
+                                    key={sess.id}
+                                    onClick={() => onSelectSession(sess)}
+                                    className="p-4 bg-white hover:bg-slate-50 rounded-2xl border border-slate-200 transition-all cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm"
+                                >
+                                    <div className="space-y-1">
+                                        <div className="flex items-center gap-2">
+                                            <span className="font-bold text-slate-800 text-sm">{sess.role}</span>
+                                            <span className="text-[10px] bg-rose-50 text-rose-700 border border-rose-100 px-2 py-0.2 rounded-full font-mono">
+                                                {sess.level}
+                                            </span>
+                                        </div>
+                                        <p className="text-xs text-slate-400">
+                                            📍 {sess.location} • ⏱️ {sess.duration} • 📅 {sess.date}
+                                        </p>
+                                    </div>
+                                    {sess.scores && (
+                                        <div className="flex items-center gap-3">
+                                            <span className="text-xl font-black text-emerald-600">{sess.scores.overall || 85}</span>
+                                            <i className="fa-solid fa-chevron-right text-slate-300 text-xs"></i>
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

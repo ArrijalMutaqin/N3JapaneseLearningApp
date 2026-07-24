@@ -186,7 +186,7 @@
                     { id: "q2", type: "mc", text: "母はいつも (     ) 服を着ている。", options: ["a. 子どもらしい", "b. 子どもっぽい"], ans: "b", trans: "Ibu selalu memakai baju yang (...)." },
                     { id: "q3", type: "mc", text: "逃げたのは (     ) 車でした。", options: ["a. 黒っぽい", "b. 黒みたいな"], ans: "a", trans: "Yang melarikan diri adalah mobil yang (...)." },
                     { id: "q4", type: "mc", text: "試験を受けたけど、合格は (     ) です。", options: ["a. 無理みたい", "b. 無理っぽい"], ans: "a", trans: "Saya sudah ikut ujian, tapi kelulusannya (...)." },
-                    { id: "q5", type: "mc", text: "うちの子には (   Custom ) 元気に育ってほしい。", options: ["a. 子どもみたいに", "b. 子どもらしく"], ans: "b", trans: "Saya ingin anak saya tumbuh sehat (...) seorang anak." }
+                    { id: "q5", type: "mc", text: "うちの子には (     ) 元気に育ってほしい。", options: ["a. 子どもみたいに", "b. 子どもらしく"], ans: "b", trans: "Saya ingin anak saya tumbuh sehat (...) seorang anak." }
                 ],
                 practice2: [
                     { id: "q6", type: "seq", prefix: "今からお話しするのは、うそ", suffix: "話です。", options: ["みたい", "の", "本当", "な"], ans: [1, 4, 3, 2], trans: "Cerita yang akan saya sampaikan sekarang adalah kisah nyata yang seperti kebohongan." },
@@ -552,7 +552,6 @@
             }
         ];
 
-        // Component pendukung & App untuk Week 1
         function TranslationToggle({ enabled, onChange }) {
             return (
                 <div className="inline-flex items-center gap-2.5 bg-slate-100 px-3.5 py-1.5 rounded-xl border border-slate-200/80 shadow-sm">
@@ -618,28 +617,74 @@
             );
         }
 
-        function GrammarExplanation({ num, title, tag, desc, examples, isUnderstood, onToggleUnderstood }) {
+        function GrammarExplanation({ num, title, tag, desc, examples, isUnderstood, onToggleUnderstood, note, onSaveNote }) {
+            const [isNoteOpen, setIsNoteOpen] = useState(false);
+            const [noteText, setNoteText] = useState(note || '');
+            const [isSavedAlert, setIsSavedAlert] = useState(false);
+
+            useEffect(() => {
+                setNoteText(note || '');
+            }, [note]);
+
+            const handleSave = () => {
+                onSaveNote(noteText);
+                setIsSavedAlert(true);
+                setTimeout(() => setIsSavedAlert(false), 2000);
+            };
+
+            const handleClear = () => {
+                setNoteText('');
+                onSaveNote('');
+            };
+
+            const hasNote = Boolean(note && note.trim().length > 0);
+
             return (
                 <div className={`border rounded-2xl p-5 transition-all duration-300 ${isUnderstood ? 'border-emerald-200 bg-emerald-50/20' : 'border-slate-100 bg-slate-50/50'}`}>
-                    <h3 className="text-lg font-black text-slate-900 mb-3 border-b border-dashed border-slate-200 pb-2 flex flex-col md:flex-row md:items-center justify-between gap-2">
-                        <span>{num}. {title}</span>
-                        <div className="flex items-center gap-2">
+                    <div className="border-b border-dashed border-slate-200 pb-3 mb-3 flex items-start justify-between gap-3">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                            <h3 className="text-lg font-black text-slate-900">{num}. {title}</h3>
+                            <span className="text-[10px] bg-emerald-100/70 text-emerald-800 font-bold px-2 py-0.5 rounded-md font-sans w-fit">
+                                {tag}
+                            </span>
+                        </div>
+                        
+                        <div className="flex items-center gap-2 shrink-0 ml-auto">
+                            <button 
+                                onClick={() => setIsNoteOpen(!isNoteOpen)}
+                                className={`text-xs font-bold px-3 py-1.5 rounded-full border transition-all duration-200 flex items-center gap-1.5 font-sans ${
+                                    hasNote
+                                        ? 'bg-amber-500 text-white border-amber-600 shadow-sm'
+                                        : 'bg-white text-amber-700 border-amber-200 hover:bg-amber-50'
+                                }`}
+                                title="Tampilkan/Sembunyikan Catatan Personal"
+                            >
+                                <i className={`fa-solid ${hasNote ? (isNoteOpen ? 'fa-eye-slash' : 'fa-sticky-note') : 'fa-pen-to-square'}`}></i>
+                                <span className="hidden sm:inline">
+                                    {hasNote 
+                                        ? (isNoteOpen ? 'Sembunyikan Catatan' : 'Lihat Catatan') 
+                                        : (isNoteOpen ? 'Tutup Form' : '+ Catatan')
+                                    }
+                                </span>
+                                <span className="sm:hidden">
+                                    {hasNote ? 'Catatan' : '+ Note'}
+                                </span>
+                            </button>
+
                             <button 
                                 onClick={onToggleUnderstood}
-                                className={`text-xs font-bold px-3 py-1 rounded-full border transition-all duration-200 flex items-center gap-1.5 font-sans ${
+                                className={`text-xs font-bold px-3 py-1.5 rounded-full border transition-all duration-200 flex items-center gap-1.5 font-sans ${
                                     isUnderstood 
                                         ? 'bg-emerald-500 text-white border-emerald-600 shadow-sm' 
                                         : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'
                                 }`}
                             >
                                 <i className={`fa-solid ${isUnderstood ? 'fa-circle-check text-white' : 'fa-circle text-slate-300'}`}></i>
-                                <span>{isUnderstood ? 'Sudah Paham' : 'Tandai Paham'}</span>
+                                <span className="hidden sm:inline">{isUnderstood ? 'Sudah Paham' : 'Tandai Paham'}</span>
+                                <span className="sm:hidden">{isUnderstood ? 'Paham' : 'Paham?'}</span>
                             </button>
-                            <span className="text-[10px] bg-emerald-100/70 text-emerald-800 font-bold px-2 py-0.5 rounded-md font-sans">
-                                {tag}
-                            </span>
                         </div>
-                    </h3>
+                    </div>
                     
                     <div className="mb-4 text-sm text-slate-600 bg-slate-100/75 p-3 rounded-lg leading-relaxed font-sans">
                         <strong>Penjelasan:</strong> {desc}
@@ -653,6 +698,79 @@
                             </p>
                         ))}
                     </div>
+
+                    {!isNoteOpen && hasNote && (
+                        <div 
+                            onClick={() => setIsNoteOpen(true)}
+                            className="mt-4 p-3 bg-amber-50/80 hover:bg-amber-100/70 border border-amber-200/90 rounded-xl flex items-center justify-between cursor-pointer transition-all font-sans group shadow-sm"
+                        >
+                            <div className="flex items-center gap-2.5 overflow-hidden mr-2">
+                                <span className="w-7 h-7 rounded-lg bg-amber-500 text-white flex items-center justify-center text-xs shrink-0 shadow-sm">
+                                    <i className="fa-solid fa-note-sticky"></i>
+                                </span>
+                                <div className="truncate">
+                                    <span className="text-[11px] font-bold text-amber-900 block leading-tight">Catatan Tersimpan:</span>
+                                    <span className="text-xs text-amber-800 font-medium italic truncate block">{note}</span>
+                                </div>
+                            </div>
+                            <span className="text-xs font-extrabold text-amber-700 group-hover:text-amber-900 shrink-0 flex items-center gap-1.5 bg-white/80 px-2.5 py-1 rounded-lg border border-amber-200/60 shadow-2xs">
+                                <i className="fa-solid fa-eye text-[11px]"></i>
+                                <span>Tampilkan</span>
+                            </span>
+                        </div>
+                    )}
+
+                    {isNoteOpen && (
+                        <div className="mt-5 pt-4 border-t border-amber-200/80 bg-amber-50/60 p-4 rounded-xl border border-amber-200 font-sans transition-all">
+                            <div className="flex items-center justify-between mb-2">
+                                <label className="text-xs font-extrabold text-amber-900 uppercase tracking-wider flex items-center gap-1.5">
+                                    <i className="fa-solid fa-note-sticky text-amber-600"></i>
+                                    Catatan Pribadi untuk Poin Ini
+                                </label>
+                                <div className="flex items-center gap-2">
+                                    {isSavedAlert && (
+                                        <span className="text-[11px] font-bold text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-md animate-pulse">
+                                            <i className="fa-solid fa-check mr-1"></i> Tersimpan!
+                                        </span>
+                                    )}
+                                    <button
+                                        onClick={() => setIsNoteOpen(false)}
+                                        className="text-[11px] font-bold text-slate-500 hover:text-slate-800 px-2 py-1 rounded-lg hover:bg-amber-100/80 transition-colors flex items-center gap-1"
+                                        title="Sembunyikan tampilan catatan"
+                                    >
+                                        <i className="fa-solid fa-eye-slash text-[10px]"></i>
+                                        Sembunyikan
+                                    </button>
+                                </div>
+                            </div>
+                            <textarea
+                                value={noteText}
+                                onChange={(e) => setNoteText(e.target.value)}
+                                placeholder="Tuliskan pola unik, rumus hafalan, atau catatan contoh kalimat Anda di sini..."
+                                rows="3"
+                                className="w-full text-xs p-3 rounded-xl border border-amber-300/80 bg-white focus:outline-none focus:ring-2 focus:ring-amber-400/50 text-slate-800 leading-relaxed font-sans resize-y"
+                            ></textarea>
+                            <div className="mt-2.5 flex items-center justify-between">
+                                <button
+                                    onClick={handleClear}
+                                    disabled={!noteText && !hasNote}
+                                    className="text-xs font-bold text-rose-600 hover:text-rose-800 disabled:opacity-40 disabled:hover:text-rose-600 transition-colors flex items-center gap-1"
+                                >
+                                    <i className="fa-solid fa-trash-can text-[10px]"></i>
+                                    Hapus Catatan
+                                </button>
+                                <div className="flex items-center gap-2">
+                                    <button
+                                        onClick={handleSave}
+                                        className="px-4 py-1.5 bg-amber-600 hover:bg-amber-700 active:scale-95 text-white text-xs font-bold rounded-lg shadow-sm transition-all flex items-center gap-1.5"
+                                    >
+                                        <i className="fa-solid fa-floppy-disk"></i>
+                                        Simpan Catatan
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             );
         }
@@ -827,7 +945,6 @@
 
         function App() {
             const [currentView, setCurrentView] = useState('landing'); 
-            const [comingSoonDay, setComingSoonDay] = useState({ week: CURRENT_WEEK, day: 1 });
 
             const [showIndoTrans, setShowIndoTrans] = useState(() => {
                 try {
@@ -861,6 +978,13 @@
             const [grammarUnderstanding, setGrammarUnderstanding] = useState(() => {
                 try {
                     const saved = localStorage.getItem('ns_grammar_understanding');
+                    return saved ? JSON.parse(saved) : {};
+                } catch (e) { return {}; }
+            });
+
+            const [grammarNotes, setGrammarNotes] = useState(() => {
+                try {
+                    const saved = localStorage.getItem('ns_grammar_notes');
                     return saved ? JSON.parse(saved) : {};
                 } catch (e) { return {}; }
             });
@@ -908,6 +1032,10 @@
             }, [grammarUnderstanding]);
 
             useEffect(() => {
+                localStorage.setItem('ns_grammar_notes', JSON.stringify(grammarNotes));
+            }, [grammarNotes]);
+
+            useEffect(() => {
                 localStorage.setItem('ns_grammar_userAnswersD7', JSON.stringify(userAnswersD7));
             }, [userAnswersD7]);
 
@@ -928,6 +1056,7 @@
                 setSubmittedD7(false);
                 setScoreD7(0);
                 setGrammarUnderstanding({});
+                setGrammarNotes({});
                 setShowResetConfirm(false);
             };
 
@@ -935,6 +1064,13 @@
                 setGrammarUnderstanding(prev => ({
                     ...prev,
                     [`${dayKey}_${gpNum}`]: !prev[`${dayKey}_${gpNum}`]
+                }));
+            };
+
+            const handleSaveNote = (dayKey, gpNum, text) => {
+                setGrammarNotes(prev => ({
+                    ...prev,
+                    [`${dayKey}_${gpNum}`]: text
                 }));
             };
 
@@ -1014,9 +1150,6 @@
                     setCurrentView('w1d7');
                 } else if (LESSON_DATA[dayKey]) {
                     setCurrentView(dayKey);
-                } else {
-                    setComingSoonDay({ week: CURRENT_WEEK, day });
-                    setCurrentView('coming_soon');
                 }
                 window.scrollTo({ top: 0 });
             };
@@ -1055,7 +1188,7 @@
 
                             <header className="bg-slate-900 text-white shadow-md relative overflow-hidden">
                                 <div className="max-w-4xl mx-auto px-6 pt-4 flex justify-between items-center text-xs">
-                                    <a href="DashboardBunpou.html" className="flex items-center gap-2 hover:text-white transition-colors bg-slate-800 text-slate-300 px-3.5 py-2 rounded-full border border-slate-700/50 hover:bg-slate-700 font-medium">
+                                    <a href="index.html" className="flex items-center gap-2 hover:text-white transition-colors bg-slate-800 text-slate-300 px-3.5 py-2 rounded-full border border-slate-700/50 hover:bg-slate-700 font-medium">
                                         <i className="fa-solid fa-house text-emerald-400"></i>
                                         <span>Kembali</span>
                                     </a>
@@ -1500,6 +1633,8 @@
                                                 examples={gp.examples} 
                                                 isUnderstood={grammarUnderstanding[`${currentView}_${gp.num}`] || false}
                                                 onToggleUnderstood={() => handleToggleUnderstood(currentView, gp.num)}
+                                                note={grammarNotes[`${currentView}_${gp.num}`] || ''}
+                                                onSaveNote={(text) => handleSaveNote(currentView, gp.num, text)}
                                             />
                                         ))}
                                     </div>
