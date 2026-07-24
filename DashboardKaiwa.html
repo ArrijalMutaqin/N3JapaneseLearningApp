@@ -84,8 +84,6 @@
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
 
-        const DEFAULT_GEMINI_KEY = "AQ.Ab8RN6K8mTwRGqjTJ--rk4APi5hkKo4JhSnaz94etEwxMumUrQ";
-
         const QUICK_ROLES = [
             'Teman sekolah', 'Guru', 'Atasan', 'Rekan kerja', 'Pelanggan', 
             'Pegawai toko', 'Kasir konbini', 'Pelayan restoran', 'Polisi', 
@@ -206,9 +204,9 @@
         }
 
         function App() {
-            // State for API Key
+            // State for API Key (diwajibkan dari pengguna, tanpa hardcoded key)
             const [apiKey, setApiKey] = useState(() => {
-                return localStorage.getItem('kaiwa_gemini_api_key') || DEFAULT_GEMINI_KEY;
+                return localStorage.getItem('kaiwa_gemini_api_key') || '';
             });
             const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
             const [apiKeyModalTab, setApiKeyModalTab] = useState('input'); // 'input' | 'tutorial'
@@ -284,9 +282,13 @@
             }, []);
 
             const saveApiKey = (newKey) => {
-                const keyToSave = newKey.trim() || DEFAULT_GEMINI_KEY;
+                const keyToSave = newKey.trim();
                 setApiKey(keyToSave);
-                localStorage.setItem('kaiwa_gemini_api_key', keyToSave);
+                if (keyToSave) {
+                    localStorage.setItem('kaiwa_gemini_api_key', keyToSave);
+                } else {
+                    localStorage.removeItem('kaiwa_gemini_api_key');
+                }
                 setIsApiKeyModalOpen(false);
             };
 
@@ -304,6 +306,11 @@
             };
 
             const callGeminiChatAPI = async (messages, currentConfig) => {
+                const activeKey = apiKey.trim();
+                if (!activeKey) {
+                    throw new Error("API Key belum diisi. Silakan masukkan Gemini API Key Anda.");
+                }
+
                 const roleTitle = currentConfig.role === 'Custom' 
                     ? `${currentConfig.customRole.name} (${currentConfig.customRole.personality}, ${currentConfig.customRole.style})`
                     : currentConfig.role;
@@ -327,7 +334,7 @@ ATURAN PERAN KETAT:
 ATURAN UTAMA:
 1. Tetap berada dalam karakter (never break character).
 2. Tulis balasan bahasa Jepang yang sangat alami sesuai level ${currentConfig.level}.
-3. Untuk tag HTML furigana pada "furigana_html", selalu gunakan sintaks HTML baku: <ruby>漢字<rt>かんじ</rt></ruby>.
+3. Untuk tag HTML furigana pada "furigana_html", selalu gunakan sintaks HTML baku: <ruby>漢字<rt>かんji</rt></ruby>.
 4. Jika pengguna membuat kesalahan dalam bahasa Jepang (tata bahasa, partikel, keigo, kosakata):
    - Jawablah terlebih dahulu secara natural untuk menjaga alur percakapan.
    - Kemudian berikan koreksi dalam properti "user_correction".
@@ -370,7 +377,6 @@ ATURAN UTAMA:
                     }
                 };
 
-                const activeKey = apiKey.trim() || DEFAULT_GEMINI_KEY;
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${activeKey}`;
 
                 const response = await fetch(apiUrl, {
@@ -391,6 +397,20 @@ ATURAN UTAMA:
                 return JSON.parse(jsonText);
             };
 
+            const fallbackWebSpeech = (text, index) => {
+                if ('speechSynthesis' in window) {
+                    window.speechSynthesis.cancel();
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.lang = 'ja-JP';
+                    utterance.rate = 0.9;
+                    utterance.onend = () => setAudioPlayingIndex(null);
+                    utterance.onerror = () => setAudioPlayingIndex(null);
+                    window.speechSynthesis.speak(utterance);
+                } else {
+                    setAudioPlayingIndex(null);
+                }
+            };
+
             const playJapaneseTTS = async (text, index) => {
                 if (audioPlayingIndex === index) {
                     setAudioPlayingIndex(null);
@@ -400,7 +420,8 @@ ATURAN UTAMA:
                 setAudioPlayingIndex(index);
 
                 try {
-                    const activeKey = apiKey.trim() || DEFAULT_GEMINI_KEY;
+                    const activeKey = apiKey.trim();
+                    if (!activeKey) throw new Error("API Key tidak ada");
                     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${activeKey}`;
                     
                     const payload = {
@@ -447,21 +468,13 @@ ATURAN UTAMA:
                 fallbackWebSpeech(text, index);
             };
 
-            const fallbackWebSpeech = (text, index) => {
-                if ('speechSynthesis' in window) {
-                    window.speechSynthesis.cancel();
-                    const utterance = new SpeechSynthesisUtterance(text);
-                    utterance.lang = 'ja-JP';
-                    utterance.rate = 0.9;
-                    utterance.onend = () => setAudioPlayingIndex(null);
-                    utterance.onerror = () => setAudioPlayingIndex(null);
-                    window.speechSynthesis.speak(utterance);
-                } else {
-                    setAudioPlayingIndex(null);
-                }
-            };
-
             const handleStartSession = async () => {
+                if (!apiKey.trim()) {
+                    setApiKeyModalTab('input');
+                    setIsApiKeyModalOpen(true);
+                    return;
+                }
+
                 setIsLoading(true);
                 setActiveTab('chat');
                 setChatMessages([]);
@@ -497,6 +510,12 @@ ATURAN UTAMA:
             const handleSendMessage = async (textToSend = null) => {
                 const text = textToSend || inputMessage;
                 if (!text.trim() || isLoading) return;
+
+                if (!apiKey.trim()) {
+                    setApiKeyModalTab('input');
+                    setIsApiKeyModalOpen(true);
+                    return;
+                }
 
                 setInputMessage('');
                 if (isListening && speechRecognitionRef.current) {
@@ -541,9 +560,15 @@ ATURAN UTAMA:
             };
 
             const handleGetHints = async () => {
+                if (!apiKey.trim()) {
+                    setApiKeyModalTab('input');
+                    setIsApiKeyModalOpen(true);
+                    return;
+                }
+
                 setIsLoadingHints(true);
                 try {
-                    const activeKey = apiKey.trim() || DEFAULT_GEMINI_KEY;
+                    const activeKey = apiKey.trim();
                     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${activeKey}`;
                     const historyContext = chatMessages.slice(-4).map(m => `${m.sender}: ${m.sender === 'user' ? m.content : m.data?.ai_response_ja}`).join('\n');
 
@@ -591,10 +616,16 @@ ATURAN UTAMA:
                     return;
                 }
 
+                if (!apiKey.trim()) {
+                    setApiKeyModalTab('input');
+                    setIsApiKeyModalOpen(true);
+                    return;
+                }
+
                 setIsLoading(true);
                 try {
                     const chatLog = chatMessages.map(m => `${m.sender.toUpperCase()}: ${m.sender === 'user' ? m.content : m.data?.ai_response_ja}`).join('\n');
-                    const activeKey = apiKey.trim() || DEFAULT_GEMINI_KEY;
+                    const activeKey = apiKey.trim();
                     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${activeKey}`;
 
                     const evalPrompt = `
@@ -702,11 +733,11 @@ Kelompokkan kesalahan ke dalam kategori: Partikel, Tata Bahasa, Pilihan Kata, Ke
             return (
                 <div className="min-h-screen bg-slate-50 flex flex-col justify-between">
                     
-                    {/* Header Component matching Bunpou Style */}
+                    {/* Header Component */}
                     <header className="bg-slate-900 text-white shadow-md">
                         <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
                             <div className="flex items-center gap-4">
-                                <a href="index.html" className="p-2 hover:bg-slate-800 rounded-lg transition-colors text-slate-300 hover:text-white" title="Kembali ke Portal">
+                                <a href="DashboardKaiwa.html" className="p-2 hover:bg-slate-800 rounded-lg transition-colors text-slate-300 hover:text-white" title="Kembali ke Portal">
                                     <i className="fa-solid fa-arrow-left"></i>
                                 </a>
                                 <div>
@@ -735,11 +766,17 @@ Kelompokkan kesalahan ke dalam kategori: Partikel, Tata Bahasa, Pilihan Kata, Ke
                                         setApiKeyModalTab('input');
                                         setIsApiKeyModalOpen(true);
                                     }}
-                                    className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-amber-300 text-xs font-bold rounded-xl border border-slate-700 transition-all flex items-center gap-1.5"
+                                    className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5 ${
+                                        !apiKey.trim()
+                                            ? 'bg-amber-500 text-slate-950 border-amber-400 animate-pulse'
+                                            : 'bg-slate-800 hover:bg-slate-700 text-amber-300 border-slate-700'
+                                    }`}
                                     title="Pengaturan API Key"
                                 >
                                     <i className="fa-solid fa-key"></i>
-                                    <span className="hidden sm:inline">API Key</span>
+                                    <span className="hidden sm:inline">
+                                        {!apiKey.trim() ? 'Wajib Isi API Key' : 'API Key'}
+                                    </span>
                                 </button>
 
                                 <button
@@ -769,7 +806,7 @@ Kelompokkan kesalahan ke dalam kategori: Partikel, Tata Bahasa, Pilihan Kata, Ke
                         </div>
                     </header>
 
-                    {}
+                    {/* API Key Settings Modal with Tutorial */}
                     {isApiKeyModalOpen && (
                         <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in font-sans">
                             <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-lg w-full overflow-hidden flex flex-col max-h-[90vh]">
@@ -782,7 +819,7 @@ Kelompokkan kesalahan ke dalam kategori: Partikel, Tata Bahasa, Pilihan Kata, Ke
                                         </div>
                                         <div>
                                             <h3 className="font-bold text-sm text-white">Pengaturan API Key Google Gemini</h3>
-                                            <p className="text-[10px] text-slate-400">Gunakan API Key sendiri untuk limit lebih luas</p>
+                                            <p className="text-[10px] text-slate-400">Dimasukkan pengguna secara mandiri</p>
                                         </div>
                                     </div>
                                     <button 
@@ -823,27 +860,27 @@ Kelompokkan kesalahan ke dalam kategori: Partikel, Tata Bahasa, Pilihan Kata, Ke
                                         <div className="space-y-4">
                                             <div className="p-3.5 bg-amber-50 border border-amber-200/80 rounded-2xl text-xs space-y-1.5 text-amber-900">
                                                 <div className="font-bold flex items-center gap-1.5">
-                                                    <i className="fa-solid fa-lightbulb text-amber-600"></i>
-                                                    Mengapa pakai API Key milik sendiri?
+                                                    <i className="fa-solid fa-triangle-exclamation text-amber-600"></i>
+                                                    API Key Dibutuhkan
                                                 </div>
                                                 <p className="text-[11px] text-amber-800 leading-relaxed">
-                                                    Google menyediakan kuota Gemini AI gratis setiap bulannya untuk tiap email. Dengan memasukkan API Key pribadi, kuota pesan Anda tidak akan terbagi dengan pengguna aplikasi lainnya.
+                                                    Untuk memulai latihan percakapan, Anda perlu memasukkan Google Gemini API Key milik Anda sendiri. API Key gratis didapatkan dari Google AI Studio dan disimpan aman secara lokal di browser Anda.
                                                 </p>
                                             </div>
 
                                             <div className="space-y-1.5">
                                                 <label className="text-xs font-bold text-slate-700 block">
-                                                    Gemini API Key Anda:
+                                                    Gemini API Key Anda <span className="text-rose-600">*</span>:
                                                 </label>
                                                 <input
                                                     type="password"
-                                                    defaultValue={apiKey === DEFAULT_GEMINI_KEY ? '' : apiKey}
+                                                    defaultValue={apiKey}
                                                     id="apiKeyInput"
                                                     placeholder="Tempelkan API Key di sini (AIzaSy...)"
                                                     className="w-full text-xs p-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-rose-500 font-mono"
                                                 />
                                                 <span className="text-[10px] text-slate-400 block">
-                                                    🔒 API Key disimpan secara lokal di browser Anda dan tidak pernah dikirim ke server pihak ketiga.
+                                                    🔒 API Key disimpan secara lokal di browser Anda dan tidak pernah dikirim ke server repositori/pihak ketiga.
                                                 </span>
                                             </div>
 
@@ -959,7 +996,7 @@ Kelompokkan kesalahan ke dalam kategori: Partikel, Tata Bahasa, Pilihan Kata, Ke
                         </div>
                     )}
 
-                    {/* Main Screen Body View Router */}
+                    {/* Main Screen Body Router */}
                     <main className="max-w-4xl mx-auto px-4 md:px-6 py-8 flex-1 w-full">
                         {activeTab === 'setup' && (
                             <SetupScreen 
@@ -967,6 +1004,11 @@ Kelompokkan kesalahan ke dalam kategori: Partikel, Tata Bahasa, Pilihan Kata, Ke
                                 setSessionConfig={setSessionConfig}
                                 onStart={handleStartSession}
                                 isLoading={isLoading}
+                                hasApiKey={!!apiKey.trim()}
+                                onOpenApiKeyModal={() => {
+                                    setApiKeyModalTab('input');
+                                    setIsApiKeyModalOpen(true);
+                                }}
                             />
                         )}
 
@@ -1020,7 +1062,7 @@ Kelompokkan kesalahan ke dalam kategori: Partikel, Tata Bahasa, Pilihan Kata, Ke
                                     setActiveTab('chat');
                                 }}
                                 onClearHistory={() => {
-                                    if (confirm('Hapus semua riwayat percakapan?')) {
+                                    if (window.confirm('Hapus semua riwayat percakapan?')) {
                                         setHistory([]);
                                         localStorage.removeItem('kaiwa_history');
                                     }
@@ -1037,7 +1079,7 @@ Kelompokkan kesalahan ke dalam kategori: Partikel, Tata Bahasa, Pilihan Kata, Ke
             );
         }
 
-        function SetupScreen({ sessionConfig, setSessionConfig, onStart, isLoading }) {
+        function SetupScreen({ sessionConfig, setSessionConfig, onStart, isLoading, hasApiKey, onOpenApiKeyModal }) {
             const [activePreset, setActivePreset] = useState(null);
 
             const updateConfig = (key, val) => setSessionConfig(prev => ({ ...prev, [key]: val }));
@@ -1070,9 +1112,27 @@ Kelompokkan kesalahan ke dalam kategori: Partikel, Tata Bahasa, Pilihan Kata, Ke
                         <h2 className="text-2xl md:text-3xl font-extrabold text-slate-800 mb-2 japanese-text">
                             Latihan Percakapan Bahasa Jepang AI
                         </h2>
-                        <p className="text-slate-600 text-sm leading-relaxed font-sans">
+                        <p className="text-slate-600 text-sm leading-relaxed font-sans mb-4">
                             Atur lawan bicara, situasi tempat, waktu, serta tingkat bahasa yang diinginkan. AI akan mempertahankan karakter secara konsisten selama percakapan berlangsung.
                         </p>
+
+                        {!hasApiKey && (
+                            <div className="p-4 bg-amber-50 border border-amber-200 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-amber-900 font-sans">
+                                <div className="flex items-center gap-2">
+                                    <i className="fa-solid fa-key text-amber-600 text-base"></i>
+                                    <div>
+                                        <span className="font-bold block">API Key Belum Dikonfigurasi</span>
+                                        <span className="text-amber-800 text-[11px]">Masukkan Gemini API Key gratis Anda terlebih dahulu sebelum memulai sesi.</span>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={onOpenApiKeyModal}
+                                    className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-xl text-xs transition-all shrink-0"
+                                >
+                                    Set API Key Sekarang
+                                </button>
+                            </div>
+                        )}
                     </div>
 
                     {/* Preset Scenarios Carousel */}
